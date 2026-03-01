@@ -395,33 +395,74 @@
         updatePhoto();
 
         function firePhotons() {
-            const f=parseFloat(fIn.value), t=parseFloat(tIn.value), intensity=parseInt(iIn.value);
-            const isEmitting = (H_EV_SCALE * f) > t;
-            for(let i=0; i<intensity; i++) {
-                setTimeout(() => {
-                    const p=document.createElement('div'); p.className='photon'; p.style.background=photonColor; p.style.top=(10+Math.random()*80)+'%'; photoArena.appendChild(p);
-                    const anim=p.animate([{left:'-20px'},{left:'110%'}], {duration:1200-(f*40)});
-                    anim.onfinish=()=>p.remove();
-                    setTimeout(()=> { 
-                        if(isEmitting){ 
-                            const es=document.querySelectorAll('.electron'); 
-                            const target=es[Math.floor(Math.random()*es.length)]; 
-                            if(target && target.style.opacity!=='0'){
-                                const speed = 0.4 + ((H_EV_SCALE * f) - t) * 0.2;
-                                target.style.transition = `transform ${0.8/speed}s linear, opacity 0.3s`;
-                                target.style.transform='translateX(600px)';
-                                target.style.opacity='0';
-                                setTimeout(()=>{
-                                    target.style.transition = 'none';
-                                    target.style.transform='none';
-                                    target.style.opacity='1';
-                                },2000);
-                            }
-                        } 
-                    }, (1200-(f*40))*0.5);
-                }, i*80);
-            }
-        }
+    const f = parseFloat(fIn.value), t = parseFloat(tIn.value), intensity = parseInt(iIn.value);
+    const kmax = (H_EV_SCALE * f) - t;
+    const electrons = document.querySelectorAll('.electron');
+
+    for(let i = 0; i < intensity; i++) {
+        setTimeout(() => {
+            const p = document.createElement('div');
+            p.className = 'photon';
+            p.style.background = photonColor;
+            const targetY = 10 + Math.random() * 80;
+            p.style.top = targetY + '%';
+            p.style.boxShadow = `0 0 15px ${photonColor}`;
+            photoArena.appendChild(p);
+
+            // Photon flies toward the metal
+            const anim = p.animate([
+                { left: '-20px', opacity: 1 },
+                { left: '60%', opacity: 1 }
+            ], { duration: 500, easing: 'linear' });
+
+            anim.onfinish = () => {
+                p.remove();
+                
+                // Select a random electron to interact with
+                const targetElectron = electrons[Math.floor(Math.random() * electrons.length)];
+                
+                // VIBRATE: The "livery" interaction
+                targetElectron.classList.add('vibrating');
+                setTimeout(() => targetElectron.classList.remove('vibrating'), 400);
+
+                // MOVEMENT LOGIC
+                if (kmax > 0.1) {
+                    // CASE 1: hf > W (SUCCESSFUL EMISSION)
+                    targetElectron.style.transform = `translateX(-800px) scale(1.2)`;
+                    targetElectron.style.opacity = '0';
+                    
+                    // Reset electron after it leaves the screen
+                    setTimeout(() => {
+                        targetElectron.style.transition = 'none';
+                        targetElectron.style.transform = 'none';
+                        targetElectron.style.opacity = '1';
+                        // Re-enable transition after reset
+                        setTimeout(() => {
+                            targetElectron.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s';
+                        }, 50);
+                    }, 1000);
+
+                } else if (Math.abs(kmax) <= 0.2) {
+                    // CASE 2: hf ≈ W (APPROACH RED LINE)
+                    // It moves to the red dashed line (roughly -40px to -60px from its start)
+                    targetElectron.style.transform = `translateX(-50px)`;
+                    // It fails to escape and gets pulled back
+                    setTimeout(() => {
+                        targetElectron.style.transform = `translateX(0)`;
+                    }, 800);
+
+                } else {
+                    // CASE 3: hf < W (TRAPPED)
+                    // Just a small jolt to show it was hit but didn't have enough energy
+                    targetElectron.style.transform = `translateX(-10px)`;
+                    setTimeout(() => {
+                        targetElectron.style.transform = `translateX(0)`;
+                    }, 300);
+                }
+            };
+        }, i * 150);
+    }
+}
 
         // DUALITY LOGIC
         function updateSlit() {
