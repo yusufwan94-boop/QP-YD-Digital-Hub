@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project QP-YD | Quantum Mission Control</title>
+    <style>
+        :root {
+            --neon-blue: #22d3ee;
+            --neon-purple: #a855f7;
+            --dark-bg: #020617;
+            --card-bg: #1e293b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
+        }
+
+        .lang-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #fbbf24;
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        #subtitle {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 90%;
+            max-width: 1100px;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.2);
+        }
+
+        .icon { font-size: 3.5rem; margin-bottom: 20px; }
+        .card h2 { margin: 10px 0; color: var(--neon-blue); }
+        .card p { font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; color: #cbd5e1; }
+
+        .btn {
+            background: linear-gradient(45deg, #2563eb, #7c3aed);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        footer { margin-top: auto; padding: 40px; color: #475569; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <button class="lang-btn" onclick="toggleLang()" id="langSwitcher">BM/EN</button>
+
+    <header>
+        <h1 id="mainTitle">PROJECT QP-YD</h1>
+        <p id="subtitle">A Digital Journey into the Photoelectric Effect</p>
+    </header>
+
+    <div class="grid">
+        <a href="theory.html" class="card">
+            <div>
+                <div class="icon">⚛️</div>
+                <h2 id="card1-h">01. Theoretical Lab</h2>
+                <p id="card1-p">Understand the core concepts of Einstein's equation E = hf - Φ before starting the experiment.</p>
+            </div>
+            <div class="btn" id="btn1">Launch Theory</div>
+        </a>
+
+        <a href="simulator.html" class="card">
+            <div>
+                <div class="icon">🔬</div>
+                <h2 id="card2-h">02. Virtual Experiment</h2>
+                <p id="card2-p">Operate the high-fidelity simulator. Sync LED intensity and record Solar Vo saturation points.</p>
+            </div>
+            <div class="btn" id="btn2">Launch Simulator</div>
+        </a>
+
+        <a href="datasheet.html" class="card">
+            <div>
+                <div class="icon">📊</div>
+                <h2 id="card3-h">03. Digital Datasheet</h2>
+                <p id="card3-p">Analyze your results, calculate Planck's constant (h), and find the threshold frequency (fo).</p>
+            </div>
+            <div class="btn" id="btn3">Launch Analysis</div>
+        </a>
+    </div>
+
+    <footer>
+        &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
+    </footer>
+
+    <script>
+        let currentLang = 'en';
+        const translations = {
+            en: {
+                switcher: "Tukar ke Bahasa Melayu",
+                sub: "A Digital Journey into the Photoelectric Effect",
+                c1h: "01. Theoretical Lab",
+                c1p: "Understand the core concepts of Einstein's equation E = hf - Φ before starting the experiment.",
+                b1: "Launch Theory",
+                c2h: "02. Virtual Experiment",
+                c2p: "Operate the high-fidelity simulator. Sync LED intensity and record Solar Vo saturation points.",
+                b2: "Launch Simulator",
+                c3h: "03. Digital Datasheet",
+                c3p: "Analyze your results, calculate Planck's constant (h), and find the threshold frequency (fo).",
+                b3: "Launch Analysis"
+            },
+            ms: {
+                switcher: "Switch to English",
+                sub: "Perjalanan Digital ke dalam Kesan Fotoelektrik",
+                c1h: "01. Makmal Teori",
+                c1p: "Fahami konsep teras persamaan Einstein E = hf - Φ sebelum memulakan eksperimen.",
+                b1: "Buka Teori",
+                c2h: "02. Eksperimen Maya",
+                c2p: "Kendalikan simulator berketepatan tinggi. Segerakkan intensiti LED dan rekod titik tepu Solar Vo.",
+                b2: "Buka Simulator",
+                c3h: "03. Lembaran Data Digital",
+                c3p: "Analisis keputusan anda, kira pemalar Planck (h), dan cari frekuensi ambang (fo).",
+                b3: "Buka Analisis"
+            }
+        };
+
+        function toggleLang() {
+            currentLang = (currentLang === 'en') ? 'ms' : 'en';
+            const d = translations[currentLang];
+            
+            document.getElementById('langSwitcher').innerText = d.switcher;
+            document.getElementById('subtitle').innerText = d.sub;
+            document.getElementById('card1-h').innerText = d.c1h;
+            document.getElementById('card1-p').innerText = d.c1p;
+            document.getElementById('btn1').innerText = d.b1;
+            document.getElementById('card2-h').innerText = d.c2h;
+            document.getElementById('card2-p').innerText = d.c2p;
+            document.getElementById('btn2').innerText = d.b2;
+            document.getElementById('card3-h').innerText = d.c3h;
+            document.getElementById('card3-p').innerText = d.c3p;
+            document.getElementById('btn3').innerText = d.b3;
+        }
+    </script>
+</body>
+</html>

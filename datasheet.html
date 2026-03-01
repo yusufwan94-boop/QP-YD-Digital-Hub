@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report_Project_QP-YD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
+        body { font-family: 'Space Grotesk', sans-serif; background: #020617; color: #e2e8f0; margin: 0; padding: 0; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(51, 65, 85, 0.3); }
+        .data-input { background: rgba(255,255,255,0.03); width: 100%; text-align: center; padding: 6px; outline: none; border-radius: 6px; border: 1px solid transparent; color: white; font-size: 13px; }
+        
+        /* PRINT OPTIMIZATION - THE FIX */
+        @media print {
+            @page { size: A4; margin: 1cm; }
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .print-hide { display: none !important; }
+            .glass-panel { 
+                background: white !important; 
+                border: 1px solid #000 !important; 
+                color: black !important; 
+                backdrop-filter: none !important;
+                box-shadow: none !important;
+                border-radius: 8px !important;
+                break-inside: avoid;
+            }
+            .data-input { 
+                background: white !important; 
+                color: black !important; 
+                border: 1px solid #ddd !important;
+            }
+            h1, h2, h3, span, p, td, th { color: black !important; }
+            .text-blue-500, .text-emerald-400, .text-red-500 { color: black !important; font-weight: bold !important; }
+            canvas { max-width: 100% !important; height: auto !important; }
+            main { display: block !important; }
+            .lg\:col-span-4, .lg\:col-span-8 { width: 100% !important; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body class="p-6 md:p-10">
+
+    <header class="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-end gap-4 border-b border-slate-800 pb-6">
+        <div>
+            <span class="mono text-blue-500 font-bold text-xs tracking-[0.3em] font-bold">// MRSM_GERIK_QUANTUM_STATION</span>
+            <h1 class="text-5xl font-black tracking-tighter mt-1">Project <span class="text-blue-500">QP-YD</span></h1>
+            <p id="sub-header" class="text-slate-500 text-xs mono mt-1 font-bold">OFFICIAL_LAB_REPORT // 2026_SESSION</p>
+        </div>
+        <div class="flex gap-3 print-hide">
+            <button onclick="toggleLang()" class="px-4 py-2 bg-amber-600 rounded-lg text-[10px] mono font-bold hover:bg-amber-500 transition shadow-lg shadow-amber-500/20">BM / EN</button>
+            <button onclick="resetVerification()" class="px-4 py-2 border border-slate-700 rounded-lg text-[10px] mono font-bold hover:bg-slate-800 transition">CLEAR_DATA</button>
+            <button onclick="window.print()" class="px-6 py-2 bg-blue-600 rounded-lg text-xs mono font-bold hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition">EXPORT_PDF_REPORT</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div class="lg:col-span-4 space-y-6">
+            <div class="glass-panel p-5 rounded-3xl border-t-4 border-t-blue-500">
+                <h2 id="t-verify" class="text-sm font-bold mono text-blue-400 mb-4 uppercase">01_Verification_Data</h2>
+                <table class="w-full mono text-[11px]">
+                    <thead><tr class="text-left border-b border-slate-800"><th>Vin (V)</th><th>I (µA)</th><th>Vo (V)</th></tr></thead>
+                    <tbody id="v-body"></tbody>
+                </table>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl bg-blue-500/5">
+                <h3 id="t-derived" class="text-xs font-bold mono text-blue-300 mb-4 uppercase tracking-widest">Derived Constants</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b border-slate-800 pb-2">
+                        <span id="t-f0" class="text-[10px] text-slate-500 mono">Threshold (f₀)</span>
+                        <span id="f0-val" class="text-lg font-bold">---</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-800 pb-2">
+                        <span id="t-phi" class="text-[10px] text-slate-500 mono">Work Function (Φ)</span>
+                        <span id="phi-val" class="text-lg font-bold">--- eV</span>
+                    </div>
+                    <p id="desc-phi" class="text-[11px] text-slate-400 italic">The Y-intercept (Φ) represents the binding energy of the electron = Work function (White mark).</p>
+                </div>
+                <p id="desc-f0" class="text-[11px] text-slate-400 italic mt-4">The X-intercept (fo) refresents the minimum frequency to eject the photoelectron from metal surface (diamond mark). If f less than fo, no energy is released.</p>
+            </div>
+        </div>
+
+        <div class="lg:col-span-8 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-emerald-500">
+                    <h2 id="t-spectral" class="text-sm font-bold mono text-emerald-400 mb-4 uppercase">Spectral Input</h2>
+                    <table class="w-full mono text-xs">
+                        <thead><tr class="text-left border-b border-slate-800"><th id="th-src">Source</th><th id="th-wave">λ (nm)</th><th id="th-vo">Sat. Vo (V)</th></tr></thead>
+                        <tbody>
+                            <tr><td id="led-red" class="font-bold">RED</td><td><input type="number" class="p-lambda data-input" value="650.0" oninput="calcMagic()"></td><td><input type="number" step="0.1" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                            <tr><td id="led-grn" class="font-bold">GREEN</td><td><input type="number" class="p-lambda data-input" value="530.0" oninput="calcMagic()"></td><td><input type="number" step="0.1" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                            <tr><td id="led-blu" class="font-bold">BLUE</td><td><input type="number" class="p-lambda data-input" value="460.0" oninput="calcMagic()"></td><td><input type="number" step="0.1" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="glass-panel p-6 rounded-3xl bg-emerald-500/5 flex flex-col justify-center items-center text-center">
+                    <span id="t-h" class="text-[10px] mono text-slate-500 uppercase font-bold">Experimental h</span>
+                    <div id="h-result" class="text-5xl font-black text-emerald-400 tracking-tighter">---</div>
+                    <div id="error-perc" class="text-[10px] mono text-slate-400 mt-2 font-bold uppercase">Err: 0.0%</div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl h-[450px] border border-slate-800 bg-white/5">
+                <canvas id="planckChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const h_ref = 6.626e-34, e_c = 1.602e-19, c_l = 2.998e8;
+        let chart;
+        let lang = 'en';
+
+        const dictionary = {
+            en: {
+                sub: "OFFICIAL_LAB_REPORT // 2026_SESSION",
+                verify: "01_Verification_Data",
+                derived: "Derived Constants",
+                f0: "Threshold (f₀)",
+                phi: "Work Function (Φ)",
+                dPhi: "The Y-intercept (Φ) represents the binding energy of the electron = Work function (White mark).",
+                dF0: "The X-intercept (fo) refresents the minimum frequency to eject the photoelectron from metal surface (diamond mark). If f less than fo, no energy is released.",
+                spectral: "Spectral Input",
+                src: "Source",
+                wave: "λ (nm)",
+                vo: "Sat. Vo (V)",
+                expH: "Experimental h",
+                red: "RED", grn: "GREEN", blu: "BLUE",
+                xAxis: "Frequency (x10¹⁴ Hz)", yAxis: "Potential (V)"
+            },
+            bm: {
+                sub: "LAPORAN_MAKMAL_RASMI // SESI_2026",
+                verify: "01_Data_Pengesahan",
+                derived: "Pemalar Terbitan",
+                f0: "Ambang (f₀)",
+                phi: "Fungsi Kerja (Φ)",
+                dPhi: "Pintasan-Y (Φ) mewakili tenaga ikatan elektron = Fungsi kerja (Tanda putih).",
+                dF0: "Pintasan-X (fo) mewakili frekuensi minimum untuk mengeluarkan fotoelektron daripada permukaan logam (tanda berlian). Jika f kurang daripada fo, tiada tenaga dibebaskan.",
+                spectral: "Input Spektrum",
+                src: "Sumber",
+                wave: "λ (nm)",
+                vo: "Sat. Vo (V)",
+                expH: "Nilai h Eksperimen",
+                red: "MERAH", grn: "HIJAU", blu: "BIRU",
+                xAxis: "Frekuensi (x10¹⁴ Hz)", yAxis: "Potensi (V)"
+            }
+        };
+
+        function toggleLang() {
+            lang = lang === 'en' ? 'bm' : 'en';
+            const d = dictionary[lang];
+            document.getElementById('sub-header').innerText = d.sub;
+            document.getElementById('t-verify').innerText = d.verify;
+            document.getElementById('t-derived').innerText = d.derived;
+            document.getElementById('t-f0').innerText = d.f0;
+            document.getElementById('t-phi').innerText = d.phi;
+            document.getElementById('desc-phi').innerText = d.dPhi;
+            document.getElementById('desc-f0').innerText = d.dF0;
+            document.getElementById('t-spectral').innerText = d.spectral;
+            document.getElementById('th-src').innerText = d.src;
+            document.getElementById('th-wave').innerText = d.wave;
+            document.getElementById('th-vo').innerText = d.vo;
+            document.getElementById('t-h').innerText = d.expH;
+            document.getElementById('led-red').innerText = d.red;
+            document.getElementById('led-grn').innerText = d.grn;
+            document.getElementById('led-blu').innerText = d.blu;
+            
+            chart.options.scales.x.title.text = d.xAxis;
+            chart.options.scales.y.title.text = d.yAxis;
+            chart.update();
+        }
+
+        window.onload = () => { resetVerification(); initChart(); };
+
+        function resetVerification() {
+            const vBody = document.getElementById('v-body');
+            vBody.innerHTML = '';
+            for(let i=0; i<8; i++) vBody.innerHTML += `<tr class="border-b border-slate-800/50"><td><input type="number" step="0.1" class="data-input"></td><td><input type="number" step="0.1" class="data-input"></td><td><input type="number" step="0.1" class="data-input"></td></tr>`;
+        }
+
+        function initChart() {
+            chart = new Chart(document.getElementById('planckChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        { label: 'RED', backgroundColor: '#ef4444', data: [], pointRadius: 8 },
+                        { label: 'GREEN', backgroundColor: '#22c55e', data: [], pointRadius: 8 },
+                        { label: 'BLUE', backgroundColor: '#3b82f6', data: [], pointRadius: 8 },
+                        { label: 'Fit Line', type: 'line', borderColor: 'rgba(59, 130, 246, 0.5)', borderDash: [5,5], data: [], pointRadius: 0 },
+                        { label: 'f₀', backgroundColor: '#fff', borderColor: '#3b82f6', borderWidth: 2, data: [], pointRadius: 7, pointStyle: 'rectRot' },
+                        { label: 'Φ', backgroundColor: '#fff', borderColor: '#ef4444', borderWidth: 2, data: [], pointRadius: 7, pointStyle: 'circle' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, title: { display: true, text: 'Frequency (x10¹⁴ Hz)', color: '#94a3b8' }, min: 0 },
+                        y: { grid: { color: '#1e293b' }, title: { display: true, text: 'Potential (V)', color: '#94a3b8' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function calcMagic() {
+            const lambdas = document.querySelectorAll('.p-lambda');
+            const vss = document.querySelectorAll('.p-vs');
+            let pts = [];
+            
+            vss.forEach((v, i) => {
+                const vs = parseFloat(v.value);
+                const l_val = parseFloat(lambdas[i].value);
+                if(!isNaN(vs)) {
+                    const f = (c_l / (l_val * 1e-9)) / 1e14;
+                    pts.push({ x: f, y: vs });
+                    chart.data.datasets[i].data = [{x: f, y: vs}];
+                }
+            });
+
+            if(pts.length >= 2) {
+                const n = pts.length;
+                let sx=0, sy=0, sxy=0, sxx=0;
+                pts.forEach(p => { sx+=p.x; sy+=p.y; sxy+=p.x*p.y; sxx+=p.x*p.x; });
+                const m = (n*sxy - sx*sy) / (n*sxx - sx*sx), b = (sy - m*sx) / n;
+                const h_calc = (m * e_c) / 1e14;
+                const f0 = Math.abs(b / m);
+
+                document.getElementById('h-result').innerText = h_calc.toExponential(2);
+                document.getElementById('error-perc').innerText = `ERROR: ${((Math.abs(h_calc - h_ref)/h_ref)*100).toFixed(1)}%`;
+                document.getElementById('f0-val').innerText = f0.toFixed(1) + " x10¹⁴";
+                document.getElementById('phi-val').innerText = Math.abs(b).toFixed(1);
+
+                chart.data.datasets[3].data = [{x: 0, y: b}, {x: 10, y: m*10+b}];
+                chart.data.datasets[4].data = [{x: f0, y: 0}]; 
+                chart.data.datasets[5].data = [{x: 0, y: b}];  
+                chart.update();
+            }
+        }
+    </script>
+</body>
+</html>

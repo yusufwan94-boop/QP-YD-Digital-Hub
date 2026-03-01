@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project QP-YD: Quantum Master Lab</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .lang-toggle { position: absolute; top: 20px; right: 20px; padding: 10px 20px; cursor: pointer; background: #fbbf24; color: #000; border: none; border-radius: 20px; font-weight: bold; }
+        .container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1250px; margin-top: 40px; }
+        .box { border: 1px solid #334155; background: #1e293b; padding: 20px; border-radius: 12px; width: 380px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .meter-group { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .meter { background: #000; border: 2px solid #475569; color: #22d3ee; font-family: 'Courier New', monospace; padding: 8px; font-size: 20px; border-radius: 4px; width: 90px; text-align: center; box-shadow: inset 0 0 10px #0891b2; }
+        .led-stage { height: 100px; display: flex; align-items: center; justify-content: center; background: #020617; border-radius: 8px; margin: 10px 0; border: 1px solid #334155; }
+        .led { width: 40px; height: 40px; border-radius: 50% 50% 10% 10%; transition: 0.05s; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .btn { padding: 8px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 0.85em; }
+        #chart-box { flex: 1; min-width: 550px; background: #ffffff; padding: 15px; border-radius: 12px; height: 500px; }
+        .formula-card { margin-top: 15px; padding: 15px; background: #0f172a; border-radius: 8px; border-left: 4px solid #fbbf24; font-size: 0.85em; }
+        .stat-val { color: #22d3ee; font-weight: bold; }
+        .conclusion-box { width: 100%; max-width: 1200px; margin-top: 20px; padding: 20px; background: #1e293b; border-radius: 12px; border: 1px solid #334155; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <button class="lang-toggle" onclick="toggleLang()" id="langBtn">Tukar ke Bahasa Melayu</button>
+    <h2 id="title">Project QP-YD: Quantum Master Lab</h2>
+    <p id="subtitle" style="color: #94a3b8; margin-top: 0;">Analyzing Planck Constant & Threshold Frequency</p>
+
+    <div class="container">
+        <div class="box">
+            <div class="meter-group">
+                <div><div class="meter">9.00V</div><div id="m1" style="font-size:9px; text-align:center;">SOURCE</div></div>
+                <div><div class="meter" id="v-led" style="color: #fbbf24;">0.00V</div><div id="m2" style="font-size:9px; text-align:center;">LED VOLTS</div></div>
+                <div><div class="meter" id="v-out" style="color: #22d3ee;">0.00V</div><div id="m3" style="font-size:9px; text-align:center;">SOLAR Vo</div></div>
+            </div>
+            <div class="led-stage"><div id="main-led" class="led" style="background: #111;"></div></div>
+            <div class="btn-grid">
+                <button class="btn" style="background: #6d28d9;" onclick="selectLED('UV', 395, 3.60, 220, '#a855f7')">UV (395nm)</button>
+                <button class="btn" style="background: #2563eb;" onclick="selectLED('Blue', 465, 3.20, 220, '#2563eb')">BLUE (465nm)</button>
+                <button class="btn" style="background: #16a34a;" onclick="selectLED('Green', 525, 2.20, 220, '#16a34a')">GREEN (525nm)</button>
+                <button class="btn" style="background: #dc2626;" onclick="selectLED('Red', 660, 1.80, 440, '#dc2626')">RED (660nm)</button>
+                <button class="btn" style="background: #4c1d95; grid-column: span 2;" onclick="selectLED('IR', 940, 1.20, 440, '#7c3aed')">INFRARED (940nm)</button>
+            </div>
+            <input type="range" id="pot" min="0" max="1000" value="0" oninput="update()" style="width:100%; accent-color:#fbbf24;">
+            <button id="logBtn" class="btn" style="background: #0d9488; width: 100%; margin-top: 10px;" onclick="logData()">LOG SATURATION POINT</button>
+            <div id="analysis" class="formula-card">Select an LED / Pilih LED</div>
+        </div>
+        <div id="chart-box"><canvas id="planckChart"></canvas></div>
+    </div>
+
+    <div class="conclusion-box">
+        <h3 id="conc-title">Final Conclusion / Kesimpulan Akhir</h3>
+        <div id="final-result">Log data to generate results. / Rekod data untuk melihat keputusan.</div>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+        const dict = {
+            en: { btn: "BM/EN", title: "Project QP-YD: Quantum Lab", sub: "Analyzing Planck Constant & Threshold Frequency", m1: "SOURCE", m2: "LED VOLTS", m3: "SOLAR Vo", log: "LOG SATURATION POINT", slope: "Slope (h/e)", h_calc: "Calculated h", wf: "Work Function (W)", thresh: "Threshold Frequency (fo)" },
+            ms: { btn: "BM/EN", title: "Projek QP-YD: Makmal Kuantum", sub: "Analisis Pemalar Planck & Frekuensi Ambang", m1: "PUNCA", m2: "VOLTAN LED", m3: "SOLAR Vo", log: "REKOD TITIK TEPU", slope: "Kecerunan (h/e)", h_calc: "Nilai h Kiraan", wf: "Fungsi Kerja (W)", thresh: "Frekuensi Ambang (fo)" }
+        };
+
+        let currentLED = { name: 'None', wave: 0, vf: 0, res: 220, color: '#111' };
+        let points = [];
+        const ctx = document.getElementById('planckChart').getContext('2d');
+        
+        // Custom plugin to draw and label intercepts
+        const interceptPlugin = {
+            id: 'interceptPlugin',
+            afterDraw: (chart) => {
+                const {ctx, scales: {x, y}} = chart;
+                if (chart.data.datasets[1].data.length < 2) return;
+                
+                const meta = chart.getDatasetMeta(1);
+                const points_data = chart.data.datasets[1].data;
+                const m = (points_data[1].y - points_data[0].y) / (points_data[1].x - points_data[0].x);
+                const c = points_data[0].y - m * points_data[0].x;
+                const fo = Math.abs(c / m);
+
+                ctx.save();
+                ctx.font = 'bold 12px Segoe UI';
+                ctx.fillStyle = '#ff4757';
+                
+                // Work Function Label (Y-intercept)
+                const yPosW = y.getPixelForValue(c);
+                const xPosW = x.getPixelForValue(0);
+                ctx.beginPath();
+                ctx.arc(xPosW, yPosW, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillText(`W = ${Math.abs(c).toFixed(2)}eV`, xPosW + 10, yPosW);
+
+                // Threshold Label (X-intercept)
+                const yPosF = y.getPixelForValue(0);
+                const xPosF = x.getPixelForValue(fo);
+                ctx.beginPath();
+                ctx.arc(xPosF, yPosF, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillText(`fo = ${fo.toFixed(2)}`, xPosF - 20, yPosF - 10);
+                ctx.restore();
+            }
+        };
+
+        let chart = new Chart(ctx, {
+            type: 'scatter',
+            data: { datasets: [{ label: 'Data', data: [], pointBackgroundColor: [], pointRadius: 10 }, { label: 'Line', data: [], type: 'line', borderColor: '#475569', borderDash: [5, 5], pointRadius: 0 }] },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                scales: { 
+                    x: { type: 'linear', position: 'bottom', title: { display: true, text: 'Frequency f (10^14 Hz)', color: '#000' }, min: 0, max: 9, grid: { color: '#ccc', lineWidth: 1 }, border: { color: '#000', width: 2 } }, 
+                    y: { type: 'linear', position: 'left', title: { display: true, text: 'Stopping Potential Vo (V)', color: '#000' }, min: -1.5, max: 2.5, grid: { color: '#ccc', lineWidth: 1 }, border: { color: '#000', width: 2 } } 
+                }, 
+                plugins: { legend: { display: false } } 
+            },
+            plugins: [interceptPlugin]
+        });
+
+        function toggleLang() {
+            currentLang = currentLang === 'en' ? 'ms' : 'en';
+            let d = dict[currentLang];
+            document.getElementById('langBtn').innerText = d.btn;
+            document.getElementById('title').innerText = d.title;
+            document.getElementById('subtitle').innerText = d.sub;
+            document.getElementById('m1').innerText = d.m1;
+            document.getElementById('m2').innerText = d.m2;
+            document.getElementById('m3').innerText = d.m3;
+            document.getElementById('logBtn').innerText = d.log;
+            updateChart();
+        }
+
+        function selectLED(name, wave, vf, res, color) {
+            currentLED = { name, wave, vf, res, color };
+            document.getElementById('pot').value = 0;
+            update();
+        }
+
+        function update() {
+            if (currentLED.name === 'None') return;
+            let potVal = parseInt(document.getElementById('pot').value) / 1000;
+            let current = Math.max(0, (9.0 - currentLED.vf) / (currentLED.res + (1000 - parseInt(document.getElementById('pot').value))));
+            let freq = 3e17 / currentLED.wave; 
+            let maxVo = (6.626e-34 * freq / 1.602e-19) - 0.98;
+            let vo = maxVo * (1 - Math.exp(-potVal * 10));
+            document.getElementById('v-led').innerText = (potVal > 0.01 ? currentLED.vf : 0).toFixed(2) + "V";
+            document.getElementById('v-out').innerText = (potVal > 0.01 ? vo : 0).toFixed(2) + "V";
+            let ledEl = document.getElementById('main-led');
+            ledEl.style.background = potVal > 0.01 ? currentLED.color : '#111';
+            ledEl.style.boxShadow = potVal > 0.01 ? `0 0 ${potVal * 60}px ${currentLED.color}` : 'none';
+        }
+
+        function logData() {
+            if (currentLED.name === 'None') return;
+            let f = (3e17 / currentLED.wave) / 1e14;
+            let vo = parseFloat(document.getElementById('v-out').innerText);
+            if (vo <= 0.05) return;
+            points = points.filter(p => p.name !== currentLED.name);
+            points.push({ x: f, y: vo, color: currentLED.color, name: currentLED.name });
+            updateChart();
+        }
+
+        function updateChart() {
+            chart.data.datasets[0].data = points.map(p => ({ x: p.x, y: p.y }));
+            chart.data.datasets[0].pointBackgroundColor = points.map(p => p.color);
+            if (points.length >= 2) {
+                let n = points.length, sumX = points.reduce((a, b) => a + b.x, 0), sumY = points.reduce((a, b) => a + b.y, 0),
+                    sumXY = points.reduce((a, b) => a + (b.x * b.y), 0), sumX2 = points.reduce((a, b) => a + (b.x * b.x), 0);
+                let m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX), c = (sumY - m * sumX) / n;
+                chart.data.datasets[1].data = [{ x: 0, y: c }, { x: 9, y: m * 9 + c }];
+                
+                let h_calc = (m * 1e-14 * 1.602e-19);
+                let f0 = Math.abs(c / m);
+                let W = Math.abs(c);
+                let error = Math.abs((h_calc - 6.626e-34) / 6.626e-34 * 100);
+                let d = dict[currentLang];
+                
+                document.getElementById('analysis').innerHTML = `
+                    <b>${d.slope}:</b> <span class="stat-val">${m.toFixed(3)}</span><br>
+                    <b>${d.thresh}:</b> <span class="stat-val">${f0.toFixed(2)} × 10¹⁴ Hz</span><br>
+                    <b>${d.h_calc}:</b> <span class="stat-val">${h_calc.toExponential(3)} J·s</span><br>
+                    <b>${d.wf}:</b> <span class="stat-val">${W.toFixed(2)} eV</span>
+                `;
+
+                if (currentLang === 'en') {
+                    document.getElementById('final-result').innerHTML = `The experiment yields a Planck constant of <b>${h_calc.toExponential(3)} J·s</b>, with an error of <b>${error.toFixed(2)}%</b> relative to the theoretical value. The material's threshold frequency is <b>${f0.toFixed(2)} × 10¹⁴ Hz</b>, corresponding to a work function of <b>${W.toFixed(2)} eV</b>. This confirms Einstein's photoelectric equation: Vo = (h/e)f - W/e.`;
+                } else {
+                    document.getElementById('final-result').innerHTML = `Eksperimen memberikan nilai pemalar Planck sebanyak <b>${h_calc.toExponential(3)} J·s</b>, dengan ralat <b>${error.toFixed(2)}%</b> berbanding nilai teori. Frekuensi ambang bahan ialah <b>${f0.toFixed(2)} × 10¹⁴ Hz</b>, yang sepadan dengan fungsi kerja <b>${W.toFixed(2)} eV</b>. Ini mengesahkan persamaan fotoelektrik Einstein: Vo = (h/e)f - W/e.`;
+                }
+            }
+            chart.update();
+        }
+        toggleLang();
+    </script>
+</body>
+</html>
