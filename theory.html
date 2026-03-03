@@ -132,7 +132,7 @@
 
     <main id="view-duality" class="hidden max-w-7xl mx-auto px-6 py-12 space-y-16">
         <header class="text-center">
-            <h2 class="text-5xl font-black mb-4 tracking-tight"><span data-key="title-w1">Particle</span> <span class="text-cyan-400" data-key="title-w2">Particle Duality.</span></h2>
+            <h2 class="text-5xl font-black mb-4 tracking-tight"><span data-key="title-w1">Particle</span> <span class="text-cyan-400" data-key="title-w2">Duality.</span></h2>
             <p class="text-slate-400 max-w-2xl mx-auto italic" data-key="subtitle-duality">Comparing Light Interference and Electron Diffraction.</p>
         </header>
 
@@ -261,7 +261,7 @@
                 "logE2-q": "Why do electrons form 'rings' or fringes?", "diffraction": "DIFFRACTION.", "logE2-a": "Electrons behave as waves when passing through atoms, creating constructive and destructive interference patterns."
             },
             bm: {
-                "nav-photo": "Fotoelektrik", "nav-duality": "Dualiti Gelombang",
+                "nav-photo": "Fotoelektrik", "nav-duality": "Dualiti Zarah",
                 "title-p1": "Sifat", "title-p2": "Zarah.",
                 "subtitle-photo": "Membuktikan E = hf (Tenaga bergantung pada Frekuensi, bukan Keamatan).",
                 "phys-pool": "Kolam Fizikal", "btn-red": "MERAH (4.6)", "btn-green": "HIJAU (5.5)", "btn-blue": "BIRU (6.7)", "btn-uv": "UV (12.0)",
@@ -270,7 +270,7 @@
                 "log1-q": "Adakah keamatan cahaya tinggi menjamin pancaran?", "no": "TIDAK.", "log1-a": "Jika f < fo, peningkatan keamatan hanya menghentam logam dengan lebih banyak foton 'lemah'. Tenaga tidak terkumpul mengikut masa.",
                 "log2-q": "Apakah yang menentukan kelajuan elektron yang terpancar?", "freq": "FREKUENSI.", "log2-a": "Tenaga berlebihan (hf - W) menjadi Tenaga Kinetik. Frekuensi lebih tinggi bermakna fotoelektron lebih laju.",
                 "log3-q": "Adakah terdapat sela masa untuk pancaran?", "immediate": "SERTA-MERTA.", "log3-a": "Pancaran adalah serta-merta (< 10^-9 s), membuktikan perlanggaran zarah 1-ke-1 antara foton dan elektron.",
-                "title-w1": "Dualiti Zarah", "title-w2": "Gelombang.", "subtitle-duality": "Membandingkan Interferens Cahaya dan Belauan Elektron.",
+                "title-w1": "Dualiti", "title-w2": "Zarah.", "subtitle-duality": "Membandingkan Interferens Cahaya dan Belauan Elektron.",
                 "light-title": "1. Cahaya (Celah Young)", "lbl-wave": "Panjang Gelombang (lambda)", "lbl-dist": "Jarak (D)", "lbl-slit": "Lebar Celah (a)",
                 "matter-title": "2. Jirim (Gelombang Elektron)", "lbl-volt": "Voltan (V)", "btn-fire": "Tembak", "btn-clear": "Padam",
                 "log-l-title": "Log Pemerhatian Cahaya", "logL1-q": "Bagaimanakah panjang gelombang mempengaruhi lebar pinggir (x)?", "direct": "HUBUNGAN LANGSUNG.", "logL1-a": "Panjang gelombang lebih panjang (Merah) membelah lebih daripada biru, menghasilkan jurang lebih lebar antara pinggir.",
@@ -353,26 +353,51 @@
 
         function firePhotons() {
             const f = parseFloat(fIn.value), t = parseFloat(tIn.value), intensity = parseInt(iIn.value);
-            const kmax = (H_EV_SCALE * f) - t;
+            const photonEnergy = H_EV_SCALE * f;
+            const kmax = photonEnergy - t;
             const electrons = document.querySelectorAll('.electron');
+            
             for(let i = 0; i < intensity; i++) {
                 setTimeout(() => {
-                    const p = document.createElement('div'); p.className = 'photon'; p.style.background = photonColor;
-                    const targetY = 10 + Math.random() * 80; p.style.top = targetY + '%';
+                    const p = document.createElement('div'); 
+                    p.className = 'photon'; 
+                    p.style.background = photonColor;
+                    const targetY = 10 + Math.random() * 80; 
+                    p.style.top = targetY + '%';
                     photoArena.appendChild(p);
-                    const anim = p.animate([{ left: '-20px' }, { left: '60%' }], { duration: 500 });
+                    
+                    const anim = p.animate([{ left: '-20px' }, { left: '50%' }], { duration: 500 });
+                    
                     anim.onfinish = () => {
                         p.remove();
                         const targetElectron = electrons[Math.floor(Math.random() * electrons.length)];
-                        targetElectron.classList.add('vibrating');
-                        setTimeout(() => targetElectron.classList.remove('vibrating'), 400);
-                        if (kmax > 0.1) {
-                            targetElectron.style.transform = `translateX(-800px) scale(1.2)`;
-                            targetElectron.style.opacity = '0';
-                            setTimeout(() => { targetElectron.style.transition = 'none'; targetElectron.style.transform = 'none'; targetElectron.style.opacity = '1'; setTimeout(() => { targetElectron.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s'; }, 50); }, 1000);
-                        } else {
-                            targetElectron.style.transform = `translateX(-10px)`;
-                            setTimeout(() => { targetElectron.style.transform = `translateX(0)`; }, 300);
+                        
+                        // STATE 1: Vibrate (Photon energy < work function)
+                        if (photonEnergy < t) {
+                            targetElectron.classList.add('vibrating');
+                            setTimeout(() => targetElectron.classList.remove('vibrating'), 400);
+                        } 
+                        // STATE 2: Move to red line (Photon energy almost equal to work function)
+                        // Using a threshold of ±0.2 eV to define "almost equal"
+                        else if (Math.abs(photonEnergy - t) <= 0.2) {
+                            targetElectron.style.left = '50%';
+                        }
+                        // STATE 3: Jump out from red line (Photon energy > work function)
+                        else {
+                            targetElectron.style.left = '50%'; // Snap to red line first
+                            setTimeout(() => {
+                                targetElectron.style.transform = `translateX(-800px) scale(1.2)`;
+                                targetElectron.style.opacity = '0';
+                                setTimeout(() => { 
+                                    targetElectron.style.transition = 'none'; 
+                                    targetElectron.style.transform = 'none'; 
+                                    targetElectron.style.opacity = '1'; 
+                                    targetElectron.style.left = (55+Math.random()*40)+'%';
+                                    setTimeout(() => { 
+                                        targetElectron.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s, left 0.6s ease'; 
+                                    }, 50); 
+                                }, 1000);
+                            }, 50);
                         }
                     };
                 }, i * 150);
