@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QP-YD | MRSM Gerik Duality Hub</title>
+    <title>QP-YD | Particle Duality Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -25,6 +25,8 @@
         .electron-dot { width: 4px; height: 4px; background: #60a5fa; border-radius: 50%; position: absolute; box-shadow: 0 0 4px #3b82f6; }
         .tab-active { border-bottom: 4px solid #3b82f6; color: white; opacity: 1; }
         .tab-inactive { opacity: 0.5; }
+        @keyframes vibrate { 0% { transform: translate(0); } 25% { transform: translate(2px, -2px); } 50% { transform: translate(-2px, 2px); } 75% { transform: translate(2px, 2px); } 100% { transform: translate(0); } }
+        .vibrating { animation: vibrate 0.1s linear infinite; }
     </style>
 </head>
 <body class="pb-20">
@@ -34,7 +36,7 @@
             <h1 class="text-3xl font-black tracking-tighter text-blue-400">QP-YD</h1>
             <div class="flex items-center gap-4 md:gap-8">
                 <button onclick="switchTab('photo')" id="btn-photo" data-key="nav-photo" class="text-[10px] md:text-xs font-bold uppercase tracking-widest py-2 tab-active">Photoelectric</button>
-                <button onclick="switchTab('duality')" id="btn-duality" data-key="nav-duality" class="text-[10px] md:text-xs font-bold uppercase tracking-widest py-2 tab-inactive">Duality</button>
+                <button onclick="switchTab('duality')" id="btn-duality" data-key="nav-duality" class="text-[10px] md:text-xs font-bold uppercase tracking-widest py-2 tab-inactive">Particle Duality</button>
                 <button onclick="toggleLang()" class="ml-4 px-3 py-1 rounded bg-slate-800 border border-slate-600 text-[10px] font-black hover:bg-slate-700 transition-colors">BM / EN</button>
             </div>
             <span class="hidden md:inline bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-[10px] font-bold border border-blue-500/30 uppercase">MRSM Gerik Official</span>
@@ -130,7 +132,7 @@
 
     <main id="view-duality" class="hidden max-w-7xl mx-auto px-6 py-12 space-y-16">
         <header class="text-center">
-            <h2 class="text-5xl font-black mb-4 tracking-tight"><span data-key="title-w1">Particle</span> <span class="text-cyan-400" data-key="title-w2">Duality.</span></h2>
+            <h2 class="text-5xl font-black mb-4 tracking-tight"><span data-key="title-w1">Particle</span> <span class="text-cyan-400" data-key="title-w2">Particle Duality.</span></h2>
             <p class="text-slate-400 max-w-2xl mx-auto italic" data-key="subtitle-duality">Comparing Light Interference and Electron Diffraction.</p>
         </header>
 
@@ -200,18 +202,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front text-center">
-                                <span class="text-cyan-500 text-xs font-bold mb-2">LOG L3: WAVE PROOF</span>
-                                <p class="text-sm font-bold" data-key="logL3-q">Why does this prove light is a wave?</p>
-                            </div>
-                            <div class="flip-card-back">
-                                <p class="font-black mb-2" data-key="interference">INTERFERENCE.</p>
-                                <p data-key="logL3-a">Particles would just create two lines. Alternating bright and dark regions only occur due to wave superposition.</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -226,7 +216,7 @@
                             </div>
                             <div class="flip-card-back">
                                 <p class="font-black mb-2" data-key="shorten">WAVELENGTH SHORTENS.</p>
-                                <p data-key="logE1-a">Higher Voltage causing Higher Momentum causing Smaller de Broglie wavelength (wavelength = h/p).</p>
+                                <p data-key="logE1-a">Higher Voltage causing Higher Momentum causing Smaller de Broglie wavelength (λ = h/p).</p>
                             </div>
                         </div>
                     </div>
@@ -242,18 +232,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front text-center">
-                                <span class="text-blue-500 text-xs font-bold mb-2">LOG E3: APPLICATIONS</span>
-                                <p class="text-sm font-bold" data-key="logE3-q">Why use electron waves instead of light?</p>
-                            </div>
-                            <div class="flip-card-back">
-                                <p class="font-black mb-2" data-key="res">HIGH RESOLUTION.</p>
-                                <p data-key="logE3-a">Tiny electron wavelengths allow us to "see" things much smaller than visible light can resolve (Electron Microscopes).</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -262,12 +240,11 @@
     <script>
         const H_EV_SCALE = 0.4136; 
 
-        // TRANSLATION DATA
         let currentLang = 'en';
         const translations = {
             en: {
-                "nav-photo": "Photoelectric", "nav-duality": "Duality",
-                "title-p1": "Wave Particle", "title-p2": "Nature.",
+                "nav-photo": "Photoelectric", "nav-duality": "Particle Duality",
+                "title-p1": "Particle", "title-p2": "Nature.",
                 "subtitle-photo": "Proving that E = hf (Energy depends on Frequency, not Intensity).",
                 "phys-pool": "Physical Pool", "btn-red": "RED (4.6)", "btn-green": "GREEN (5.5)", "btn-blue": "BLUE (6.7)", "btn-uv": "UV (12.0)",
                 "lbl-intensity": "Int (W/m^2)", "lbl-work": "Work function (eV)", "btn-execute": "Execute Emission",
@@ -280,13 +257,11 @@
                 "matter-title": "2. Matter (Electron Wave)", "lbl-volt": "Voltage (V)", "btn-fire": "Fire Gun", "btn-clear": "Clear",
                 "log-l-title": "Light Observation Logs", "logL1-q": "How does wavelength affect fringe separation (x)?", "direct": "DIRECT RELATION.", "logL1-a": "Longer wavelengths (Red) diffract more than shorter wavelengths (Blue), creating wider gaps between fringes.",
                 "logL2-q": "Effect of bringing slits closer together (d)?", "inverse": "INVERSE RELATION.", "logL2-a": "As d decreases, the fringe width x increases according to x = (wavelength x D) / a.",
-                "logL3-q": "Why does this prove light is a wave?", "interference": "INTERFERENCE.", "logL3-a": "Particles would just create two lines. Alternating bright and dark regions only occur due to wave superposition.",
-                "log-e-title": "Electron Observation Logs", "logE1-q": "What happens when you increase Gun Voltage?", "shorten": "WAVELENGTH SHORTENS.", "logE1-a": "Higher Voltage causing Higher Momentum causing Smaller de Broglie wavelength (wavelength = h/p).",
-                "logE2-q": "Why do electrons form 'rings' or fringes?", "diffraction": "DIFFRACTION.", "logE2-a": "Electrons behave as waves when passing through atoms, creating constructive and destructive interference patterns.",
-                "logE3-q": "Why use electron waves instead of light?", "res": "HIGH RESOLUTION.", "logE3-a": "Tiny electron wavelengths allow us to 'see' things much smaller than visible light can resolve (Electron Microscopes)."
+                "log-e-title": "Electron Observation Logs", "logE1-q": "What happens when you increase Gun Voltage?", "shorten": "WAVELENGTH SHORTENS.", "logE1-a": "Higher Voltage causing Higher Momentum causing Smaller de Broglie wavelength (λ = h/p).",
+                "logE2-q": "Why do electrons form 'rings' or fringes?", "diffraction": "DIFFRACTION.", "logE2-a": "Electrons behave as waves when passing through atoms, creating constructive and destructive interference patterns."
             },
             bm: {
-                "nav-photo": "Fotoelektrik", "nav-duality": "Dualiti",
+                "nav-photo": "Fotoelektrik", "nav-duality": "Dualiti Gelombang",
                 "title-p1": "Sifat", "title-p2": "Zarah.",
                 "subtitle-photo": "Membuktikan E = hf (Tenaga bergantung pada Frekuensi, bukan Keamatan).",
                 "phys-pool": "Kolam Fizikal", "btn-red": "MERAH (4.6)", "btn-green": "HIJAU (5.5)", "btn-blue": "BIRU (6.7)", "btn-uv": "UV (12.0)",
@@ -300,10 +275,8 @@
                 "matter-title": "2. Jirim (Gelombang Elektron)", "lbl-volt": "Voltan (V)", "btn-fire": "Tembak", "btn-clear": "Padam",
                 "log-l-title": "Log Pemerhatian Cahaya", "logL1-q": "Bagaimanakah panjang gelombang mempengaruhi lebar pinggir (x)?", "direct": "HUBUNGAN LANGSUNG.", "logL1-a": "Panjang gelombang lebih panjang (Merah) membelah lebih daripada biru, menghasilkan jurang lebih lebar antara pinggir.",
                 "logL2-q": "Kesan merapatkan celah (d)?", "inverse": "HUBUNGAN SONGSANG.", "logL2-a": "Apabila d berkurang, lebar pinggir x bertambah mengikut x = (lambda x D) / a.",
-                "logL3-q": "Mengapa ini membuktikan cahaya ialah gelombang?", "interference": "INTERFERENS.", "logL3-a": "Zarah hanya akan menghasilkan dua baris. Kawasan terang dan gelap berselang-seli hanya berlaku kerana superposisi gelombang.",
-                "log-e-title": "Log Pemerhatian Elektron", "logE1-q": "Apakah yang berlaku apabila anda meningkatkan Voltan?", "shorten": "PANJANG GELOMBANG MEMENDEK.", "logE1-a": "Voltan lebih tinggi menyebabkan Momentum lebih tinggi, menghasilkan panjang gelombang de Broglie lebih kecil (lambda = h/p).",
-                "logE2-q": "Mengapa elektron membentuk corak 'gelang'?", "diffraction": "BELAUAN.", "logE2-a": "Elektron berkelakuan sebagai gelombang semasa melalui atom, menghasilkan corak interferens membina dan memusnah.",
-                "logE3-q": "Mengapa menggunakan gelombang elektron berbanding cahaya?", "res": "RESOLUSI TINGGI.", "logE3-a": "Panjang gelombang elektron yang halus membolehkan kita 'melihat' benda yang jauh lebih kecil daripada cahaya nampak (Mikroskop Elektron)."
+                "log-e-title": "Log Pemerhatian Elektron", "logE1-q": "Apakah yang berlaku apabila anda meningkatkan Voltan?", "shorten": "PANJANG GELOMBANG MEMENDEK.", "logE1-a": "Voltan lebih tinggi menyebabkan Momentum lebih tinggi, menghasilkan panjang gelombang de Broglie lebih kecil (λ = h/p).",
+                "logE2-q": "Mengapa elektron membentuk corak 'gelang'?", "diffraction": "BELAUAN.", "logE2-a": "Elektron berkelakuan sebagai gelombang semasa melalui atom, menghasilkan corak interferens membina dan memusnah."
             }
         };
 
@@ -315,10 +288,9 @@
                     el.innerText = translations[currentLang][key];
                 }
             });
-            updatePhoto(); // Update status indicator text
+            updatePhoto();
         }
 
-        // TAB LOGIC
         function switchTab(mode) {
             document.getElementById('view-photo').classList.toggle('hidden', mode !== 'photo');
             document.getElementById('view-duality').classList.toggle('hidden', mode !== 'duality');
@@ -327,7 +299,6 @@
             if(mode === 'duality') { updateSlit(); updateElectron(); }
         }
 
-        // PHOTOELECTRIC LOGIC
         const photoArena = document.getElementById('photo-arena');
         const fIn = document.getElementById('fIn'), iIn = document.getElementById('iIn'), tIn = document.getElementById('tIn');
         let photonColor = '#fbbf24';
@@ -353,16 +324,8 @@
                 responsive:true,
                 maintainAspectRatio:false,
                 scales:{
-                    y:{
-                        min:-6, max:6,
-                        title: { display: true, text: 'Max Kinetic Energy (eV)', color: '#94a3b8', font: { weight: 'bold' } },
-                        grid: { color: 'rgba(255,255,255,0.05)' }
-                    },
-                    x:{
-                        type:'linear', min:0, max:20,
-                        title: { display: true, text: 'Frequency (10¹⁴ Hz)', color: '#94a3b8', font: { weight: 'bold' } },
-                        grid: { color: 'rgba(255,255,255,0.05)' }
-                    }
+                    y:{ min:-6, max:6, title: { display: true, text: 'Max Kinetic Energy (eV)', color: '#94a3b8' } },
+                    x:{ type:'linear', min:0, max:20, title: { display: true, text: 'Frequency (10¹⁴ Hz)', color: '#94a3b8' } }
                 },
                 plugins:{legend:{display:false}}
             }
@@ -376,95 +339,46 @@
             const kmax = (H_EV_SCALE * f) - t;
             chart.data.datasets[0].data=[{x:0,y:-t},{x:20,y:(H_EV_SCALE*20)-t}]; 
             chart.data.datasets[1].data=[{x:f,y:kmax}]; 
-            chart.data.datasets[1].backgroundColor=photonColor; 
             chart.update('none');
             const status = document.getElementById('statusIndicator');
-            const isEmitting = (H_EV_SCALE * f) > t;
-            
-            // Dynamic translation for status indicator
+            const isEmitting = kmax > 0;
             if (currentLang === 'en') {
                 status.innerText = !isEmitting ? "No Emission" : "Emission Active";
             } else {
                 status.innerText = !isEmitting ? "Tiada Pancaran" : "Pancaran Aktif";
             }
-            
-            status.className = !isEmitting ? 
-                "text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded border border-red-500/20 font-mono tracking-widest uppercase" : 
-                "text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20 font-mono tracking-widest uppercase";
+            status.className = !isEmitting ? "text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded border border-red-500/20 font-mono tracking-widest" : "text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20 font-mono tracking-widest";
         }
         updatePhoto();
 
         function firePhotons() {
-    const f = parseFloat(fIn.value), t = parseFloat(tIn.value), intensity = parseInt(iIn.value);
-    const kmax = (H_EV_SCALE * f) - t;
-    const electrons = document.querySelectorAll('.electron');
+            const f = parseFloat(fIn.value), t = parseFloat(tIn.value), intensity = parseInt(iIn.value);
+            const kmax = (H_EV_SCALE * f) - t;
+            const electrons = document.querySelectorAll('.electron');
+            for(let i = 0; i < intensity; i++) {
+                setTimeout(() => {
+                    const p = document.createElement('div'); p.className = 'photon'; p.style.background = photonColor;
+                    const targetY = 10 + Math.random() * 80; p.style.top = targetY + '%';
+                    photoArena.appendChild(p);
+                    const anim = p.animate([{ left: '-20px' }, { left: '60%' }], { duration: 500 });
+                    anim.onfinish = () => {
+                        p.remove();
+                        const targetElectron = electrons[Math.floor(Math.random() * electrons.length)];
+                        targetElectron.classList.add('vibrating');
+                        setTimeout(() => targetElectron.classList.remove('vibrating'), 400);
+                        if (kmax > 0.1) {
+                            targetElectron.style.transform = `translateX(-800px) scale(1.2)`;
+                            targetElectron.style.opacity = '0';
+                            setTimeout(() => { targetElectron.style.transition = 'none'; targetElectron.style.transform = 'none'; targetElectron.style.opacity = '1'; setTimeout(() => { targetElectron.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s'; }, 50); }, 1000);
+                        } else {
+                            targetElectron.style.transform = `translateX(-10px)`;
+                            setTimeout(() => { targetElectron.style.transform = `translateX(0)`; }, 300);
+                        }
+                    };
+                }, i * 150);
+            }
+        }
 
-    for(let i = 0; i < intensity; i++) {
-        setTimeout(() => {
-            const p = document.createElement('div');
-            p.className = 'photon';
-            p.style.background = photonColor;
-            const targetY = 10 + Math.random() * 80;
-            p.style.top = targetY + '%';
-            p.style.boxShadow = `0 0 15px ${photonColor}`;
-            photoArena.appendChild(p);
-
-            // Photon flies toward the metal
-            const anim = p.animate([
-                { left: '-20px', opacity: 1 },
-                { left: '60%', opacity: 1 }
-            ], { duration: 500, easing: 'linear' });
-
-            anim.onfinish = () => {
-                p.remove();
-                
-                // Select a random electron to interact with
-                const targetElectron = electrons[Math.floor(Math.random() * electrons.length)];
-                
-                // VIBRATE: The "livery" interaction
-                targetElectron.classList.add('vibrating');
-                setTimeout(() => targetElectron.classList.remove('vibrating'), 400);
-
-                // MOVEMENT LOGIC
-                if (kmax > 0.1) {
-                    // CASE 1: hf > W (SUCCESSFUL EMISSION)
-                    targetElectron.style.transform = `translateX(-800px) scale(1.2)`;
-                    targetElectron.style.opacity = '0';
-                    
-                    // Reset electron after it leaves the screen
-                    setTimeout(() => {
-                        targetElectron.style.transition = 'none';
-                        targetElectron.style.transform = 'none';
-                        targetElectron.style.opacity = '1';
-                        // Re-enable transition after reset
-                        setTimeout(() => {
-                            targetElectron.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s';
-                        }, 50);
-                    }, 1000);
-
-                } else if (Math.abs(kmax) <= 0.2) {
-                    // CASE 2: hf ≈ W (APPROACH RED LINE)
-                    // It moves to the red dashed line (roughly -40px to -60px from its start)
-                    targetElectron.style.transform = `translateX(-50px)`;
-                    // It fails to escape and gets pulled back
-                    setTimeout(() => {
-                        targetElectron.style.transform = `translateX(0)`;
-                    }, 800);
-
-                } else {
-                    // CASE 3: hf < W (TRAPPED)
-                    // Just a small jolt to show it was hit but didn't have enough energy
-                    targetElectron.style.transform = `translateX(-10px)`;
-                    setTimeout(() => {
-                        targetElectron.style.transform = `translateX(0)`;
-                    }, 300);
-                }
-            };
-        }, i * 150);
-    }
-}
-
-        // DUALITY LOGIC
         function updateSlit() {
             const lambda = parseFloat(document.getElementById('waveLen').value);
             const d = parseFloat(document.getElementById('slitSep').value);
@@ -478,12 +392,8 @@
             const color = `hsl(${(1 - (lambda - 400) / 300) * 240}, 100%, 50%)`;
             const spacing = (lambda / 450) * (D / 15) * (1 / d) * 1.2;
             for(let i=-25; i<25; i++) {
-                const fr = document.createElement('div');
-                fr.className = 'fringe';
-                fr.style.left = (50 + i * spacing) + '%';
-                fr.style.background = color;
-                fr.style.opacity = Math.max(0, Math.cos(i * 0.6) * (1 - Math.abs(i)/30));
-                fr.style.boxShadow = `0 0 8px ${color}`;
+                const fr = document.createElement('div'); fr.className = 'fringe'; fr.style.left = (50 + i * spacing) + '%';
+                fr.style.background = color; fr.style.opacity = Math.max(0, Math.cos(i * 0.6) * (1 - Math.abs(i)/30));
                 screen.appendChild(fr);
             }
         }
@@ -498,17 +408,12 @@
             const spacing = (1 / Math.sqrt(v)) * 120; 
             for(let i=0; i<50; i++) {
                 setTimeout(() => {
-                    const dot = document.createElement('div');
-                    dot.className = 'electron-dot';
-                    const rand = (Math.random() - 0.5) * 40;
-                    const offset = Math.round(rand) * spacing;
+                    const dot = document.createElement('div'); dot.className = 'electron-dot';
+                    const rand = (Math.random() - 0.5) * 40; const offset = Math.round(rand) * spacing;
                     const intensity = Math.pow(Math.cos(offset * 0.05), 2);
                     if (Math.random() < intensity) {
-                        dot.style.left = (50 + offset/2) + '%';
-                        dot.style.top = (Math.random() * 95) + '%';
-                        dot.style.opacity = '0';
+                        dot.style.left = (50 + offset/2) + '%'; dot.style.top = (Math.random() * 95) + '%';
                         eScreen.appendChild(dot);
-                        dot.animate([{opacity:0}, {opacity:0.8}], {duration: 500, fill: 'forwards'});
                     }
                 }, i * 20);
             }
@@ -517,8 +422,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
