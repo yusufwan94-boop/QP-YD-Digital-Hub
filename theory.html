@@ -68,7 +68,7 @@
                 </div>
                 <div class="grid grid-cols-3 gap-2">
                     <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                        <label class="block text-[10px] font-black text-blue-400 uppercase mb-2">Freq (10^14 Hz)</label>
+                        <label class="block text-[10px] font-black text-blue-400 uppercase mb-2" data-key="lbl-freq">Freq (10^14 Hz)</label>
                         <input type="range" id="fIn" min="0" max="20" step="0.1" value="5.5" class="w-full" oninput="updatePhoto()">
                         <div id="fOut" class="text-xl font-black mt-1">5.5</div>
                     </div>
@@ -85,9 +85,25 @@
                 </div>
                 <button onclick="firePhotons()" id="btn-execute" class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-black text-lg shadow-xl uppercase tracking-widest transition-all" data-key="btn-execute">Execute Emission</button>
             </div>
-            <div class="glass p-8 rounded-3xl shadow-2xl flex flex-col h-full min-h-[500px]">
-                <h3 class="text-xl font-bold uppercase tracking-tight text-slate-300 mb-6 italic" data-key="graph-title">Energy Analysis Graph</h3>
-                <div class="flex-grow"><canvas id="quantumGraph"></canvas></div>
+            <div class="glass p-8 rounded-3xl shadow-2xl flex flex-col h-full min-h-[500px] space-y-6">
+                <h3 class="text-xl font-bold uppercase tracking-tight text-slate-300 italic" data-key="graph-title">Energy Analysis Graph</h3>
+                <div class="flex-grow max-h-[300px]"><canvas id="quantumGraph"></canvas></div>
+                
+                <div class="border-t border-slate-700 pt-4 space-y-4">
+                    <h3 class="text-md font-bold text-blue-400 uppercase tracking-widest" data-key="sit-title">Situational Analysis</h3>
+                    <div id="p-sit1" class="p-3 rounded-lg border border-slate-700 bg-slate-800/30 opacity-40 transition-opacity">
+                        <h4 class="font-bold text-red-400 text-xs" data-key="sit1-head">1. hf < W (No Emission)</h4>
+                        <p class="text-[10px] text-slate-400" data-key="sit1-body">Photons lack energy. Electrons only <b>vibrate</b> at original position.</p>
+                    </div>
+                    <div id="p-sit2" class="p-3 rounded-lg border border-slate-700 bg-slate-800/30 opacity-40 transition-opacity">
+                        <h4 class="font-bold text-amber-400 text-xs" data-key="sit2-head">2. hf = W (Threshold)</h4>
+                        <p class="text-[10px] text-slate-400" data-key="sit2-body">Photons match Work Function. Electrons <b>move to the red line</b> but do not escape.</p>
+                    </div>
+                    <div id="p-sit3" class="p-3 rounded-lg border border-slate-700 bg-slate-800/30 opacity-40 transition-opacity">
+                        <h4 class="font-bold text-emerald-400 text-xs" data-key="sit3-head">3. hf > W (Photoemission)</h4>
+                        <p class="text-[10px] text-slate-400" data-key="sit3-body">Excess energy exists. Electrons <b>jump from the red line</b> with speed relative to frequency.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -149,12 +165,12 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                        <label class="block text-[10px] font-bold text-blue-400 uppercase mb-2">Input Voltage (V_in)</label>
+                        <label class="block text-[10px] font-bold text-blue-400 uppercase mb-2" data-key="lbl-vin">Input Voltage (V_in)</label>
                         <input type="range" id="vIn_act" min="0" max="5.0" step="0.1" value="1.5" class="w-full" oninput="updateActivation()">
                         <div class="text-2xl font-black text-blue-400 mt-1" id="vIn_actOut">1.5V</div>
                     </div>
                     <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                        <label class="block text-[10px] font-bold text-red-400 uppercase mb-2">Band Gap (E_g / V_ac)</label>
+                        <label class="block text-[10px] font-bold text-red-400 uppercase mb-2" data-key="lbl-vac">Band Gap (E_g / V_ac)</label>
                         <input type="range" id="vAc_act" min="0.5" max="4.5" step="0.1" value="2.0" class="w-full" oninput="updateActivation()">
                         <div class="text-2xl font-black text-red-400 mt-1" id="vAc_actOut">2.0V</div>
                     </div>
@@ -166,15 +182,15 @@
                 <div class="space-y-4">
                     <div id="sit1" class="p-4 rounded-xl border border-slate-700 bg-slate-800/30 opacity-40">
                         <h4 class="font-bold text-blue-400 text-sm">1. V_in < V_ac</h4>
-                        <p class="text-xs text-slate-400" data-key="sit1-desc">Energy is insufficient to cross the gap. Electron remains in ground state with minor vibration.</p>
+                        <p class="text-xs text-slate-400" data-key="act-sit1-desc">Energy is insufficient to cross the gap. Electron remains in ground state with minor vibration.</p>
                     </div>
                     <div id="sit2" class="p-4 rounded-xl border border-slate-700 bg-slate-800/30 opacity-40">
                         <h4 class="font-bold text-amber-400 text-sm">2. V_in = V_ac</h4>
-                        <p class="text-xs text-slate-400" data-key="sit2-desc">Perfect threshold match. Electron jumps to CB and releases a single photon on recombination.</p>
+                        <p class="text-xs text-slate-400" data-key="act-sit2-desc">Perfect threshold match. Electron jumps to CB and releases a single photon on recombination.</p>
                     </div>
                     <div id="sit3" class="p-4 rounded-xl border border-slate-700 bg-slate-800/30 opacity-40">
                         <h4 class="font-bold text-emerald-400 text-sm">3. V_in > V_ac</h4>
-                        <p class="text-xs text-slate-400" data-key="sit3-desc">Saturation state. Excess energy drives high-density photon release.</p>
+                        <p class="text-xs text-slate-400" data-key="act-sit3-desc">Saturation state. Excess energy drives high-density photon release.</p>
                     </div>
                 </div>
             </div>
@@ -317,51 +333,61 @@
                 "nav-photo": "Photoelectric", "nav-activation": "Activation Theory", "nav-duality": "Particle Duality",
                 "title-p1": "Particle", "title-p2": "Nature.", "subtitle-photo": "Proving that E = hf (Energy depends on Frequency, not Intensity).",
                 "phys-pool": "Physical Pool", "btn-red": "RED (4.6)", "btn-green": "GREEN (5.5)", "btn-blue": "BLUE (6.7)", "btn-uv": "UV (12.0)",
-                "lbl-intensity": "Int (W/m^2)", "lbl-work": "Work function (eV)", "btn-execute": "Execute Emission",
-                "graph-title": "Energy Analysis Graph", "log-p-title": "Observation Logs (Particle)",
+                "lbl-freq": "Freq (10^14 Hz)", "lbl-intensity": "Int (W/m^2)", "lbl-work": "Work function (eV)", "btn-execute": "Execute Emission",
+                "graph-title": "Energy Analysis Graph", "sit-title": "Situational Analysis",
+                "sit1-head": "1. hf < W (No Emission)", "sit1-body": "Photons lack energy. Electrons only vibrate at original position.",
+                "sit2-head": "2. hf = W (Threshold)", "sit2-body": "Photons match Work Function. Electrons move to the red line but do not escape.",
+                "sit3-head": "3. hf > W (Photoemission)", "sit3-body": "Excess energy exists. Electrons jump from the red line with speed relative to frequency.",
+                "log-p-title": "Observation Logs (Particle)",
                 "log1-q": "Does more light intensity guarantee emission?", "no": "NO.", "log1-a": "If f < fo, increasing intensity just hits the metal with more 'weak' photons. Energy is not accumulated over time.",
                 "log2-q": "What determines the speed of ejected electrons?", "freq": "FREQUENCY.", "log2-a": "Excess energy (hf - W) becomes Kinetic Energy. Higher frequency means faster photoelectrons.",
                 "log3-q": "Is there a time lag for emission?", "immediate": "IMMEDIATE.", "log3-a": "Emission is instantaneous (< 10^-9 s), proving 1-to-1 particle collision.",
                 "act-title1": "Activation", "act-title2": "Voltage.", "act-subtitle": "Vin vs Vac Relationship Analysis.",
-                "btn-jump": "Execute Activation", "act-theory-title": "Situational Analysis",
-                "sit1-desc": "Energy is insufficient to cross the gap. Electron remains in ground state with minor vibration.",
-                "sit2-desc": "Perfect threshold match. Electron jumps to CB and releases a single photon on recombination.",
-                "sit3-desc": "Saturation state. Excess energy drives high-density photon release.",
+                "lbl-vin": "Input Voltage (V_in)", "lbl-vac": "Band Gap (E_g / V_ac)", "btn-jump": "Execute Activation", "act-theory-title": "Situational Analysis",
+                "act-sit1-desc": "Energy is insufficient to cross the gap. Electron remains in ground state with minor vibration.",
+                "act-sit2-desc": "Perfect threshold match. Electron jumps to CB and releases a single photon on recombination.",
+                "act-sit3-desc": "Saturation state. Excess energy drives high-density photon release.",
                 "log-act-title": "Observation Logs (Activation)",
                 "al1-q": "What is Activation Voltage?", "al1-a1": "MINIMUM VOLTAGE.", "al1-a2": "The smallest potential difference needed for electrons to cross the energy band gap (Eg).",
                 "al2-q": "How is light produced in LED?", "al2-a1": "SPONTANEOUS EMISSION.", "al2-a2": "When electrons fall from Conduction Band back to Valence Band, they release energy as photons.",
                 "al3-q": "How to find Planck's Constant?", "al3-a1": "eV = hf", "al3-a2": "By plotting Activation Voltage (V) vs Frequency (f), the gradient of the graph represents h/e.",
                 "title-w1": "Wave-Particle", "title-w2": "Duality.", "subtitle-duality": "Comparing Light Interference and Electron Diffraction.",
                 "light-title": "1. Light (Young's Slit)", "matter-title": "2. Matter (Electron Wave)",
-                "log-d-title": "Observation Logs (Duality)",
+                "lbl-wave": "Wavelength (lambda)", "lbl-dist": "Distance (D)", "lbl-slit": "Slit Width (a)", "lbl-volt": "Voltage (V)",
+                "btn-fire": "Fire Gun", "btn-clear": "Clear", "log-d-title": "Observation Logs (Duality)",
                 "dl1-q": "Why do electrons form rings?", "wave-nature": "WAVE NATURE.", "dl1-a": "Electrons diffracting through graphite layers prove that matter behaves like a wave.",
-                "dl2-q": "What happens if Voltage increases?", "shorter": "SHORTER WAVELENGTH.", "dl2-a": "Higher V increases momentum. Since lambda = h/p, rings become smaller.",
-                "dl3-q": "Can a human be a wave?", "too-small": "TOO SMALL.", "dl3-a": "Large mass makes de Broglie wavelength tiny, making wave properties impossible to detect."
+                "dl2-q": "What happens if Voltage increases?", "shorter": "SHORTER WAVELENGTH.", "dl2-a": "Higher V increases momentum. Since lambda = h/p, the wavelength decreases and rings become smaller.",
+                "dl3-q": "Can a human be a wave?", "too-small": "TOO SMALL.", "dl3-a": "Large mass makes de Broglie wavelength incredibly tiny, making wave properties impossible to detect."
             },
             bm: {
                 "nav-photo": "Fotoelektrik", "nav-activation": "Teori Pengaktifan", "nav-duality": "Dualiti Zarah",
                 "title-p1": "Sifat", "title-p2": "Zarah.", "subtitle-photo": "Membuktikan E = hf (Tenaga bergantung pada Frekuensi, bukan Keamatan).",
                 "phys-pool": "Kolam Fizikal", "btn-red": "MERAH (4.6)", "btn-green": "HIJAU (5.5)", "btn-blue": "BIRU (6.7)", "btn-uv": "UV (12.0)",
-                "lbl-intensity": "Keamatan (W/m^2)", "lbl-work": "Fungsi Kerja (eV)", "btn-execute": "Laksanakan Pancaran",
-                "graph-title": "Graf Analisis Tenaga", "log-p-title": "Log Pemerhatian (Zarah)",
+                "lbl-freq": "Frek (10^14 Hz)", "lbl-intensity": "Keamatan (W/m^2)", "lbl-work": "Fungsi Kerja (eV)", "btn-execute": "Laksanakan Pancaran",
+                "graph-title": "Graf Analisis Tenaga", "sit-title": "Analisis Situasi",
+                "sit1-head": "1. hf < W (Tiada Pancaran)", "sit1-body": "Foton kekurangan tenaga. Elektron hanya bergetar pada kedudukan asal.",
+                "sit2-head": "2. hf = W (Ambang)", "sit2-body": "Tenaga foton menyamai Fungsi Kerja. Elektron bergerak ke garisan merah tetapi tidak terlepas.",
+                "sit3-head": "3. hf > W (Pancaran Foto)", "sit3-body": "Wujud tenaga berlebihan. Elektron memecut keluar dengan kelajuan berkadar dengan frekuensi.",
+                "log-p-title": "Log Pemerhatian (Zarah)",
                 "log1-q": "Adakah keamatan cahaya menjamin pancaran?", "no": "TIDAK.", "log1-a": "Jika f < fo, peningkatan keamatan hanya menambah foton 'lemah'. Tenaga tidak terkumpul mengikut masa.",
                 "log2-q": "Apakah yang menentukan kelajuan elektron?", "freq": "FREKUENSI.", "log2-a": "Tenaga lebihan (hf - W) menjadi Tenaga Kinetik. Frekuensi tinggi bermaksud fotoelektron lebih laju.",
                 "log3-q": "Adakah terdapat sela masa untuk pancaran?", "immediate": "SERTA-MERTA.", "log3-a": "Pancaran berlaku serta-merta (< 10^-9 s), membuktikan perlanggaran 1-ke-1 zarah.",
-                "act-title1": "Voltan", "act-title2": "Pengaktifan.", "act-subtitle": "Analisis Hubungan Vin vs Vac.",
-                "btn-jump": "Laksanakan Pengaktifan", "act-theory-title": "Analisis Situasi",
-                "sit1-desc": "Tenaga tidak cukup untuk merentasi jurang jalur. Elektron kekal pada tahap asal dengan getaran kecil.",
-                "sit2-desc": "Padanan ambang sempurna. Elektron melompat ke CB dan memancarkan foton tunggal.",
-                "sit3-desc": "Keadaan tepu. Tenaga berlebihan menghasilkan ketumpatan pancaran foton yang tinggi.",
+                "act-title1": "Voltan", "act-title2": "Pengaktifan.", "act-subtitle": "Analisis Hubungan Vin lawan Vac.",
+                "lbl-vin": "Voltan Input (V_in)", "lbl-vac": "Jurang Jalur (E_g / V_ac)", "btn-jump": "Laksanakan Pengaktifan", "act-theory-title": "Analisis Situasi",
+                "act-sit1-desc": "Tenaga tidak cukup untuk merentasi jurang. Elektron kekal di tahap asas dengan getaran kecil.",
+                "act-sit2-desc": "Padanan ambang sempurna. Elektron melompat ke Jalur Konduksi dan memancarkan foton.",
+                "act-sit3-desc": "Keadaan tepu. Tenaga berlebihan memacu ketumpatan pancaran foton yang tinggi.",
                 "log-act-title": "Log Pemerhatian (Pengaktifan)",
                 "al1-q": "Apakah Voltan Pengaktifan?", "al1-a1": "VOLTAN MINIMUM.", "al1-a2": "Beza keupayaan terkecil yang diperlukan untuk elektron merentasi jurang jalur tenaga (Eg).",
                 "al2-q": "Bagaimana cahaya LED dihasilkan?", "al2-a1": "PANCARAN SPONTAN.", "al2-a2": "Apabila elektron jatuh dari Jalur Konduksi ke Jalur Valens, tenaga dibebaskan sebagai foton.",
                 "al3-q": "Cara mencari Pemalar Planck?", "al3-a1": "eV = hf", "al3-a2": "Dengan memplot Voltan Pengaktifan (V) lawan Frekuensi (f), kecerunan graf mewakili h/e.",
-                "title-w1": "Dualiti", "title-w2": "Zarah-Gelombang.", "subtitle-duality": "Membandingkan Interferens Cahaya dan Belauan Elektron.",
+                "title-w1": "Dualiti", "title-w2": "Zarah-Gelombang.", "subtitle-duality": "Perbandingan Interferens Cahaya dan Belauan Elektron.",
                 "light-title": "1. Cahaya (Dwi-celah Young)", "matter-title": "2. Jirim (Gelombang Elektron)",
-                "log-d-title": "Log Pemerhatian (Dualiti)",
+                "lbl-wave": "Panjang Gelombang (λ)", "lbl-dist": "Jarak (D)", "lbl-slit": "Lebar Celah (a)", "lbl-volt": "Voltan (V)",
+                "btn-fire": "Tembak Elektron", "btn-clear": "Padam", "log-d-title": "Log Pemerhatian (Dualiti)",
                 "dl1-q": "Mengapa elektron membentuk corak bulatan?", "wave-nature": "SIFAT GELOMBANG.", "dl1-a": "Elektron yang terbelau melalui lapisan grafit membuktikan jirim berkelakuan seperti gelombang.",
-                "dl2-q": "Apa berlaku jika Voltan meningkat?", "shorter": "PANJANG GELOMBANG PENDEK.", "dl2-a": "V lebih tinggi meningkatkan momentum. Kerana lambda = h/p, corak belauan mengecil.",
-                "dl3-q": "Bolehkah manusia menjadi gelombang?", "too-small": "TERLALU KECIL.", "dl3-a": "Jisim besar menjadikan panjang gelombang de Broglie sangat kecil, mustahil dikesan."
+                "dl2-q": "Apa berlaku jika Voltan meningkat?", "shorter": "PANJANG GELOMBANG PENDEK.", "dl2-a": "V lebih tinggi meningkatkan momentum. Kerana λ = h/p, corak belauan menjadi lebih kecil.",
+                "dl3-q": "Bolehkah manusia menjadi gelombang?", "too-small": "TERLALU KECIL.", "dl3-a": "Jisim besar menjadikan panjang gelombang de Broglie sangat kecil, mustahil untuk dikesan."
             }
         };
 
@@ -372,6 +398,9 @@
                 if (translations[currentLang][key]) el.innerText = translations[currentLang][key];
             });
             updatePhoto();
+            updateActivation();
+            updateSlit();
+            updateElectron();
         }
 
         function switchTab(mode) {
@@ -430,8 +459,6 @@
         function initElectrons() { for(let i=0; i<18; i++) { let e = document.createElement('div'); e.className='electron'; e.style.left=(55+Math.random()*40)+'%'; e.style.top=(15+Math.random()*70)+'%'; photoArena.appendChild(e); } }
         initElectrons();
 
-        function setPhotoColor(f, c) { fIn.value=f; photonColor=c; updatePhoto(); }
-
         const ctx = document.getElementById('quantumGraph').getContext('2d');
         let chart = new Chart(ctx, { 
             type:'line', 
@@ -440,36 +467,68 @@
                 responsive:true, 
                 maintainAspectRatio:false, 
                 scales:{ 
-                    y:{ min:-6, max:6, title: { display: true, text: 'Max Kinetic Energy K_max (eV)', color: '#64748b' } }, 
-                    x:{ type:'linear', min:0, max:20, title: { display: true, text: 'Frequency f (10^14 Hz)', color: '#64748b' } } 
+                    y:{ min:-6, max:6, title: { display: true, text: 'K_max (eV)', color: '#64748b' } }, 
+                    x:{ type:'linear', min:0, max:20, title: { display: true, text: 'f (10^14 Hz)', color: '#64748b' } } 
                 }, 
                 plugins:{legend:{display:false}} 
             }
         });
 
         function updatePhoto() {
-            const f=parseFloat(fIn.value), t=parseFloat(tIn.value);
-            document.getElementById('fOut').innerText=f; document.getElementById('tOut').innerText=t; 
+            const f=parseFloat(fIn.value), t=parseFloat(tIn.value), intensity = parseInt(iIn.value);
+            document.getElementById('fOut').innerText=f; 
+            document.getElementById('tOut').innerText=t;
+            document.getElementById('iOut').innerText=intensity;
+
             const kmax = (H_EV_SCALE * f) - t;
             chart.data.datasets[0].data=[{x:0,y:-t},{x:20,y:(H_EV_SCALE*20)-t}]; chart.data.datasets[1].data=[{x:f,y:kmax}]; chart.update('none');
+            
             const status = document.getElementById('statusIndicator');
-            status.innerText = kmax > 0 ? "Active" : "Standby";
-            status.className = kmax > 0 ? "text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded" : "text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded";
+            status.innerText = kmax > 0 ? (currentLang === 'en' ? "Active" : "Aktif") : (Math.abs(kmax) < 0.1 ? (currentLang === 'en' ? "Threshold" : "Ambang") : (currentLang === 'en' ? "Standby" : "Sedia"));
+            status.className = kmax > 0 ? "text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded" : (Math.abs(kmax) < 0.1 ? "text-[10px] bg-amber-500/20 text-amber-400 px-2 py-1 rounded" : "text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded");
+
+            document.getElementById('p-sit1').style.opacity = kmax < -0.1 ? "1" : "0.4";
+            document.getElementById('p-sit2').style.opacity = Math.abs(kmax) <= 0.1 ? "1" : "0.4";
+            document.getElementById('p-sit3').style.opacity = kmax > 0.1 ? "1" : "0.4";
         }
-        updatePhoto();
+
+        function setPhotoColor(f, c) { fIn.value=f; photonColor=c; updatePhoto(); }
 
         function firePhotons() {
             const f = parseFloat(fIn.value), t = parseFloat(tIn.value), intensity = parseInt(iIn.value);
+            const energy = H_EV_SCALE * f;
             const electrons = document.querySelectorAll('.electron');
+            const photonSpeed = 300 + (20 - f) * 15; // Reoptimized Speed logic
+
             for(let i = 0; i < intensity; i++) {
                 setTimeout(() => {
                     const p = document.createElement('div'); p.className = 'photon'; p.style.background = photonColor;
                     p.style.top = (10 + Math.random() * 80) + '%'; photoArena.appendChild(p);
-                    p.animate([{ left: '-20px' }, { left: '50%' }], 500).onfinish = () => {
+                    p.animate([{ left: '-20px' }, { left: '50%' }], photonSpeed).onfinish = () => {
                         p.remove();
                         const e = electrons[Math.floor(Math.random() * electrons.length)];
-                        if (H_EV_SCALE * f < t) { e.classList.add('vibrating'); setTimeout(() => e.classList.remove('vibrating'), 400); } 
-                        else { e.style.left = '50%'; setTimeout(() => { e.style.transform = `translateX(-800px)`; e.style.opacity = '0'; setTimeout(() => { e.style.transition='none'; e.style.transform='none'; e.style.opacity='1'; e.style.left=(55+Math.random()*40)+'%'; setTimeout(()=>e.style.transition='transform 0.6s, opacity 0.3s, left 0.6s', 50); }, 1000); }, 50); }
+                        if (energy < t - 0.1) {
+                            e.classList.add('vibrating'); 
+                            setTimeout(() => e.classList.remove('vibrating'), 400); 
+                        } 
+                        else if (Math.abs(energy - t) <= 0.1) {
+                            const originalLeft = e.style.left; e.style.left = '50%';
+                            setTimeout(() => { e.style.left = originalLeft; }, 800);
+                        }
+                        else {
+                            const kmax = energy - t;
+                            const speedFactor = 0.3 + (kmax / 10); 
+                            const duration = 1000 / speedFactor; 
+                            e.style.left = '50%';
+                            setTimeout(() => { 
+                                e.animate([
+                                    { transform: 'translateX(0)', opacity: 1 }, 
+                                    { transform: 'translateX(-800px)', opacity: 0 }
+                                ], { duration: duration, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }).onfinish = () => {
+                                    e.style.left = (55 + Math.random() * 40) + '%';
+                                };
+                            }, 50); 
+                        }
                     };
                 }, i * 150);
             }
@@ -479,6 +538,9 @@
             const lambda = parseFloat(document.getElementById('waveLen').value);
             const d = parseFloat(document.getElementById('slitSep').value);
             const D = parseFloat(document.getElementById('distD').value);
+            document.getElementById('waveLenOut').innerText = lambda + " nm";
+            document.getElementById('distDOut').innerText = D + " cm";
+            document.getElementById('slitSepOut').innerText = d + " mm";
             const screen = document.getElementById('slit-screen');
             screen.innerHTML = '';
             const color = `hsl(${(1 - (lambda - 400) / 300) * 240}, 100%, 50%)`;
@@ -510,6 +572,9 @@
             }
         }
         function clearElectronScreen() { document.getElementById('electron-screen').innerHTML = ''; }
+        
+        // Initial setup
+        updatePhoto();
     </script>
 </body>
 </html>
