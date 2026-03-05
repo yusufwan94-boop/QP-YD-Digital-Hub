@@ -233,12 +233,45 @@
                     }
                 }
 
-                if(id === 'bohr') {
-                    ctx.strokeStyle = '#4f46e5'; ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 50, 0, Math.PI*2); ctx.stroke();
-                    ctx.fillStyle = 'cyan'; ctx.beginPath(); ctx.arc(canvas.width/2 + Math.cos(frame*0.05)*50, canvas.height/2 + Math.sin(frame*0.05)*50, 6, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = 'red'; ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 12, 0, Math.PI*2); ctx.fill();
-                }
+if(id === 'bohr') {
+                    const cx = canvas.width/2, cy = canvas.height/2;
+                    const r1 = 45, r2 = 90; // The two quantized levels
+                    
+                    // 1. Draw Static Orbits (Dashed for that "quantum" look)
+                    ctx.strokeStyle = '#334155'; ctx.setLineDash([5, 5]);
+                    ctx.beginPath(); ctx.arc(cx, cy, r1, 0, Math.PI*2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(cx, cy, r2, 0, Math.PI*2); ctx.stroke();
+                    ctx.setLineDash([]); 
 
+                    // 2. Logic: Jump every 100 frames
+                    let isHigh = (Math.floor(frame / 100) % 2 === 0);
+                    let currentR = isHigh ? r2 : r1;
+                    let angle = frame * 0.05;
+                    let ex = cx + Math.cos(angle) * currentR;
+                    let ey = cy + Math.sin(angle) * currentR;
+
+                    // 3. Emit Photon (Yellow Wave) when dropping from r2 to r1
+                    let cycleFrame = frame % 100;
+                    if (!isHigh && cycleFrame < 40) {
+                        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        for(let i=0; i<30; i++) {
+                            // Sine wave moves outward from the jump point
+                            let px = ex + i + (cycleFrame * 3);
+                            let py = ey + Math.sin(i * 0.6) * 10;
+                            if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                        }
+                        ctx.stroke();
+                        ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px Inter';
+                        ctx.fillText("ΔE = hf", ex + (cycleFrame * 3), ey - 15);
+                    }
+
+                    // 4. Draw Nucleus and Electron
+                    ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(cx, cy, 12, 0, Math.PI*2); ctx.fill(); // Nucleus
+                    ctx.fillStyle = '#22d3ee'; ctx.shadowBlur = 10; ctx.shadowColor = '#22d3ee';
+                    ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI*2); ctx.fill(); // Electron
+                    ctx.shadowBlur = 0;
+                }
                 if(id === 'debroglie') {
                     if(frame % 2 === 0) dbParticles.push({x: 0, y: canvas.height/2 + (Math.random()-0.5)*10, angle: (Math.random()-0.5)*0.1});
                     dbParticles.forEach((p, i) => {
