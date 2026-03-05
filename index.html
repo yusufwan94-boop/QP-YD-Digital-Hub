@@ -37,6 +37,7 @@
             border-radius: 20px;
             font-weight: bold;
             transition: 0.3s;
+            z-index: 100;
         }
 
         header {
@@ -61,10 +62,11 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            /* Updated to allow 2x2 grid on larger screens */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
             width: 90%;
-            max-width: 1100px;
+            max-width: 1200px;
             padding: 20px;
         }
 
@@ -89,8 +91,8 @@
         }
 
         .icon { font-size: 3.5rem; margin-bottom: 20px; }
-        .card h2 { margin: 10px 0; color: var(--neon-blue); }
-        .card p { font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; color: #cbd5e1; }
+        .card h2 { margin: 10px 0; color: var(--neon-blue); font-size: 1.4rem; }
+        .card p { font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; color: #cbd5e1; height: 60px; overflow: hidden; }
 
         .btn {
             background: linear-gradient(45deg, #2563eb, #7c3aed);
@@ -108,7 +110,7 @@
 </head>
 <body>
 
-    <button class="lang-btn" onclick="toggleLang()" id="langSwitcher">BM/EN</button>
+    <button class="lang-btn" onclick="toggleLang()" id="langSwitcher">Tukar ke Bahasa Melayu</button>
 
     <header>
         <h1 id="mainTitle">PROJECT QP-YD</h1>
@@ -116,6 +118,15 @@
     </header>
 
     <div class="grid">
+        <a href="history.html" class="card">
+            <div>
+                <div class="icon">📜</div>
+                <h2 id="cardH-h">00. Quantum History</h2>
+                <p id="cardH-p">Explore the timeline of light theory from Newton's corpuscles to De Broglie's matter waves.</p>
+            </div>
+            <div class="btn" id="btnH">Launch History</div>
+        </a>
+
         <a href="theory.html" class="card">
             <div>
                 <div class="icon">⚛️</div>
@@ -154,6 +165,9 @@
             en: {
                 switcher: "Tukar ke Bahasa Melayu",
                 sub: "A Digital Journey into the Photoelectric Effect",
+                chH: "00. Quantum History",
+                cpH: "Explore the timeline of light theory from Newton's corpuscles to De Broglie's matter waves.",
+                bH: "Launch History",
                 c1h: "01. Theoretical Lab",
                 c1p: "Understand the core concepts of Einstein's equation E = hf - Φ before starting the experiment.",
                 b1: "Launch Theory",
@@ -167,6 +181,9 @@
             ms: {
                 switcher: "Switch to English",
                 sub: "Perjalanan Digital ke dalam Kesan Fotoelektrik",
+                chH: "00. Sejarah Kuantum",
+                cpH: "Terokai garis masa teori cahaya daripada korpuskel Newton sehingga gelombang jirim De Broglie.",
+                bH: "Buka Sejarah",
                 c1h: "01. Makmal Teori",
                 c1p: "Fahami konsep teras persamaan Einstein E = hf - Φ sebelum memulakan eksperimen.",
                 b1: "Buka Teori",
@@ -185,6 +202,12 @@
             
             document.getElementById('langSwitcher').innerText = d.switcher;
             document.getElementById('subtitle').innerText = d.sub;
+            
+            // New History Card
+            document.getElementById('cardH-h').innerText = d.chH;
+            document.getElementById('cardH-p').innerText = d.cpH;
+            document.getElementById('btnH').innerText = d.bH;
+
             document.getElementById('card1-h').innerText = d.c1h;
             document.getElementById('card1-p').innerText = d.c1p;
             document.getElementById('btn1').innerText = d.b1;
@@ -198,4 +221,3 @@
     </script>
 </body>
 </html>
-
