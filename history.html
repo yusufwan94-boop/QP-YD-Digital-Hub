@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Chronology | MRSM Gerik Physics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #020617; color: #f8fafc; scroll-behavior: smooth; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .timeline-line { position: absolute; left: 50%; width: 4px; height: 100%; background: linear-gradient(to bottom, #1e293b, #3b82f6, #ec4899, #1e293b); transform: translateX(-50%); z-index: 0; }
+        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .portrait { 
+    width: 100%; 
+    max-width: 200px; /* Limits width so it doesn't get too bulky on wide screens */
+    height: 240px;    /* Fixed height for all images for a clean alignment */
+    object-fit: cover; 
+    object-position: top; /* Ensures faces aren't cut off in tall portraits */
+    border-radius: 12px; 
+    border: 2px solid #334155; 
+    background: #1e293b; 
+    display: block;
+    margin: 0 auto;   /* Centers the image in its column */
+}
+        .sim-box { width: 100%; height: 320px; background: #000; border-radius: 12px; border: 2px solid #1e293b; position: relative; overflow: hidden; }
+        canvas { width: 100%; height: 100%; display: block; }
+        
+        [data-lang="bm"] .lang-en { display: none; }
+        [data-lang="en"] .lang-bm { display: none; }
+
+        .btn-start { background: #059669; }
+        .btn-stop { background: #dc2626; }
+    </style>
+</head>
+<body class="pb-20" data-lang="en">
+
+    <nav class="sticky top-0 z-50 bg-slate-950/95 border-b border-slate-800 py-4 px-8 flex justify-between items-center">
+        <div class="flex flex-col">
+            <span class="text-xs mono text-blue-500 font-bold tracking-widest uppercase">Saturation Searching Lab</span>
+            <h1 class="text-2xl font-black tracking-tighter uppercase">Quantum Evolution</h1>
+        </div>
+        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
+            <button onclick="setLang('en')" id="btn-en" class="px-4 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white">EN</button>
+            <button onclick="setLang('bm')" id="btn-bm" class="px-4 py-1 rounded-lg text-xs font-bold transition-all text-slate-400">BM</button>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-6 py-16 relative">
+        <div class="timeline-line"></div>
+        <div id="segments-container"></div>
+    </div>
+
+    <script>
+        const activeSims = {};
+        // Using direct, non-Wikipedia sources to bypass hotlink protection
+        const data = [
+            { 
+                id: 'newton', 
+                name: 'Isaac Newton', 
+                year: '1704', 
+                img: 'https://raw.githubusercontent.com/yusufwan94-boop/QP-YD-IMAGE/main/Portrait_of_Sir_Isaac_Newton%2C_1689_(brightened).jpg', 
+                theoryEn: '<b>Corpuscular Theory:</b> Light consists of tiny, discrete particles (corpuscles). Explained reflection as elastic bounces and refraction as acceleration into denser media. Restricted by lack of wave explanation.', 
+                theoryBm: '<b>Teori Korpuskel:</b> Cahaya terdiri daripada zarah halus dan diskrit (korpuskel). Menerangkan pantulan sebagai lantunan elastik dan pembiasan sebagai pecutan ke dalam medium lebih tumpat.' 
+            },
+            { 
+                id: 'young', 
+                name: 'Thomas Young', 
+                year: '1801', 
+                img: 'https://raw.githubusercontent.com/yusufwan94-boop/QP-YD-IMAGE/main/Thomas_Young_by_Briggs_cropped.jpg', 
+                theoryEn: '<b>Wave Theory:</b> Proved light is a wave via the Double-Slit experiment. Established the principle of <i>interference</i> where path difference determines constructive (Bright) or destructive (Dark) fringes.', 
+                theoryBm: '<b>Teori Gelombang:</b> Membuktikan cahaya adalah gelombang melalui eksperimen Dwi-Celah. Menetapkan prinsip <i>interferens</i> di mana perbezaan laluan menentukan pinggir membina (Terang) atau memusnah (Gelap).' 
+            },
+            { 
+                id: 'dalton', 
+                name: 'John Dalton', 
+                year: '1803', 
+                img: 'https://raw.githubusercontent.com/yusufwan94-boop/QP-YD-IMAGE/main/gettyimages-113444311.jpg', 
+                theoryEn: '<b>Billiard Ball Model:</b> Atoms are indivisible, indestructible spheres. Different elements have different masses. This formed the basis of modern stoichiometry and chemical identity.', 
+                theoryBm: '<b>Model Bola Biliard:</b> Atom adalah sfera yang tidak boleh dibahagi dan tidak boleh dimusnahkan. Unsur berbeza mempunyai jisim yang berbeza.' 
+            },
+            { 
+                id: 'thompson', 
+                name: 'J.J. Thompson', 
+                year: '1897', 
+                img: 'https://raw.githubusercontent.com/yusufwan94-boop/QP-YD-IMAGE/main/J.J_Thomson.jpg', 
+                theoryEn: '<b>Plum Pudding Model:</b> Discovered the electron using cathode rays. Proposed atoms are positive spheres with embedded negative electrons, proving atoms are actually divisible.', 
+                theoryBm: '<b>Model Puding Palam:</b> Menemui elektron menggunakan sinar katod. Mencadangkan atom adalah sfera positif dengan elektron negatif terbenam, membuktikan atom boleh dibahagi.' 
+            },
+            { 
+                id: 'planck', 
+                name: 'Max Planck', 
+                year: '1900', 
+                img: 'https://raw.githubusercontent.com/yusufwan94-boop/QP-YD-IMAGE/main/Max_Planck_by_Hugo_Erfurth_1938cr_-_restoration1.jpg', 
+                theoryEn: '<b>Quantum Hypothesis:</b> Energy is not continuous but emitted in discrete "quanta". Introduced Planck\'s Constant ($h$) with the formula $E = hf$. This solved the Blackbody Radiation/Ultraviolet Catastrophe.', 
+                theoryBm: '<b>Hipotesis Kuantum:</b> Tenaga tidak berterusan tetapi dipancarkan dalam "kuanta" diskrit. Memperkenalkan Pemalar Planck ($h$) dengan formula $E = hf$.' 
+            },
+            { 
+                id: 'einstein', 
+                name: 'Albert Einstein', 
+                year: '1905', 
+                img: 'https://raw.githubusercontent.com/yusufwan94-boop/QP-YD-IMAGE/main/Albert_Einstein_Head_cleaned.jpg', 
+                theoryEn: '<b>Photoelectric Effect:</b> Light energy is carried in "photons". If photon energy ($hf$) exceeds the work function ($\Phi$), electrons are emitted with Max Kinetic Energy: $K_{max} = hf - \Phi$.', 
+                theoryBm: '<b>Kesan Fotoelektrik:</b> Tenaga cahaya dibawa dalam "foton". Jika tenaga foton ($hf$) melebihi fungsi kerja ($\Phi$), elektron dipancarkan dengan Tenaga Kinetik Maksimum.' 
+            },
+            { 
+                id: 'bohr', 
+                name: 'Niels Bohr', 
+                year: '1913', 
+                img: 'https://raw.githubusercontent.com/yusufwan94-boop/QP-YD-IMAGE/main/Niels_Bohr.jpg', 
+                theoryEn: '<b>Quantized Orbits:</b> Electrons move in specific circular orbits without radiating energy. Radiation occurs only during transitions between levels: $\Delta E = E_2 - E_1 = hf$.', 
+                theoryBm: '<b>Orbit Terkuantum:</b> Elektron bergerak dalam orbit bulat tertentu tanpa memancarkan tenaga. Sinaran hanya berlaku semasa peralihan antara tahap tenaga.' 
+            },
+            { 
+                id: 'debroglie', 
+                name: 'Louis De Broglie', 
+                year: '1924', 
+                img: 'https://raw.githubusercontent.com/yusufwan94-boop/QP-YD-IMAGE/main/Broglie_Big.jpg', 
+                theoryEn: '<b>Wave-Particle Duality:</b> Proposed that moving particles exhibit wave characteristics. The de Broglie wavelength is $\lambda = \frac{h}{p} = \frac{h}{mv}$. This unified the wave and particle nature of matter.', 
+                theoryBm: '<b>Dualiti Zarah-Gelombang:</b> Mencadangkan zarah yang bergerak menunjukkan ciri gelombang. Panjang gelombang de Broglie ialah $\lambda = \frac{h}{p} = \frac{h}{mv}$.' 
+            }
+        ];
+
+        const container = document.getElementById('segments-container');
+        data.forEach((item, index) => {
+            const isEven = index % 2 === 0;
+            container.innerHTML += `
+                <div class="relative z-10 grid md:grid-cols-12 gap-8 mb-40 items-start">
+                    <div class="md:col-span-3 text-center ${isEven ? '' : 'md:order-3'}">
+                        <h3 class="text-3xl font-black mb-2">${item.name}</h3>
+                        <img src="${item.img}" class="portrait mb-2" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300x400/1e293b/f8fafc?text=Founder+Image'">
+                        <div class="mono text-blue-500 font-black text-xl">${item.year}</div>
+                    </div>
+                    <div class="md:col-span-4 glass-card p-6 rounded-3xl ${isEven ? '' : 'md:order-2'}">
+                        <div class="mb-6">
+                            <h4 class="font-black text-blue-400 uppercase text-xs tracking-widest lang-en">Theory Proposal</h4>
+                            <h4 class="font-black text-blue-400 uppercase text-xs tracking-widest lang-bm">Cadangan Teori</h4>
+                            <p class="text-sm mt-3 leading-relaxed lang-en">${item.theoryEn}</p>
+                            <p class="text-sm mt-3 leading-relaxed lang-bm">${item.theoryBm}</p>
+                        </div>
+                        <button onclick="toggleSim('${item.id}')" id="btn-${item.id}" class="btn-start px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest w-full transition-all">Start Simulation</button>
+                    </div>
+                    <div class="md:col-span-5 ${isEven ? '' : 'md:order-1'}">
+                        <div class="sim-box"><canvas id="canvas-${item.id}"></canvas></div>
+                    </div>
+                </div>`;
+        });
+
+        function setLang(lang) {
+            document.body.setAttribute('data-lang', lang);
+            document.getElementById('btn-en').className = lang === 'en' ? "px-4 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white" : "px-4 py-1 rounded-lg text-xs font-bold transition-all text-slate-400";
+            document.getElementById('btn-bm').className = lang === 'bm' ? "px-4 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white" : "px-4 py-1 rounded-lg text-xs font-bold transition-all text-slate-400";
+        }
+
+        function toggleSim(id) {
+            const btn = document.getElementById(`btn-${id}`);
+            if (activeSims[id]) {
+                activeSims[id] = false;
+                btn.innerText = "Start Simulation";
+                btn.className = btn.className.replace('btn-stop', 'btn-start');
+            } else {
+                activeSims[id] = true;
+                btn.innerText = "Stop Simulation";
+                btn.className = btn.className.replace('btn-start', 'btn-stop');
+                runSim(id);
+            }
+        }
+
+        function runSim(id) {
+            const canvas = document.getElementById(`canvas-${id}`);
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            let frame = 0;
+            let dbParticles = [];
+
+            const draw = () => {
+                if (!activeSims[id]) return;
+                ctx.fillStyle = 'black'; ctx.fillRect(0,0, canvas.width, canvas.height);
+                
+                if(id === 'newton') {
+                    ctx.fillStyle = '#3b82f6';
+                    for(let i=0; i<8; i++) {
+                        let x = (frame*4 + i*60) % canvas.width;
+                        ctx.beginPath(); ctx.arc(x, canvas.height/2, 3, 0, Math.PI*2); ctx.fill();
+                    }
+                }
+                
+                if(id === 'young') {
+                    const s1y = canvas.height/2 - 25, s2y = canvas.height/2 + 25;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for(let r=0; r<canvas.width-50; r+=25) {
+                        ctx.strokeStyle = `rgba(34, 211, 238, ${0.4 - r/canvas.width})`;
+                        ctx.beginPath(); ctx.arc(30, s1y, (r + frame)%canvas.width, -Math.PI/2, Math.PI/2); ctx.stroke();
+                        ctx.beginPath(); ctx.arc(30, s2y, (r + frame)%canvas.width, -Math.PI/2, Math.PI/2); ctx.stroke();
+                    }
+                    ctx.globalCompositeOperation = 'source-over';
+                    for(let y=0; y<canvas.height; y++) {
+                        let d1 = Math.sqrt(Math.pow(canvas.width-40, 2) + Math.pow(y-s1y, 2));
+                        let d2 = Math.sqrt(Math.pow(canvas.width-40, 2) + Math.pow(y-s2y, 2));
+                        let diff = Math.abs(d1 - d2);
+                        let intensity = Math.pow(Math.cos(diff * 0.15), 2);
+                        ctx.fillStyle = `rgba(34, 211, 238, ${intensity})`;
+                        ctx.fillRect(canvas.width-30, y, 20, 1);
+                    }
+                    ctx.fillStyle = 'white'; ctx.fillRect(25, 0, 5, canvas.height);
+                    ctx.clearRect(25, s1y-2, 5, 4); ctx.clearRect(25, s2y-2, 5, 4);
+                }
+
+                if(id === 'dalton') {
+                    ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 50, 0, Math.PI*2); ctx.fill();
+                }
+
+                if(id === 'thompson') {
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.4)'; ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 60, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = 'blue';
+                    for(let i=0; i<6; i++) {
+                        let ang = (frame*0.02) + (i * Math.PI/3);
+                        ctx.beginPath(); ctx.arc(canvas.width/2 + Math.cos(ang)*35, canvas.height/2 + Math.sin(ang)*35, 6, 0, Math.PI*2); ctx.fill();
+                    }
+                }
+
+                if(id === 'planck') {
+                    ctx.fillStyle = '#a855f7'; let pos = (frame*3) % canvas.width;
+                    ctx.fillRect(pos, canvas.height/2 - 10 + Math.sin(frame*0.1)*20, 15, 15);
+                }
+
+                if(id === 'einstein') {
+                    ctx.fillStyle = 'yellow'; ctx.fillRect((frame*5)% (canvas.width/2), canvas.height/2, 8, 2);
+                    ctx.fillStyle = '#475569'; ctx.fillRect(canvas.width/2, 20, 15, canvas.height-40);
+                    if((frame*5)%canvas.width > canvas.width/2) {
+                        ctx.fillStyle = '#3b82f6'; ctx.beginPath(); ctx.arc(canvas.width/2 + 20 + (frame%50), canvas.height/2 - (frame%30), 4, 0, Math.PI*2); ctx.fill();
+                    }
+                }
+
+                if(id === 'bohr') {
+                    ctx.strokeStyle = '#4f46e5'; ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 50, 0, Math.PI*2); ctx.stroke();
+                    ctx.fillStyle = 'cyan'; ctx.beginPath(); ctx.arc(canvas.width/2 + Math.cos(frame*0.05)*50, canvas.height/2 + Math.sin(frame*0.05)*50, 6, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = 'red'; ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 12, 0, Math.PI*2); ctx.fill();
+                }
+
+                if(id === 'debroglie') {
+                    if(frame % 2 === 0) dbParticles.push({x: 0, y: canvas.height/2 + (Math.random()-0.5)*10, angle: (Math.random()-0.5)*0.1});
+                    dbParticles.forEach((p, i) => {
+                        p.x += 4;
+                        if(p.x > 60) { 
+                            if(!p.fixedAngle) p.fixedAngle = (Math.tan((Math.random()-0.5) * 1.5));
+                            p.y += p.fixedAngle * 2;
+                        }
+                        ctx.fillStyle = 'rgba(236, 72, 153, 0.8)';
+                        ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
+                        if(p.x > canvas.width - 40) { 
+                            ctx.fillStyle = 'rgba(236, 72, 153, 0.2)';
+                            ctx.fillRect(canvas.width-30, p.y-5, 15, 10);
+                            dbParticles.splice(i, 1);
+                        }
+                    });
+                    ctx.fillStyle = 'white'; ctx.fillRect(60, 0, 5, canvas.height/2 - 10); ctx.fillRect(60, canvas.height/2 + 10, 5, canvas.height/2);
+                }
+
+                frame++;
+                requestAnimationFrame(draw);
+            };
+            draw();
+        }
+    </script>
+</body>
+</html>
