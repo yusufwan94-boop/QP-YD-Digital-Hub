@@ -15,19 +15,16 @@
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Unified Navigation */
         .nav-hub { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 9999; }
         .nav-btn { padding: 15px 25px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 0.75rem; transition: 0.3s; border-bottom: 3px solid transparent; }
         .nav-btn.active { color: #3b82f6; border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
         
-        /* Shared Styles */
         .meter-box { background: #000; border: 2px solid #1e293b; border-radius: 12px; padding: 15px; text-align: center; }
         .meter-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #22d3ee; }
         .led-indicator { width: 50px; height: 50px; border-radius: 50% 50% 15% 15%; margin: 0 auto; transition: 0.2s; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
         
-        /* Slider Styling */
         input[type=range] { -webkit-appearance: none; width: 100%; background: #1e293b; height: 12px; border-radius: 10px; outline: none; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; background: #fbbf24; border-radius: 50%; cursor: pointer; border: 3px solid #000; }
         
@@ -37,8 +34,8 @@
 <body class="pb-10">
 
     <nav class="nav-hub flex justify-center gap-4">
-        <button class="nav-btn active" id="btn-nav-1" onclick="showLab(1)">Lab 1: Saturation method</button>
-        <button class="nav-btn" id="btn-nav-2" onclick="showLab(2)">Lab 2: Activation method</button>
+        <button class="nav-btn active" id="btn-nav-1" onclick="showLab(1)">Lab 1: Saturation</button>
+        <button class="nav-btn" id="btn-nav-2" onclick="showLab(2)">Lab 2: Activation</button>
     </nav>
 
     <div id="lab1" class="tab-content active p-4 md:p-8">
@@ -53,7 +50,7 @@
                         <h1 class="text-5xl md:text-6xl font-black tracking-tighter text-blue-500 uppercase leading-none"><span id="title1-p1">SATURATION</span> <br class="md:hidden"><span class="text-white" id="title1-p2">VOLTAGE</span></h1>
                         <p class="text-slate-400 font-bold tracking-[0.2em] mt-3 text-sm" id="subtitle1">METHOD: Vo = (h/e)f - Φ/e</p>
                     </div>
-                    <div class="bg-blue-600/10 border border-blue-500/30 p-5 rounded-2xl">
+                    <div class="bg-blue-600/10 border border-blue-500/30 p-5 rounded-2xl text-right">
                         <span class="text-[10px] text-blue-400 font-black block uppercase mb-1" id="target-lbl1">Target Value</span>
                         <span class="text-2xl md:text-3xl font-black mono text-blue-400">h ≈ 6.63 × 10⁻³⁴ Js</span>
                     </div>
@@ -64,50 +61,32 @@
                 <div class="lg:col-span-4 space-y-6">
                     <div class="glass p-8 rounded-[2rem] shadow-2xl border-l-4 border-blue-500">
                         <div class="grid grid-cols-2 gap-4 mb-8">
-                            <div class="meter-box">
-                                <div class="meter-val" id="v-in-1">0.00</div>
-                                <div class="text-[10px] text-slate-500 font-black uppercase mt-1" id="m1_1">Source Vin</div>
-                            </div>
-                            <div class="meter-box">
-                                <div class="meter-val" id="v-out-1" style="color: #fbbf24;">0.00</div>
-                                <div class="text-[10px] text-slate-500 font-black uppercase mt-1" id="m3_1">Solar Vo</div>
-                            </div>
+                            <div class="meter-box"><div class="meter-val" id="v-in-1">0.00</div><div class="text-[10px] text-slate-500 font-black uppercase mt-1" id="m1_1">Source Vin</div></div>
+                            <div class="meter-box"><div class="meter-val" id="v-out-1" style="color: #fbbf24;">0.00</div><div class="text-[10px] text-slate-500 font-black uppercase mt-1" id="m3_1">Solar Vo</div></div>
                         </div>
-
-                        <div class="h-44 bg-black/50 rounded-2xl border border-slate-800 mb-6 p-2">
-                            <canvas id="liveryChart1"></canvas>
-                        </div>
-
-                        <div class="h-24 bg-black/80 rounded-2xl flex items-center justify-center border border-slate-800 mb-8">
-                            <div id="led-bulb-1" class="led-indicator" style="background: #111;"></div>
-                        </div>
-
+                        <div class="h-44 bg-black/50 rounded-2xl border border-slate-800 mb-6 p-2"><canvas id="liveryChart1"></canvas></div>
+                        <div class="h-24 bg-black/80 rounded-2xl flex items-center justify-center border border-slate-800 mb-8"><div id="led-bulb-1" class="led-indicator" style="background: #111;"></div></div>
                         <div class="grid grid-cols-2 gap-3 mb-8">
-                            <button class="py-4 rounded-xl bg-purple-600 font-black text-xs uppercase" onclick="selectLED1('UV', 395, '#a855f7')">UV Source</button>
-                            <button class="py-4 rounded-xl bg-blue-600 font-black text-xs uppercase" onclick="selectLED1('Blue', 465, '#3b82f6')">Blue Source</button>
-                            <button class="py-4 rounded-xl bg-green-600 font-black text-xs uppercase" onclick="selectLED1('Green', 525, '#22c55e')">Green Source</button>
-                            <button class="py-4 rounded-xl bg-red-600 font-black text-xs uppercase" onclick="selectLED1('Red', 660, '#ef4444')">Red Source</button>
+                            <button class="py-4 rounded-xl bg-purple-600 font-black text-xs uppercase" onclick="selectLED1('UV', 395, '#a855f7')">UV</button>
+                            <button class="py-4 rounded-xl bg-blue-600 font-black text-xs uppercase" onclick="selectLED1('Blue', 465, '#3b82f6')">Blue</button>
+                            <button class="py-4 rounded-xl bg-green-600 font-black text-xs uppercase" onclick="selectLED1('Green', 525, '#22c55e')">Green</button>
+                            <button class="py-4 rounded-xl bg-red-600 font-black text-xs uppercase" onclick="selectLED1('Red', 660, '#ef4444')">Red</button>
                         </div>
-
                         <div class="space-y-4">
-                            <div class="flex justify-between font-black text-[10px] text-slate-500 uppercase px-1">
-                                <span id="adj-lbl-1">Adjust Brightness</span>
-                                <span id="perc-1">0%</span>
-                            </div>
+                            <div class="flex justify-between font-black text-[10px] text-slate-500 uppercase px-1"><span id="adj-lbl-1">Adjust Brightness</span><span id="perc-1">0%</span></div>
                             <input type="range" id="pot1" min="0" max="1000" value="0" oninput="runPhysics1()">
                         </div>
-
-                        <button onclick="logData1()" id="logBtn1" class="w-full mt-8 py-5 bg-emerald-600 rounded-2xl font-black uppercase tracking-widest hover:bg-emerald-500 active:scale-95 transition-all">Capture Vo Point</button>
+                        <div class="flex gap-2 mt-8">
+                            <button onclick="logData1()" id="logBtn1" class="flex-grow py-5 bg-emerald-600 rounded-2xl font-black uppercase tracking-widest hover:bg-emerald-500 transition-all">Capture Vo</button>
+                            <button onclick="resetLab1()" class="px-5 border-2 border-red-900/50 text-red-500 rounded-2xl hover:bg-red-900/20 transition-all font-black">✕</button>
+                        </div>
                     </div>
                 </div>
-
                 <div class="lg:col-span-8 space-y-6">
-                    <div class="glass p-8 rounded-[2rem] shadow-2xl relative overflow-hidden h-[500px]">
-                        <canvas id="planckChart1"></canvas>
-                    </div>
+                    <div class="glass p-8 rounded-[2rem] shadow-2xl relative h-[500px]"><canvas id="planckChart1"></canvas></div>
                     <div class="bg-slate-900/80 p-6 rounded-[2rem] border border-slate-800 border-l-4 border-amber-500">
                         <strong id="conc-h1" class="text-amber-400 uppercase tracking-widest text-xs">Results / Keputusan:</strong>
-                        <p id="final-result1" class="mt-2 text-xl font-black mono text-emerald-400">Log points to calculate h</p>
+                        <p id="final-result1" class="mt-2 text-xl font-black mono text-emerald-400">Ready for data input...</p>
                     </div>
                 </div>
             </div>
@@ -119,20 +98,18 @@
             <nav class="mb-6 flex justify-end">
                 <button onclick="toggleLang2()" class="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-black hover:bg-slate-700 transition-all uppercase tracking-widest">BM / EN</button>
             </nav>
-
             <header class="mb-10">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                     <div>
                         <h1 class="text-5xl md:text-6xl font-black tracking-tighter text-blue-500 uppercase leading-none"><span data-key="title-1">ACTIVATION</span> <br class="md:hidden"><span class="text-white" data-key="title-2">VOLTAGE</span></h1>
                         <p class="text-slate-400 font-bold tracking-[0.2em] mt-3 text-sm" data-key="subtitle">METHOD: Vac = (h/e)f - Φ/e</p>
                     </div>
-                    <div class="bg-blue-600/10 border border-blue-500/30 p-5 rounded-2xl">
+                    <div class="bg-blue-600/10 border border-blue-500/30 p-5 rounded-2xl text-right">
                         <span class="text-[10px] text-blue-400 font-black block uppercase mb-1" data-key="target-lbl">Target Value</span>
                         <span class="text-2xl md:text-3xl font-black mono text-blue-400">h ≈ 6.63 × 10⁻³⁴ Js</span>
                     </div>
                 </div>
             </header>
-
             <main class="grid lg:grid-cols-12 gap-8">
                 <div class="lg:col-span-4 space-y-6">
                     <div class="glass p-8 rounded-[2rem] space-y-8 shadow-2xl border-l-4 border-blue-500">
@@ -141,7 +118,7 @@
                             <div class="grid grid-cols-5 gap-3" id="led-selector2"></div>
                         </div>
                         <div class="bg-black/40 h-48 rounded-2xl relative overflow-hidden flex flex-col items-center justify-center border border-slate-700">
-                            <div id="led-physical2" class="w-12 h-16 rounded-t-full rounded-b-lg border-2 border-slate-700 bg-slate-800/50 relative mb-4 led-glow" style="--glow-color: transparent">
+                            <div id="led-physical2" class="w-12 h-16 rounded-t-full rounded-b-lg border-2 border-slate-700 bg-slate-800/50 relative mb-4" style="--glow-color: transparent">
                                 <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-6 h-4 bg-slate-600 rounded"></div>
                             </div>
                             <div id="glow-status2" class="text-[10px] font-black px-3 py-1 rounded bg-slate-900 text-slate-600 border border-slate-800 uppercase tracking-tighter" data-key="status-off">LED Status: Off</div>
@@ -151,24 +128,23 @@
                                 <h3 class="text-xs font-black text-slate-500 uppercase tracking-[0.2em]" data-key="step-2">2. Find Threshold</h3>
                                 <span id="volt-display2" class="text-3xl font-black mono text-blue-400">0.00V</span>
                             </div>
-                            <input type="range" id="volt-slider2" min="0" max="4" step="0.01" value="0" class="w-full h-3 bg-slate-800 rounded-lg appearance-none accent-blue-500">
+                            <input type="range" id="volt-slider2" min="0" max="4" step="0.01" value="0" class="w-full h-3">
                         </div>
-                        <button onclick="logPoint2()" class="w-full bg-white text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-400 transition-all transform active:scale-95" data-key="btn-log">Log Data Point</button>
+                        <div class="flex gap-2">
+                            <button onclick="logPoint2()" class="flex-grow bg-white text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-400 transition-all transform active:scale-95" data-key="btn-log">Log Point</button>
+                            <button onclick="resetLab2()" class="px-5 border-2 border-red-900/50 text-red-500 rounded-2xl hover:bg-red-900/20 transition-all font-black">✕</button>
+                        </div>
                     </div>
-
                     <div class="glass p-6 rounded-[2rem] border-l-4 border-l-emerald-500">
-                        <h3 class="text-xs font-black text-slate-400 uppercase mb-4" data-key="const-title">Calculated Constants</h3>
+                        <h3 class="text-xs font-black text-slate-400 uppercase mb-4" data-key="const-title">Constants</h3>
                         <div class="space-y-4">
                             <div><p class="text-[10px] text-slate-500 uppercase font-bold" data-key="lbl-grad">Gradient (h/e)</p><p id="res-gradient2" class="text-xl font-black mono">0.0000</p></div>
                             <div><p class="text-[10px] text-slate-500 uppercase font-bold" data-key="lbl-h">Experimental h (Js)</p><p id="res-h2" class="text-2xl font-black mono text-emerald-400">0.00</p></div>
                         </div>
                     </div>
                 </div>
-
                 <div class="lg:col-span-8 space-y-6">
-                    <div class="glass p-8 rounded-[2rem] h-[500px] shadow-2xl relative">
-                        <canvas id="analysisChart2"></canvas>
-                    </div>
+                    <div class="glass p-8 rounded-[2rem] h-[500px] shadow-2xl relative"><canvas id="analysisChart2"></canvas></div>
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="glass p-6 rounded-[2rem]">
                             <h3 class="text-xs font-black text-slate-500 uppercase mb-4 tracking-widest" data-key="log-title">Observation Log</h3>
@@ -182,7 +158,7 @@
                             </div>
                         </div>
                         <div class="glass p-6 rounded-[2rem] flex flex-col justify-center bg-blue-500/5 border-blue-500/10">
-                            <h3 class="text-xs font-black text-blue-400 uppercase mb-2" data-key="theory-title">Analysis Logic</h3>
+                            <h3 class="text-xs font-black text-blue-400 uppercase mb-2" data-key="theory-title">Analysis</h3>
                             <p class="text-[11px] text-slate-400 leading-relaxed italic" data-key="theory-body">By plotting Activation Voltage against Frequency, the gradient reflects h/e.</p>
                         </div>
                     </div>
@@ -203,11 +179,15 @@
             document.getElementById('btn-nav-' + num).classList.add('active');
         }
 
-        // --- CORE SCRIPT FOR LAB 1 (SATURATION) ---
+        // Shared Chart Defaults
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+
+        // --- LAB 1 LOGIC ---
         let currentLang1 = 'en';
         const dict1 = {
-            en: { t1: "SATURATION", t2: "VOLTAGE", sub: "METHOD: Vo = (h/e)f - Φ/e", target: "Target Value", m1: "Source Vin", m3: "Solar Vo", log: "Capture Vo Point", adj: "Adjust Brightness", h: "Result: h =", err: "Error:" },
-            ms: { t1: "VOLTAN", t2: "KETEPUAN", sub: "KAEDAH: Vo = (h/e)f - Φ/e", target: "Nilai Sasaran", m1: "Punca Vin", m3: "Solar Vo", log: "Rekod Titik Vo", adj: "Laraskan Kecerahan", h: "Keputusan: h =", err: "Ralat:" }
+            en: { t1: "SATURATION", t2: "VOLTAGE", sub: "METHOD: Vo = (h/e)f - Φ/e", target: "Target Value", m1: "Source Vin", m3: "Solar Vo", log: "Capture Vo", adj: "Adjust Brightness", h: "Result: h =", ready: "Ready for data input..." },
+            ms: { t1: "VOLTAN", t2: "KETEPUAN", sub: "KAEDAH: Vo = (h/e)f - Φ/e", target: "Nilai Sasaran", m1: "Punca Vin", m3: "Solar Vo", log: "Rekod Titik Vo", adj: "Laraskan Kecerahan", h: "Keputusan: h =", ready: "Sedia untuk data..." }
         };
 
         function toggleLang1() {
@@ -221,7 +201,6 @@
             document.getElementById('m3_1').innerText = d.m3;
             document.getElementById('logBtn1').innerText = d.log;
             document.getElementById('adj-lbl-1').innerText = d.adj;
-            document.getElementById('conc-h1').innerText = currentLang1 === 'en' ? "Results / Keputusan:" : "Keputusan / Results:";
             updateAnalysis1();
         }
 
@@ -229,36 +208,18 @@
         let points1 = [];
         let liveryData1 = [];
 
-        // Updated chart defaults for dark theme
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
-
         const liveryCtx1 = document.getElementById('liveryChart1').getContext('2d');
         const liveryChart1 = new Chart(liveryCtx1, {
             type: 'line',
-            data: { datasets: [{ data: [], borderColor: '#fbbf24', borderWidth: 3, pointRadius: 0, fill: false, tension: 0.4 }] },
-            options: { 
-                responsive: true, maintainAspectRatio: false, animation: false,
-                scales: { 
-                    x: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'V_in (Source)', font: { size: 10 } } }, 
-                    y: { type: 'linear', min: 0, max: 3, title: { display: true, text: 'V_o (Output)', font: { size: 10 } } } 
-                },
-                plugins: { legend: { display: false } }
-            }
+            data: { datasets: [{ data: [], borderColor: '#fbbf24', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.4 }] },
+            options: { responsive: true, maintainAspectRatio: false, animation: false, scales: { x: { type: 'linear', min: 0, max: 1 }, y: { type: 'linear', min: 0, max: 3 } }, plugins: { legend: { display: false } } }
         });
 
         const planckCtx1 = document.getElementById('planckChart1').getContext('2d');
         const planckChart1 = new Chart(planckCtx1, {
             type: 'scatter',
-            data: { datasets: [{ label: 'Points', data: [], pointRadius: 10, pointBackgroundColor: [] }, { label: 'Fit', data: [], type: 'line', borderColor: '#3b82f6', borderDash: [5, 5], pointRadius: 0 }] },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: {
-                    x: { type: 'linear', min: 0, max: 10, title: { display: true, text: 'Frequency (10¹⁴ Hz)', font: { size: 14, weight: '900' } } },
-                    y: { type: 'linear', min: -1.5, max: 3, title: { display: true, text: 'Saturation Voltage Vo (V)', font: { size: 14, weight: '900' } } }
-                },
-                plugins: { legend: { display: false } }
-            }
+            data: { datasets: [{ label: 'Data', data: [], pointRadius: 10, pointBackgroundColor: [] }, { label: 'Fit', data: [], type: 'line', borderColor: '#3b82f6', borderDash: [5, 5], pointRadius: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', min: 0, max: 10, title: { display: true, text: 'Frequency (10¹⁴ Hz)' } }, y: { type: 'linear', min: -1.5, max: 3, title: { display: true, text: 'Saturation Voltage Vo (V)' } } }, plugins: { legend: { display: false } } }
         });
 
         function selectLED1(name, wave, color) {
@@ -276,15 +237,12 @@
             let freq = 3e17 / activeLED1.wave;
             let maxVo = (6.626e-34 * freq / 1.602e-19) - 1.02;
             let vo = val > 0.01 ? maxVo * (1 - Math.exp(-val * 8)) : 0;
-
             document.getElementById('v-in-1').innerText = (val * 12).toFixed(2);
             document.getElementById('v-out-1').innerText = vo.toFixed(2);
             document.getElementById('perc-1').innerText = Math.round(val * 100) + "%";
-
             const bulb = document.getElementById('led-bulb-1');
             bulb.style.background = val > 0.01 ? activeLED1.color : '#111';
             bulb.style.boxShadow = val > 0.01 ? `0 0 ${val * 70}px ${activeLED1.color}` : 'none';
-
             liveryData1.push({ x: val, y: vo });
             liveryData1.sort((a,b) => a.x - b.x);
             liveryChart1.data.datasets[0].data = liveryData1;
@@ -312,37 +270,41 @@
                 let c = (sY - m * sX) / n;
                 planckChart1.data.datasets[1].data = [{ x: 0, y: c }, { x: 10, y: m * 10 + c }];
                 let h = (m * 1.602e-33);
-                let err = Math.abs((h - 6.626e-34)/6.626e-34 * 100);
-                document.getElementById('final-result1').innerHTML = `${dict1[currentLang1].h} <b>${h.toExponential(2)}</b> J·s (${err.toFixed(1)}% error)`;
+                document.getElementById('final-result1').innerHTML = `${dict1[currentLang1].h} <b>${h.toExponential(2)}</b> J·s`;
+            } else {
+                document.getElementById('final-result1').innerText = dict1[currentLang1].ready;
             }
             planckChart1.update();
         }
 
-        // --- CORE SCRIPT FOR LAB 2 (ACTIVATION) ---
+        function resetLab1() {
+            points1 = [];
+            liveryData1 = [];
+            planckChart1.data.datasets[1].data = [];
+            liveryChart1.data.datasets[0].data = [];
+            document.getElementById('v-in-1').innerText = "0.00";
+            document.getElementById('v-out-1').innerText = "0.00";
+            document.getElementById('perc-1').innerText = "0%";
+            document.getElementById('pot1').value = 0;
+            document.getElementById('led-bulb-1').style.boxShadow = "none";
+            updateAnalysis1();
+        }
+
+        // --- LAB 2 LOGIC ---
         const E_CHARGE2 = 1.602e-19;
         let currentLang2 = 'en';
         const langData2 = {
-            en: { "title-1": "ACTIVATION", "title-2": "VOLTAGE", "subtitle": "METHOD: Vac = (h/e)f - Φ/e", "target-lbl": "Target Value", "step-1": "1. Select LED Source", "step-2": "2. Find Threshold", "btn-log": "Log Data Point", "const-title": "Calculated Constants", "lbl-grad": "Gradient (h/e)", "lbl-h": "Experimental h (Js)", "log-title": "Observation Log", "th-led": "LED", "th-vac": "Vac (V)", "theory-title": "Analysis Logic", "theory-body": "The gradient of the V vs f graph directly represents h/e. Identify the minimum voltage where light first appears.", "status-off": "LED Status: Off", "status-on": "LED Status: EMITTING" },
-            bm: { "title-1": "VOLTAN", "title-2": "PENGAKTIFAN", "subtitle": "KAEDAH: Vac = (h/e)f - Φ/e", "target-lbl": "Nilai Sasaran", "step-1": "1. Pilih Sumber LED", "step-2": "2. Cari Ambang", "btn-log": "Log Titik Data", "const-title": "Pemalar Dikira", "lbl-grad": "Kecerunan (h/e)", "lbl-h": "h Eksperimen (Js)", "log-title": "Log Pemerhatian", "th-led": "LED", "th-vac": "Vac (V)", "theory-title": "Logik Analisis", "theory-body": "Kecerunan graf V lawan f mewakili h/e. Log tepat memerlukan anda mencari voltan minimum saat cahaya mula kelihatan.", "status-off": "Status LED: Padam", "status-on": "Status LED: MEMANCAR" }
+            en: { "title-1": "ACTIVATION", "title-2": "VOLTAGE", "subtitle": "METHOD: Vac = (h/e)f - Φ/e", "target-lbl": "Target Value", "step-1": "1. Select LED", "step-2": "2. Find Threshold", "btn-log": "Log Point", "const-title": "Constants", "lbl-grad": "Gradient (h/e)", "lbl-h": "Experimental h (Js)", "log-title": "Observation Log", "th-led": "LED", "th-vac": "Vac (V)", "theory-title": "Analysis", "theory-body": "Plot Vac vs f. The gradient reflects h/e.", "status-off": "LED: Off", "status-on": "LED: EMITTING" },
+            bm: { "title-1": "VOLTAN", "title-2": "PENGAKTIFAN", "subtitle": "KAEDAH: Vac = (h/e)f - Φ/e", "target-lbl": "Nilai Sasaran", "step-1": "1. Pilih LED", "step-2": "2. Cari Ambang", "btn-log": "Log Titik", "const-title": "Pemalar", "lbl-grad": "Kecerunan (h/e)", "lbl-h": "h Eksperimen (Js)", "log-title": "Log Pemerhatian", "th-led": "LED", "th-vac": "Vac (V)", "theory-title": "Analisis", "theory-body": "Plot Vac lawan f. Kecerunan mewakili h/e.", "status-off": "LED: Padam", "status-on": "LED: MEMANCAR" }
         };
         const leds2 = [{ id: 0, name: 'Red', f: 4.54, vac: 1.88, color: '#ef4444' }, { id: 1, name: 'Orange', f: 4.96, vac: 2.05, color: '#f97316' }, { id: 2, name: 'Yellow', f: 5.13, vac: 2.12, color: '#eab308' }, { id: 3, name: 'Green', f: 5.36, vac: 2.22, color: '#22c55e' }, { id: 4, name: 'Blue', f: 6.38, vac: 2.64, color: '#3b82f6' }];
-        let selectedLED2 = leds2[0];
-        let loggedPoints2 = [];
-        
+        let selectedLED2 = leds2[0], loggedPoints2 = [];
         const ctx2 = document.getElementById('analysisChart2').getContext('2d');
         let chart2 = new Chart(ctx2, {
             type: 'scatter',
-            data: { datasets: [{ label: 'Data', data: [], pointRadius: 8, pointBackgroundColor: [] }, { label: 'Trend', data: [], type: 'line', borderColor: 'rgba(59, 130, 246, 0.5)', borderDash: [5,5], borderWidth: 2, pointRadius: 0, fill: false }] },
-            options: { 
-                responsive: true, maintainAspectRatio: false, 
-                scales: { 
-                    x: { type: 'linear', min: 4, max: 7, title: { display: true, text: 'f (10¹⁴ Hz)' } }, 
-                    y: { min: 0, max: 3, title: { display: true, text: 'V_ac (V)' } } 
-                }, 
-                plugins: { legend: { display: false } } 
-            }
+            data: { datasets: [{ label: 'Data', data: [], pointRadius: 8, pointBackgroundColor: [] }, { label: 'Trend', data: [], type: 'line', borderColor: 'rgba(59, 130, 246, 0.5)', borderDash: [5,5], pointRadius: 0, fill: false }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', min: 4, max: 7 }, y: { min: 0, max: 3 } }, plugins: { legend: { display: false } } }
         });
-
         const selector2 = document.getElementById('led-selector2');
         leds2.forEach(led => {
             const btn = document.createElement('button');
@@ -378,31 +340,26 @@
                 ledPhys.classList.add('active-led');
                 ledPhys.style.opacity = 0.5 + (Math.min((v - selectedLED2.vac) * 2, 1) * 0.5);
                 status.innerText = langData2[currentLang2]["status-on"];
-                status.className = "text-[10px] font-black px-3 py-1 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase tracking-tighter";
             } else {
                 ledPhys.classList.remove('active-led');
                 ledPhys.style.opacity = 0.3;
                 status.innerText = langData2[currentLang2]["status-off"];
-                status.className = "text-[10px] font-black px-3 py-1 rounded bg-slate-900 text-slate-600 border border-slate-800 uppercase tracking-tighter";
             }
         }
 
         function logPoint2() {
             const v = parseFloat(document.getElementById('volt-slider2').value);
             loggedPoints2.push({ x: selectedLED2.f, y: v, color: selectedLED2.color });
-            
             const tr = document.createElement('tr');
             tr.className = "border-b border-slate-800";
             tr.innerHTML = `<td class="py-2" style="color:${selectedLED2.color}">${selectedLED2.name}</td><td>${selectedLED2.f}</td><td class="font-bold">${v.toFixed(2)}</td>`;
             document.getElementById('log-body2').prepend(tr);
-            
             calculateRegression2();
         }
 
         function calculateRegression2() {
             chart2.data.datasets[0].data = loggedPoints2.map(p => ({ x: p.x, y: p.y }));
             chart2.data.datasets[0].pointBackgroundColor = loggedPoints2.map(p => p.color);
-            
             if (loggedPoints2.length >= 2) {
                 const n = loggedPoints2.length;
                 let sX = 0, sY = 0, sXY = 0, sX2 = 0;
@@ -415,6 +372,15 @@
                 document.getElementById('res-h2').innerText = h_val.toExponential(2);
             }
             chart2.update();
+        }
+
+        function resetLab2() {
+            loggedPoints2 = [];
+            document.getElementById('log-body2').innerHTML = "";
+            document.getElementById('res-gradient2').innerText = "0.0000";
+            document.getElementById('res-h2').innerText = "0.00";
+            chart2.data.datasets[1].data = [];
+            calculateRegression2();
         }
         
         selectLED2(0);
