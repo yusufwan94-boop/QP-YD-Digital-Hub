@@ -303,7 +303,7 @@
         let chart2 = new Chart(ctx2, {
             type: 'scatter',
             data: { datasets: [{ label: 'Data', data: [], pointRadius: 8, pointBackgroundColor: [] }, { label: 'Trend', data: [], type: 'line', borderColor: 'rgba(59, 130, 246, 0.5)', borderDash: [5,5], pointRadius: 0, fill: false }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', min: 4, max: 7 }, y: { min: 0, max: 3 } }, plugins: { legend: { display: false } } }
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', min: -1, max: 7 }, y: { min: -1, max: 5 } }, plugins: { legend: { display: false } } }
         });
         const selector2 = document.getElementById('led-selector2');
         leds2.forEach(led => {
@@ -366,7 +366,7 @@
                 loggedPoints2.forEach(p => { sX += p.x; sY += p.y; sXY += p.x * p.y; sX2 += p.x * p.x; });
                 const m = (n * sXY - sX * sY) / (n * sX2 - sX * sX);
                 const c = (sY - m * sX) / n;
-                chart2.data.datasets[1].data = [{ x: 4, y: m * 4 + c }, { x: 7, y: m * 7 + c }];
+                chart2.data.datasets[1].data = [{ x: -1, y: m * -1 + c }, { x: 7, y: m * 7 + c }];
                 const h_val = (m * E_CHARGE2) * 1e-14;
                 document.getElementById('res-gradient2').innerText = m.toFixed(4);
                 document.getElementById('res-h2').innerText = h_val.toExponential(2);
