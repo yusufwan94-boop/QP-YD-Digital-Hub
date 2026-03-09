@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datasheet_Project_Va_Derivation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
+        body { font-family: 'Space Grotesk', sans-serif; background: #020617; color: #e2e8f0; margin: 0; padding: 0; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.4); }
+        .input-cell { background: rgba(255,255,255,0.03); width: 100%; text-align: center; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); color: white; transition: all 0.2s; font-size: 13px; }
+        .input-cell:focus { border-color: #10b981; background: rgba(16, 185, 129, 0.1); outline: none; }
+        .header-input { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); font-weight: bold; color: #60a5fa; }
+        
+        @media print {
+            @page { size: A4; margin: 1cm; }
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .print-hide { display: none !important; }
+            main { display: block !important; } /* Force linear flow */
+            .lg\:col-span-7, .lg\:col-span-5 { width: 100% !important; margin-bottom: 2rem; }
+            .glass-panel { 
+                background: white !important; 
+                border: 1px solid #000 !important; 
+                color: black !important; 
+                break-inside: avoid; 
+                backdrop-filter: none !important;
+                margin-bottom: 15px;
+            }
+            .input-cell { border: 1px solid #ccc !important; color: black !important; background: transparent !important; }
+            .header-input { color: #2563eb !important; border: 1px solid #2563eb !important; }
+            h1, h2, h3, span, p { color: black !important; }
+            .text-emerald-500, .text-red-400, .text-blue-400 { color: black !important; border-color: black !important; }
+            canvas { max-height: 300px !important; width: 100% !important; }
+            header { border-bottom: 2px solid black !important; }
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <header class="max-w-7xl mx-auto mb-10 border-b border-slate-800 pb-6 flex flex-col md:flex-row justify-between items-end gap-4">
+        <div>
+            <span class="mono text-emerald-500 font-bold text-xs tracking-widest uppercase" data-en="7.5 TEXTBOOK EXPERIMENT" data-ms="EKSPERIMEN BUKU TEKS 7.5">7.5 TEXTBOOK EXPERIMENT</span>
+            <h1 class="text-4xl font-black tracking-tighter mt-1">PROJECT <span class="text-emerald-500">QP-YD</span></h1>
+            <p class="text-slate-500 text-xs mono mt-1" data-en="METHOD: ACTIVATION VOLTAGE INTERCEPT (Va)" data-ms="KAEDAH: PINTASAN VOLTAN PENGAKTIFAN (Va)">METHOD: ACTIVATION VOLTAGE INTERCEPT (Va)</p>
+        </div>
+        <div class="flex gap-3 print-hide">
+            <select id="langSwitch" onchange="toggleLanguage()" class="bg-slate-800 border border-slate-700 text-[10px] mono px-3 py-2 rounded text-emerald-400 font-bold outline-none cursor-pointer">
+                <option value="en">ENGLISH</option>
+                <option value="ms">B. MELAYU</option>
+            </select>
+            <button onclick="window.print()" class="px-6 py-2 bg-emerald-600 rounded text-[10px] mono font-bold hover:bg-emerald-500 transition shadow-lg shadow-emerald-500/20" data-en="PRINT DATASHEET" data-ms="CETAK DATASET">PRINT DATASHEET</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="lg:col-span-7 space-y-8">
+            <div id="led-sections-container">
+                <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-red-500 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-black mono text-red-400 uppercase" data-en="Red LED (623 nm)" data-ms="LED Merah (623 nm)">Red LED (623 nm)</h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] mono text-slate-500" data-en="DETERMINED Va:" data-ms="Va DITENTUKAN:">DETERMINED Va:</span>
+                            <input type="number" step="0.01" class="input-cell w-20 border-red-500/50" id="va-red" oninput="updatePlanckPlot()">
+                        </div>
+                    </div>
+                    <table class="w-full mono text-[11px]">
+                        <thead>
+                            <tr class="text-left border-b border-slate-800 text-slate-500">
+                                <th class="pb-2 w-24" data-en="Voltage V (V)" data-ms="Voltan V (V)">Voltage V (V)</th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V1" oninput="updateIVChart('red')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V2" oninput="updateIVChart('red')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V3" oninput="updateIVChart('red')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V4" oninput="updateIVChart('red')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V5" oninput="updateIVChart('red')"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-3 text-red-500 font-bold" data-en="Current I (mA)" data-ms="Arus I (mA)">Current I (mA)</td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-emerald-500 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-black mono text-emerald-400 uppercase" data-en="Green LED (567 nm)" data-ms="LED Hijau (567 nm)">Green LED (567 nm)</h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] mono text-slate-500" data-en="DETERMINED Va:" data-ms="Va DITENTUKAN:">DETERMINED Va:</span>
+                            <input type="number" step="0.01" class="input-cell w-20 border-emerald-500/50" id="va-green" oninput="updatePlanckPlot()">
+                        </div>
+                    </div>
+                    <table class="w-full mono text-[11px]">
+                        <thead>
+                            <tr class="text-left border-b border-slate-800 text-slate-500">
+                                <th class="pb-2 w-24" data-en="V (V)" data-ms="V (V)">V (V)</th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V1" oninput="updateIVChart('green')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V2" oninput="updateIVChart('green')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V3" oninput="updateIVChart('green')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V4" oninput="updateIVChart('green')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V5" oninput="updateIVChart('green')"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-3 text-emerald-500 font-bold" data-en="I (mA)" data-ms="I (mA)">I (mA)</td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-blue-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-black mono text-blue-400 uppercase" data-en="Blue LED (467 nm)" data-ms="LED Biru (467 nm)">Blue LED (467 nm)</h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] mono text-slate-500" data-en="DETERMINED Va:" data-ms="Va DITENTUKAN:">DETERMINED Va:</span>
+                            <input type="number" step="0.01" class="input-cell w-20 border-blue-500/50" id="va-blue" oninput="updatePlanckPlot()">
+                        </div>
+                    </div>
+                    <table class="w-full mono text-[11px]">
+                        <thead>
+                            <tr class="text-left border-b border-slate-800 text-slate-500">
+                                <th class="pb-2 w-24" data-en="V (V)" data-ms="V (V)">V (V)</th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V1" oninput="updateIVChart('blue')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V2" oninput="updateIVChart('blue')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V3" oninput="updateIVChart('blue')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V4" oninput="updateIVChart('blue')"></th>
+                                <th class="pb-2"><input type="number" step="0.01" class="input-cell header-input" placeholder="V5" oninput="updateIVChart('blue')"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-3 text-blue-500 font-bold" data-en="I (mA)" data-ms="I (mA)">I (mA)</td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                                <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-5 space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-slate-800 h-[350px]">
+                <h3 class="text-[10px] mono font-bold text-slate-500 uppercase mb-4 tracking-widest" data-en="I-V Characteristics Plot" data-ms="Plot Ciri I-V">I-V Characteristics Plot</h3>
+                <canvas id="ivChart"></canvas>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/5">
+                <h3 class="text-[10px] mono font-bold text-emerald-400 uppercase mb-4 tracking-widest text-center" data-en="Final Analysis: Vₐ vs 1/λ" data-ms="Analisis Akhir: Vₐ vs 1/λ">Final Analysis: Vₐ vs 1/λ</h3>
+                <div class="h-[250px] mb-6"><canvas id="planckPlot"></canvas></div>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+                        <span class="text-[9px] mono text-slate-500" data-en="Derived h=(gradient)e/c" data-ms="h Diterbitkan=(kecerunan)e/c">Derived h=(gradient)e/c</span>
+                        <div id="final-h" class="text-2xl font-black text-emerald-400">---</div>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+                        <span class="text-[9px] mono text-slate-500 uppercase" data-en="Percentage Error" data-ms="Peratus Ralat">Percentage Error</span>
+                        <div id="final-error" class="text-2xl font-black text-slate-300">0.0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let ivChart, planckPlot;
+        const h_ref = 6.626e-34, e_c = 1.602e-19, c_l = 2.998e8;
+
+        window.onload = () => {
+            initCharts();
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langSwitch').value;
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.innerText = el.getAttribute(`data-${lang}`);
+            });
+            const xLabel = lang === 'en' ? 'Data Point Index' : 'Indeks Titik Data';
+            const yLabel = lang === 'en' ? 'Current (mA)' : 'Arus (mA)';
+            ivChart.options.scales.x.title.text = xLabel;
+            ivChart.options.scales.y.title.text = yLabel;
+            ivChart.update();
+        }
+
+        function initCharts() {
+            ivChart = new Chart(document.getElementById('ivChart'), {
+                type: 'line',
+                data: {
+                    labels: [1, 2, 3, 4, 5],
+                    datasets: [
+                        { label: 'RED', borderColor: '#ef4444', data: Array(5).fill(null), tension: 0.3, pointRadius: 4 },
+                        { label: 'GREEN', borderColor: '#10b981', data: Array(5).fill(null), tension: 0.3, pointRadius: 4 },
+                        { label: 'BLUE', borderColor: '#3b82f6', data: Array(5).fill(null), tension: 0.3, pointRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, title: { display: true, text: 'Data Point Index', color: '#64748b' } },
+                        y: { grid: { color: '#1e293b' }, title: { display: true, text: 'Current (mA)', color: '#64748b' }, min: 0 }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            planckPlot = new Chart(document.getElementById('planckPlot'), {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Data Points',
+                        backgroundColor: '#10b981',
+                        data: [],
+                        pointRadius: 6
+                    }, {
+                        label: 'Best Fit',
+                        type: 'line',
+                        borderColor: 'rgba(255,255,255,0.2)',
+                        borderDash: [5, 5],
+                        data: [],
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false }, title: { display: true, text: '1/λ (10⁶ m⁻¹)', color: '#64748b' } },
+                        y: { grid: { color: '#1e293b' }, title: { display: true, text: 'Va (V)', color: '#64748b' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateIVChart(color) {
+            const sectionSelector = `.glass-panel.border-l-${color === 'red' ? 'red' : color === 'green' ? 'emerald' : 'blue'}-500`;
+            const vInputs = document.querySelectorAll(`${sectionSelector} thead input`);
+            const iInputs = document.querySelectorAll(`${sectionSelector} tbody input`);
+            const datasetIndex = color === 'red' ? 0 : color === 'green' ? 1 : 2;
+            let labels = [];
+            vInputs.forEach((input, i) => {
+                const vVal = input.value || (i + 1);
+                labels.push(vVal);
+                const iVal = parseFloat(iInputs[i].value);
+                ivChart.data.datasets[datasetIndex].data[i] = isNaN(iVal) ? null : iVal;
+            });
+            ivChart.data.labels = labels;
+            ivChart.update();
+        }
+
+        function updatePlanckPlot() {
+            const wavelengths = { red: 623e-9, green: 567e-9, blue: 467e-9 };
+            const vaPoints = [
+                { x: (1/wavelengths.red)/1e6, y: parseFloat(document.getElementById('va-red').value) },
+                { x: (1/wavelengths.green)/1e6, y: parseFloat(document.getElementById('va-green').value) },
+                { x: (1/wavelengths.blue)/1e6, y: parseFloat(document.getElementById('va-blue').value) }
+            ].filter(p => !isNaN(p.y));
+            planckPlot.data.datasets[0].data = vaPoints;
+            if (vaPoints.length >= 2) {
+                const n = vaPoints.length;
+                let sx = 0, sy = 0, sxy = 0, sxx = 0;
+                vaPoints.forEach(p => { sx += p.x; sy += p.y; sxy += p.x * p.y; sxx += p.x * p.x; });
+                const m = (n * sxy - sx * sy) / (n * sxx - sx * sx);
+                const b = (sy - m * sx) / n;
+                const minX = Math.min(...vaPoints.map(p => p.x)) * 0.9;
+                const maxX = Math.max(...vaPoints.map(p => p.x)) * 1.1;
+                planckPlot.data.datasets[1].data = [{x: minX, y: m*minX + b}, {x: maxX, y: m*maxX + b}];
+                const h_calc = ((m / 1e6) * e_c) / c_l;
+                document.getElementById('final-h').innerText = h_calc.toExponential(2);
+                document.getElementById('final-error').innerText = ((Math.abs(h_calc - h_ref)/h_ref)*100).toFixed(1) + "%";
+            }
+            planckPlot.update();
+        }
+    </script>
+</body>
+</html>
