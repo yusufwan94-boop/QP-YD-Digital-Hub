@@ -19,16 +19,16 @@
         .nav-btn { padding: 15px 25px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 0.75rem; transition: 0.3s; border-bottom: 3px solid transparent; }
         .nav-btn.active { color: #3b82f6; border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
         
-        .meter-box { background: #000; border: 2px solid #1e293b; border-radius: 12px; padding: 15px; text-align: center; }
-        .meter-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #22d3ee; }
-        .led-indicator { width: 50px; height: 50px; border-radius: 50% 50% 15% 15%; margin: 0 auto; transition: 0.2s; }
+        .meter-box { background: #000; border: 2px solid #1e293b; border-radius: 12px; padding: 10px; text-align: center; }
+        .meter-val { font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; color: #22d3ee; }
+        .led-indicator { width: 40px; height: 40px; border-radius: 50% 50% 15% 15%; margin: 0 auto; transition: 0.2s; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
         
-        input[type=range] { -webkit-appearance: none; width: 100%; background: #1e293b; height: 12px; border-radius: 10px; outline: none; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; background: #fbbf24; border-radius: 50%; cursor: pointer; border: 3px solid #000; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: #1e293b; height: 10px; border-radius: 10px; outline: none; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: #fbbf24; border-radius: 50%; cursor: pointer; border: 3px solid #000; }
         
-        .active-led { filter: drop-shadow(0 0 25px var(--glow-color)) brightness(1.5); }
+        .active-led { filter: drop-shadow(0 0 20px var(--glow-color)) brightness(1.5); }
     </style>
 </head>
 <body class="pb-10">
@@ -41,51 +41,41 @@
     <div id="lab1" class="tab-content active p-4 md:p-8">
         <div class="max-w-7xl mx-auto">
             <nav class="mb-6 flex justify-end">
-                <button onclick="toggleLang1()" class="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-black hover:bg-slate-700 transition-all uppercase tracking-widest">BM / EN</button>
+                <button onclick="toggleLang1()" class="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-black hover:bg-slate-700 uppercase tracking-widest">BM / EN</button>
             </nav>
-            
             <header class="mb-10">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                    <div>
-                        <h1 class="text-5xl md:text-6xl font-black tracking-tighter text-blue-500 uppercase leading-none"><span id="title1-p1">SATURATION</span> <br class="md:hidden"><span class="text-white" id="title1-p2">VOLTAGE</span></h1>
-                        <p class="text-slate-400 font-bold tracking-[0.2em] mt-3 text-sm" id="subtitle1">METHOD: Vo = (h/e)f - Φ/e</p>
-                    </div>
-                    <div class="bg-blue-600/10 border border-blue-500/30 p-5 rounded-2xl text-right">
-                        <span class="text-[10px] text-blue-400 font-black block uppercase mb-1" id="target-lbl1">Target Value</span>
-                        <span class="text-2xl md:text-3xl font-black mono text-blue-400">h ≈ 6.63 × 10⁻³⁴ Js</span>
-                    </div>
-                </div>
+                <h1 class="text-5xl font-black tracking-tighter text-blue-500 uppercase"><span id="title1-p1">SATURATION</span> <span class="text-white" id="title1-p2">VOLTAGE</span></h1>
+                <p class="text-slate-400 font-bold tracking-[0.2em] mt-2 text-sm" id="subtitle1">METHOD: Vo = (h/e)f - Φ/e</p>
             </header>
-
-            <div class="grid lg:grid-cols-12 gap-8">
+            <div class="grid lg:grid-cols-12 gap-6">
                 <div class="lg:col-span-4 space-y-6">
-                    <div class="glass p-8 rounded-[2rem] shadow-2xl border-l-4 border-blue-500">
-                        <div class="grid grid-cols-2 gap-4 mb-8">
-                            <div class="meter-box"><div class="meter-val" id="v-in-1">0.00</div><div class="text-[10px] text-slate-500 font-black uppercase mt-1" id="m1_1">Source Vin</div></div>
-                            <div class="meter-box"><div class="meter-val" id="v-out-1" style="color: #fbbf24;">0.00</div><div class="text-[10px] text-slate-500 font-black uppercase mt-1" id="m3_1">Solar Vo</div></div>
+                    <div class="glass p-6 rounded-[2rem] border-l-4 border-blue-500">
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="meter-box"><div class="meter-val" id="v-in-1">0.00</div><div class="text-[9px] text-slate-500 font-black uppercase mt-1" id="m1_1">Source Vin</div></div>
+                            <div class="meter-box"><div class="meter-val" id="v-out-1" style="color: #fbbf24;">0.00</div><div class="text-[9px] text-slate-500 font-black uppercase mt-1" id="m3_1">Solar Vo</div></div>
                         </div>
-                        <div class="h-44 bg-black/50 rounded-2xl border border-slate-800 mb-6 p-2"><canvas id="liveryChart1"></canvas></div>
-                        <div class="h-24 bg-black/80 rounded-2xl flex items-center justify-center border border-slate-800 mb-8"><div id="led-bulb-1" class="led-indicator" style="background: #111;"></div></div>
-                        <div class="grid grid-cols-2 gap-3 mb-8">
-                            <button class="py-4 rounded-xl bg-purple-600 font-black text-xs uppercase" onclick="selectLED1('UV', 395, '#a855f7')">UV</button>
-                            <button class="py-4 rounded-xl bg-blue-600 font-black text-xs uppercase" onclick="selectLED1('Blue', 465, '#3b82f6')">Blue</button>
-                            <button class="py-4 rounded-xl bg-green-600 font-black text-xs uppercase" onclick="selectLED1('Green', 525, '#22c55e')">Green</button>
-                            <button class="py-4 rounded-xl bg-red-600 font-black text-xs uppercase" onclick="selectLED1('Red', 660, '#ef4444')">Red</button>
+                        <div class="h-40 bg-black/50 rounded-2xl border border-slate-800 mb-6"><canvas id="liveryChart1"></canvas></div>
+                        <div class="h-20 bg-black/80 rounded-2xl flex items-center justify-center border border-slate-800 mb-6"><div id="led-bulb-1" class="led-indicator" style="background: #111;"></div></div>
+                        <div class="grid grid-cols-2 gap-2 mb-6">
+                            <button class="py-3 rounded-lg bg-purple-600 font-black text-[10px] uppercase" onclick="selectLED1('UV', 395, '#a855f7')">UV</button>
+                            <button class="py-3 rounded-lg bg-blue-600 font-black text-[10px] uppercase" onclick="selectLED1('Blue', 465, '#3b82f6')">Blue</button>
+                            <button class="py-3 rounded-lg bg-green-600 font-black text-[10px] uppercase" onclick="selectLED1('Green', 525, '#22c55e')">Green</button>
+                            <button class="py-3 rounded-lg bg-red-600 font-black text-[10px] uppercase" onclick="selectLED1('Red', 660, '#ef4444')">Red</button>
                         </div>
                         <div class="space-y-4">
                             <div class="flex justify-between font-black text-[10px] text-slate-500 uppercase px-1"><span id="adj-lbl-1">Adjust Brightness</span><span id="perc-1">0%</span></div>
                             <input type="range" id="pot1" min="0" max="1000" value="0" oninput="runPhysics1()">
                         </div>
-                        <div class="flex gap-2 mt-8">
-                            <button onclick="logData1()" id="logBtn1" class="flex-grow py-5 bg-emerald-600 rounded-2xl font-black uppercase tracking-widest hover:bg-emerald-500 transition-all">Capture Vo</button>
-                            <button onclick="resetLab1()" class="px-5 border-2 border-red-900/50 text-red-500 rounded-2xl hover:bg-red-900/20 transition-all font-black">✕</button>
+                        <div class="flex gap-2 mt-6">
+                            <button onclick="logData1()" id="logBtn1" class="flex-grow py-4 bg-emerald-600 rounded-xl font-black uppercase text-xs tracking-widest">Capture Vo</button>
+                            <button onclick="resetLab1()" class="px-4 border-2 border-red-900/50 text-red-500 rounded-xl font-black">✕</button>
                         </div>
                     </div>
                 </div>
                 <div class="lg:col-span-8 space-y-6">
-                    <div class="glass p-8 rounded-[2rem] shadow-2xl relative h-[500px]"><canvas id="planckChart1"></canvas></div>
-                    <div class="bg-slate-900/80 p-6 rounded-[2rem] border border-slate-800 border-l-4 border-amber-500">
-                        <strong id="conc-h1" class="text-amber-400 uppercase tracking-widest text-xs">Results / Keputusan:</strong>
+                    <div class="glass p-6 rounded-[2rem] h-[450px] relative"><canvas id="planckChart1"></canvas></div>
+                    <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 border-l-4 border-amber-500">
+                        <strong id="conc-h1" class="text-amber-400 uppercase tracking-widest text-[10px]">Results / Keputusan:</strong>
                         <p id="final-result1" class="mt-2 text-xl font-black mono text-emerald-400">Ready for data input...</p>
                     </div>
                 </div>
@@ -96,80 +86,53 @@
     <div id="lab2" class="tab-content p-4 md:p-8">
         <div class="max-w-7xl mx-auto">
             <nav class="mb-6 flex justify-end">
-                <button onclick="toggleLang2()" class="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-black hover:bg-slate-700 transition-all uppercase tracking-widest">BM / EN</button>
+                <button onclick="toggleLang2()" class="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-black hover:bg-slate-700 uppercase tracking-widest">BM / EN</button>
             </nav>
             <header class="mb-10">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                    <div>
-                        <h1 class="text-5xl md:text-6xl font-black tracking-tighter text-blue-500 uppercase leading-none"><span data-key="title-1">ACTIVATION</span> <br class="md:hidden"><span class="text-white" data-key="title-2">VOLTAGE</span></h1>
-                        <p class="text-slate-400 font-bold tracking-[0.2em] mt-3 text-sm" data-key="subtitle">METHOD: Vac = (h/e)f - Φ/e</p>
-                    </div>
-                    <div class="bg-blue-600/10 border border-blue-500/30 p-5 rounded-2xl text-right">
-                        <span class="text-[10px] text-blue-400 font-black block uppercase mb-1" data-key="target-lbl">Target Value</span>
-                        <span class="text-2xl md:text-3xl font-black mono text-blue-400">h ≈ 6.63 × 10⁻³⁴ Js</span>
-                    </div>
-                </div>
+                <h1 class="text-5xl font-black tracking-tighter text-blue-500 uppercase"><span data-key="title-1">ACTIVATION</span> <span class="text-white" data-key="title-2">VOLTAGE</span></h1>
+                <p class="text-slate-400 font-bold tracking-[0.2em] mt-2 text-sm" data-key="subtitle">METHOD: Vac = (h/e)f - Φ/e</p>
             </header>
-            <main class="grid lg:grid-cols-12 gap-8">
+            <div class="grid lg:grid-cols-12 gap-6">
                 <div class="lg:col-span-4 space-y-6">
-                    <div class="glass p-8 rounded-[2rem] space-y-8 shadow-2xl border-l-4 border-blue-500">
-                        <div>
-                            <h3 class="text-xs font-black text-slate-500 uppercase mb-4 tracking-[0.2em]" data-key="step-1">1. Select LED Source</h3>
-                            <div class="grid grid-cols-5 gap-3" id="led-selector2"></div>
+                    <div class="glass p-6 rounded-[2rem] border-l-4 border-blue-500">
+                        <div class="mb-4">
+                            <h3 class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest" data-key="step-1">1. Select LED Source</h3>
+                            <div class="grid grid-cols-5 gap-2" id="led-selector2"></div>
                         </div>
-                        <div class="bg-black/40 h-48 rounded-2xl relative overflow-hidden flex flex-col items-center justify-center border border-slate-700">
-                            <div id="led-physical2" class="w-12 h-16 rounded-t-full rounded-b-lg border-2 border-slate-700 bg-slate-800/50 relative mb-4" style="--glow-color: transparent">
-                                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-6 h-4 bg-slate-600 rounded"></div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-black/40 h-36 rounded-xl relative overflow-hidden flex flex-col items-center justify-center border border-slate-700">
+                                <div id="led-physical2" class="w-10 h-14 rounded-t-full rounded-b-lg border-2 border-slate-700 bg-slate-800/50 relative mb-2" style="--glow-color: transparent"></div>
+                                <div id="glow-status2" class="text-[8px] font-black px-2 py-1 rounded bg-slate-900 text-slate-600 border border-slate-800 uppercase" data-key="status-off">LED: Off</div>
                             </div>
-                            <div id="glow-status2" class="text-[10px] font-black px-3 py-1 rounded bg-slate-900 text-slate-600 border border-slate-800 uppercase tracking-tighter" data-key="status-off">LED Status: Off</div>
+                            <div class="bg-black/60 h-36 rounded-xl border border-slate-800 p-1">
+                                <canvas id="liveTraceChart2"></canvas>
+                            </div>
                         </div>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-end">
-                                <h3 class="text-xs font-black text-slate-500 uppercase tracking-[0.2em]" data-key="step-2">2. Find Threshold</h3>
-                                <span id="volt-display2" class="text-3xl font-black mono text-blue-400">0.00V</span>
-                            </div>
-                            <input type="range" id="volt-slider2" min="0" max="4" step="0.01" value="0" class="w-full h-3">
+
+                        <div class="space-y-4 mb-6">
+                            <div class="flex justify-between items-end"><h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest" data-key="step-2">2. Find Threshold</h3><span id="volt-display2" class="text-2xl font-black mono text-blue-400">0.00V</span></div>
+                            <input type="range" id="volt-slider2" min="0" max="4" step="0.01" value="0" oninput="runPhysics2()">
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="logPoint2()" class="flex-grow bg-white text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-400 transition-all transform active:scale-95" data-key="btn-log">Log Point</button>
-                            <button onclick="resetLab2()" class="px-5 border-2 border-red-900/50 text-red-500 rounded-2xl hover:bg-red-900/20 transition-all font-black">✕</button>
+                            <button onclick="logPoint2()" class="flex-grow bg-white text-black py-4 rounded-xl font-black uppercase text-xs tracking-widest" data-key="btn-log">Log Point</button>
+                            <button onclick="resetLab2()" class="px-4 border-2 border-red-900/50 text-red-500 rounded-xl font-black">✕</button>
                         </div>
                     </div>
-                    <div class="glass p-6 rounded-[2rem] border-l-4 border-l-emerald-500">
-                        <h3 class="text-xs font-black text-slate-400 uppercase mb-4" data-key="const-title">Constants</h3>
-                        <div class="space-y-4">
-                            <div><p class="text-[10px] text-slate-500 uppercase font-bold" data-key="lbl-grad">Gradient (h/e)</p><p id="res-gradient2" class="text-xl font-black mono">0.0000</p></div>
-                            <div><p class="text-[10px] text-slate-500 uppercase font-bold" data-key="lbl-h">Experimental h (Js)</p><p id="res-h2" class="text-2xl font-black mono text-emerald-400">0.00</p></div>
+                    <div class="glass p-5 rounded-2xl border-l-4 border-l-emerald-500">
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase mb-3" data-key="const-title">Constants</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><p class="text-[9px] text-slate-500 uppercase font-bold" data-key="lbl-grad">Grad (h/e)</p><p id="res-gradient2" class="text-lg font-black mono">0.0000</p></div>
+                            <div><p class="text-[9px] text-slate-500 uppercase font-bold" data-key="lbl-h">h (Js)</p><p id="res-h2" class="text-lg font-black mono text-emerald-400">0.00</p></div>
                         </div>
                     </div>
                 </div>
                 <div class="lg:col-span-8 space-y-6">
-                    <div class="glass p-8 rounded-[2rem] h-[500px] shadow-2xl relative"><canvas id="analysisChart2"></canvas></div>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="glass p-6 rounded-[2rem]">
-                            <h3 class="text-xs font-black text-slate-500 uppercase mb-4 tracking-widest" data-key="log-title">Observation Log</h3>
-                            <div class="max-h-48 overflow-y-auto pr-2">
-                                <table class="w-full text-left text-[11px] mono">
-                                    <thead class="text-slate-600 sticky top-0 bg-[#020617]/50 backdrop-blur-md">
-                                        <tr><th class="pb-2" data-key="th-led">LED</th><th class="pb-2">f (10¹⁴)</th><th class="pb-2" data-key="th-vac">Vac (V)</th></tr>
-                                    </thead>
-                                    <tbody id="log-body2"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="glass p-6 rounded-[2rem] flex flex-col justify-center bg-blue-500/5 border-blue-500/10">
-                            <h3 class="text-xs font-black text-blue-400 uppercase mb-2" data-key="theory-title">Analysis</h3>
-                            <p class="text-[11px] text-slate-400 leading-relaxed italic" data-key="theory-body">By plotting Activation Voltage against Frequency, the gradient reflects h/e.</p>
-                        </div>
-                    </div>
+                    <div class="glass p-6 rounded-[2rem] h-[550px] relative"><canvas id="analysisChart2"></canvas></div>
                 </div>
-            </main>
+            </div>
         </div>
     </div>
-
-    <footer class="text-center py-12 text-slate-600 text-[10px] font-bold tracking-widest uppercase">
-        &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
-    </footer>
 
     <script>
         function showLab(num) {
@@ -179,11 +142,10 @@
             document.getElementById('btn-nav-' + num).classList.add('active');
         }
 
-        // Shared Chart Defaults
         Chart.defaults.color = '#94a3b8';
         Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
 
-        // --- LAB 1 LOGIC ---
+        // --- LAB 1: SATURATION LOGIC ---
         let currentLang1 = 'en';
         const dict1 = {
             en: { t1: "SATURATION", t2: "VOLTAGE", sub: "METHOD: Vo = (h/e)f - Φ/e", target: "Target Value", m1: "Source Vin", m3: "Solar Vo", log: "Capture Vo", adj: "Adjust Brightness", h: "Result: h =", ready: "Ready for data input..." },
@@ -196,9 +158,6 @@
             document.getElementById('title1-p1').innerText = d.t1;
             document.getElementById('title1-p2').innerText = d.t2;
             document.getElementById('subtitle1').innerText = d.sub;
-            document.getElementById('target-lbl1').innerText = d.target;
-            document.getElementById('m1_1').innerText = d.m1;
-            document.getElementById('m3_1').innerText = d.m3;
             document.getElementById('logBtn1').innerText = d.log;
             document.getElementById('adj-lbl-1').innerText = d.adj;
             updateAnalysis1();
@@ -206,12 +165,12 @@
 
         let activeLED1 = { name: 'None', wave: 0, color: '#111' };
         let points1 = [];
-        let liveryData1 = [];
+        const ledDatasets1 = { 'UV': { color: '#a855f7', data: [] }, 'Blue': { color: '#3b82f6', data: [] }, 'Green': { color: '#22c55e', data: [] }, 'Red': { color: '#ef4444', data: [] } };
 
         const liveryCtx1 = document.getElementById('liveryChart1').getContext('2d');
         const liveryChart1 = new Chart(liveryCtx1, {
             type: 'line',
-            data: { datasets: [{ data: [], borderColor: '#fbbf24', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.4 }] },
+            data: { datasets: Object.keys(ledDatasets1).map(key => ({ label: key, data: [], borderColor: ledDatasets1[key].color, borderWidth: 2, pointRadius: 0, fill: false, tension: 0.4 }))},
             options: { responsive: true, maintainAspectRatio: false, animation: false, scales: { x: { type: 'linear', min: 0, max: 1 }, y: { type: 'linear', min: 0, max: 3 } }, plugins: { legend: { display: false } } }
         });
 
@@ -219,17 +178,10 @@
         const planckChart1 = new Chart(planckCtx1, {
             type: 'scatter',
             data: { datasets: [{ label: 'Data', data: [], pointRadius: 10, pointBackgroundColor: [] }, { label: 'Fit', data: [], type: 'line', borderColor: '#3b82f6', borderDash: [5, 5], pointRadius: 0 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', min: 0, max: 10, title: { display: true, text: 'Frequency (10¹⁴ Hz)' } }, y: { type: 'linear', min: -1.5, max: 3, title: { display: true, text: 'Saturation Voltage Vo (V)' } } }, plugins: { legend: { display: false } } }
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', min: 0, max: 10 }, y: { type: 'linear', min: -1.5, max: 3 } }, plugins: { legend: { display: false } } }
         });
 
-        function selectLED1(name, wave, color) {
-            activeLED1 = { name, wave, color };
-            document.getElementById('pot1').value = 0;
-            liveryData1 = [];
-            liveryChart1.data.datasets[0].borderColor = color;
-            liveryChart1.update();
-            runPhysics1();
-        }
+        function selectLED1(name, wave, color) { activeLED1 = { name, wave, color }; document.getElementById('pot1').value = 0; runPhysics1(); }
 
         function runPhysics1() {
             if (activeLED1.name === 'None') return;
@@ -243,9 +195,9 @@
             const bulb = document.getElementById('led-bulb-1');
             bulb.style.background = val > 0.01 ? activeLED1.color : '#111';
             bulb.style.boxShadow = val > 0.01 ? `0 0 ${val * 70}px ${activeLED1.color}` : 'none';
-            liveryData1.push({ x: val, y: vo });
-            liveryData1.sort((a,b) => a.x - b.x);
-            liveryChart1.data.datasets[0].data = liveryData1;
+            const dsIndex = Object.keys(ledDatasets1).indexOf(activeLED1.name);
+            liveryChart1.data.datasets[dsIndex].data.push({ x: val, y: vo });
+            liveryChart1.data.datasets[dsIndex].data.sort((a,b) => a.x - b.x);
             liveryChart1.update('none');
         }
 
@@ -271,17 +223,15 @@
                 planckChart1.data.datasets[1].data = [{ x: 0, y: c }, { x: 10, y: m * 10 + c }];
                 let h = (m * 1.602e-33);
                 document.getElementById('final-result1').innerHTML = `${dict1[currentLang1].h} <b>${h.toExponential(2)}</b> J·s`;
-            } else {
-                document.getElementById('final-result1').innerText = dict1[currentLang1].ready;
-            }
+            } else { document.getElementById('final-result1').innerText = dict1[currentLang1].ready; }
             planckChart1.update();
         }
 
         function resetLab1() {
             points1 = [];
-            liveryData1 = [];
+            liveryChart1.data.datasets.forEach(ds => ds.data = []);
+            liveryChart1.update();
             planckChart1.data.datasets[1].data = [];
-            liveryChart1.data.datasets[0].data = [];
             document.getElementById('v-in-1').innerText = "0.00";
             document.getElementById('v-out-1').innerText = "0.00";
             document.getElementById('perc-1').innerText = "0%";
@@ -290,100 +240,155 @@
             updateAnalysis1();
         }
 
-        // --- LAB 2 LOGIC ---
+        // --- LAB 2: ACTIVATION LOGIC (WITH I-V KNEE CHARACTERISTICS) ---
         const E_CHARGE2 = 1.602e-19;
         let currentLang2 = 'en';
         const langData2 = {
-            en: { "title-1": "ACTIVATION", "title-2": "VOLTAGE", "subtitle": "METHOD: Vac = (h/e)f - Φ/e", "target-lbl": "Target Value", "step-1": "1. Select LED", "step-2": "2. Find Threshold", "btn-log": "Log Point", "const-title": "Constants", "lbl-grad": "Gradient (h/e)", "lbl-h": "Experimental h (Js)", "log-title": "Observation Log", "th-led": "LED", "th-vac": "Vac (V)", "theory-title": "Analysis", "theory-body": "Plot Vac vs f. The gradient reflects h/e.", "status-off": "LED: Off", "status-on": "LED: EMITTING" },
-            bm: { "title-1": "VOLTAN", "title-2": "PENGAKTIFAN", "subtitle": "KAEDAH: Vac = (h/e)f - Φ/e", "target-lbl": "Nilai Sasaran", "step-1": "1. Pilih LED", "step-2": "2. Cari Ambang", "btn-log": "Log Titik", "const-title": "Pemalar", "lbl-grad": "Kecerunan (h/e)", "lbl-h": "h Eksperimen (Js)", "log-title": "Log Pemerhatian", "th-led": "LED", "th-vac": "Vac (V)", "theory-title": "Analisis", "theory-body": "Plot Vac lawan f. Kecerunan mewakili h/e.", "status-off": "LED: Padam", "status-on": "LED: MEMANCAR" }
+            en: { "title-1": "ACTIVATION", "title-2": "VOLTAGE", "subtitle": "METHOD: Vac = (h/e)f - Φ/e", "step-1": "1. Select LED", "step-2": "2. Find Threshold", "btn-log": "Log Point", "const-title": "Constants", "lbl-grad": "Grad (h/e)", "lbl-h": "h (Js)", "status-off": "LED: Off", "status-on": "LED: EMITTING" },
+            bm: { "title-1": "VOLTAN", "title-2": "PENGAKTIFAN", "subtitle": "KAEDAH: Vac = (h/e)f - Φ/e", "step-1": "1. Pilih LED", "step-2": "2. Cari Ambang", "btn-log": "Log Titik", "const-title": "Pemalar", "lbl-grad": "Kecerunan (h/e)", "lbl-h": "h (Js)", "status-off": "LED: Padam", "status-on": "LED: MEMANCAR" }
         };
-        const leds2 = [{ id: 0, name: 'Red', f: 4.54, vac: 1.88, color: '#ef4444' }, { id: 1, name: 'Orange', f: 4.96, vac: 2.05, color: '#f97316' }, { id: 2, name: 'Yellow', f: 5.13, vac: 2.12, color: '#eab308' }, { id: 3, name: 'Green', f: 5.36, vac: 2.22, color: '#22c55e' }, { id: 4, name: 'Blue', f: 6.38, vac: 2.64, color: '#3b82f6' }];
+
+        const leds2 = [
+            { id: 0, name: 'Red', f: 4.54, vac: 1.88, color: '#ef4444' },
+            { id: 1, name: 'Orange', f: 4.96, vac: 2.05, color: '#f97316' },
+            { id: 2, name: 'Yellow', f: 5.13, vac: 2.12, color: '#eab308' },
+            { id: 3, name: 'Green', f: 5.36, vac: 2.22, color: '#22c55e' },
+            { id: 4, name: 'Blue', f: 6.38, vac: 2.64, color: '#3b82f6' }
+        ];
+        
         let selectedLED2 = leds2[0], loggedPoints2 = [];
+
+        function initLab2() {
+            const container = document.getElementById('led-selector2');
+            leds2.forEach(led => {
+                const btn = document.createElement('button');
+                btn.className = `h-10 rounded-lg border-2 transition-all flex items-center justify-center`;
+                btn.style.borderColor = led.color;
+                btn.innerHTML = `<div class="w-3 h-3 rounded-full" style="background:${led.color}"></div>`;
+                btn.onclick = () => {
+                    selectedLED2 = led;
+                    document.getElementById('volt-slider2').value = 0;
+                    runPhysics2();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        const liveTraceCtx2 = document.getElementById('liveTraceChart2').getContext('2d');
+        const liveTraceChart2 = new Chart(liveTraceCtx2, {
+            type: 'line',
+            data: { datasets: leds2.map(l => ({ 
+                label: l.name, 
+                data: [], 
+                borderColor: l.color, 
+                borderWidth: 2, 
+                pointRadius: 0,
+                fill: false,
+                tension: 0.3
+            }))},
+            options: {
+                responsive: true, maintainAspectRatio: false, animation: false,
+                scales: { 
+                    x: { type: 'linear', min: 0, max: 4, title: { display: true, text: 'Vf', font: { size: 8 } } }, 
+                    y: { type: 'linear', min: 0, max: 50, title: { display: true, text: 'I (mA)', font: { size: 8 } }, ticks: { font: { size: 7 } } } 
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
         const ctx2 = document.getElementById('analysisChart2').getContext('2d');
         let chart2 = new Chart(ctx2, {
             type: 'scatter',
-            data: { datasets: [{ label: 'Data', data: [], pointRadius: 8, pointBackgroundColor: [] }, { label: 'Trend', data: [], type: 'line', borderColor: 'rgba(59, 130, 246, 0.5)', borderDash: [5,5], pointRadius: 0, fill: false }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', min: -1, max: 7 }, y: { min: -1, max: 5 } }, plugins: { legend: { display: false } } }
+            data: { datasets: [
+                { label: 'Logged', data: [], pointRadius: 10, pointBackgroundColor: [] }, 
+                { label: 'Linear Law', data: [], type: 'line', borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0, borderDash: [5,5] }
+            ]},
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                scales: { 
+                    x: { type: 'linear', min: 0, max: 7, title: { display: true, text: 'Frequency (10¹⁴ Hz)', color: '#94a3b8' } }, 
+                    y: { type: 'linear', min: -1, max: 4, title: { display: true, text: 'Voltage (V)', color: '#94a3b8' } } 
+                },
+                plugins: { legend: { display: false } }
+            }
         });
-        const selector2 = document.getElementById('led-selector2');
-        leds2.forEach(led => {
-            const btn = document.createElement('button');
-            btn.className = `h-10 rounded-lg border-2 border-slate-800 transition-all`;
-            btn.style.backgroundColor = `${led.color}22`;
-            btn.onclick = () => selectLED2(led.id);
-            btn.id = `btn2-${led.id}`;
-            selector2.appendChild(btn);
-        });
 
-        function toggleLang2() {
-            currentLang2 = currentLang2 === 'en' ? 'bm' : 'en';
-            document.querySelectorAll('#lab2 [data-key]').forEach(el => { el.innerText = langData2[currentLang2][el.getAttribute('data-key')]; });
-            updateUI2();
-        }
+        function runPhysics2() {
+            const vInput = parseFloat(document.getElementById('volt-slider2').value);
+            document.getElementById('volt-display2').innerText = vInput.toFixed(2) + 'V';
+            
+            // Generate I-V Curve "Knee" like the provided image
+            const idx = selectedLED2.id;
+            const curveData = [];
+            for (let v = 0; v <= vInput; v += 0.05) {
+                // Diode equation approximation: I = Is * (exp(V/Vt) - 1)
+                // Shifted based on specific LED Vac
+                let current = v > (selectedLED2.vac - 0.3) ? 2 * Math.exp((v - selectedLED2.vac + 0.3) * 5) : 0;
+                curveData.push({x: v, y: Math.min(current, 50)});
+            }
 
-        function selectLED2(id) {
-            selectedLED2 = leds2[id];
-            leds2.forEach(l => document.getElementById(`btn2-${l.id}`).style.borderColor = '#1e293b');
-            document.getElementById(`btn2-${id}`).style.borderColor = selectedLED2.color;
-            updateUI2();
-        }
+            liveTraceChart2.data.datasets.forEach((ds, i) => {
+                ds.data = (i === idx) ? curveData : ds.data;
+            });
+            liveTraceChart2.update('none');
 
-        document.getElementById('volt-slider2').oninput = updateUI2;
-
-        function updateUI2() {
-            const v = parseFloat(document.getElementById('volt-slider2').value);
-            document.getElementById('volt-display2').innerText = v.toFixed(2) + "V";
-            const ledPhys = document.getElementById('led-physical2');
+            const physical = document.getElementById('led-physical2');
             const status = document.getElementById('glow-status2');
-            ledPhys.style.setProperty('--glow-color', selectedLED2.color);
-            if (v >= selectedLED2.vac) {
-                ledPhys.classList.add('active-led');
-                ledPhys.style.opacity = 0.5 + (Math.min((v - selectedLED2.vac) * 2, 1) * 0.5);
+            if (vInput >= selectedLED2.vac) {
+                physical.style.background = selectedLED2.color;
+                physical.style.boxShadow = `0 0 30px ${selectedLED2.color}`;
                 status.innerText = langData2[currentLang2]["status-on"];
+                status.classList.replace('text-slate-600', 'text-emerald-400');
             } else {
-                ledPhys.classList.remove('active-led');
-                ledPhys.style.opacity = 0.3;
+                physical.style.background = '#1e293b';
+                physical.style.boxShadow = 'none';
                 status.innerText = langData2[currentLang2]["status-off"];
+                status.classList.replace('text-emerald-400', 'text-slate-600');
             }
         }
 
         function logPoint2() {
             const v = parseFloat(document.getElementById('volt-slider2').value);
-            loggedPoints2.push({ x: selectedLED2.f, y: v, color: selectedLED2.color });
-            const tr = document.createElement('tr');
-            tr.className = "border-b border-slate-800";
-            tr.innerHTML = `<td class="py-2" style="color:${selectedLED2.color}">${selectedLED2.name}</td><td>${selectedLED2.f}</td><td class="font-bold">${v.toFixed(2)}</td>`;
-            document.getElementById('log-body2').prepend(tr);
-            calculateRegression2();
+            if (v < 0.5) return;
+            loggedPoints2 = loggedPoints2.filter(p => p.id !== selectedLED2.id);
+            loggedPoints2.push({ x: selectedLED2.f, y: v, id: selectedLED2.id, color: selectedLED2.color });
+            updateAnalysis2();
         }
 
-        function calculateRegression2() {
-            chart2.data.datasets[0].data = loggedPoints2.map(p => ({ x: p.x, y: p.y }));
+        function updateAnalysis2() {
+            chart2.data.datasets[0].data = loggedPoints2;
             chart2.data.datasets[0].pointBackgroundColor = loggedPoints2.map(p => p.color);
+            
             if (loggedPoints2.length >= 2) {
                 const n = loggedPoints2.length;
-                let sX = 0, sY = 0, sXY = 0, sX2 = 0;
-                loggedPoints2.forEach(p => { sX += p.x; sY += p.y; sXY += p.x * p.y; sX2 += p.x * p.x; });
-                const m = (n * sXY - sX * sY) / (n * sX2 - sX * sX);
-                const c = (sY - m * sX) / n;
-                chart2.data.datasets[1].data = [{ x: -1, y: m * -1 + c }, { x: 7, y: m * 7 + c }];
-                const h_val = (m * E_CHARGE2) * 1e-14;
+                let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+                loggedPoints2.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumX2 += p.x * p.x; });
+                const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                const c = (sumY - m * sumX) / n;
+                
+                chart2.data.datasets[1].data = [{ x: 0, y: c }, { x: 7, y: m * 7 + c }];
                 document.getElementById('res-gradient2').innerText = m.toFixed(4);
-                document.getElementById('res-h2').innerText = h_val.toExponential(2);
+                document.getElementById('res-h2').innerText = (m * 1.602e-33).toExponential(2);
             }
             chart2.update();
         }
 
         function resetLab2() {
             loggedPoints2 = [];
-            document.getElementById('log-body2').innerHTML = "";
-            document.getElementById('res-gradient2').innerText = "0.0000";
-            document.getElementById('res-h2').innerText = "0.00";
-            chart2.data.datasets[1].data = [];
-            calculateRegression2();
+            liveTraceChart2.data.datasets.forEach(d => d.data = []);
+            liveTraceChart2.update();
+            updateAnalysis2();
+            runPhysics2();
         }
-        
-        selectLED2(0);
+
+        function toggleLang2() {
+            currentLang2 = currentLang2 === 'en' ? 'bm' : 'en';
+            document.querySelectorAll('[data-key]').forEach(el => {
+                el.innerText = langData2[currentLang2][el.getAttribute('data-key')];
+            });
+        }
+
+        window.onload = () => { initLab2(); runPhysics2(); };
     </script>
 </body>
 </html>
