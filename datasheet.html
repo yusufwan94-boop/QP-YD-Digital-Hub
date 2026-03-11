@@ -77,9 +77,9 @@
                         <table class="w-full mono text-[10px]">
                             <thead><tr class="text-left border-b border-slate-800"><th id="th-src">Src</th><th id="th-wave">λ</th><th id="th-vo">Vo</th></tr></thead>
                             <tbody>
-                                <tr><td id="led-red" class="font-bold text-red-500">RED</td><td><input type="number" class="p-lambda data-input" value="650.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
-                                <tr><td id="led-grn" class="font-bold text-emerald-500">GRN</td><td><input type="number" class="p-lambda data-input" value="530.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
-                                <tr><td id="led-blu" class="font-bold text-blue-500">BLU</td><td><input type="number" class="p-lambda data-input" value="460.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                                <tr><td id="led-red" class="font-bold text-red-500">RED</td><td><input type="number" class="p-lambda data-input" value="620.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                                <tr><td id="led-grn" class="font-bold text-emerald-500">GRN</td><td><input type="number" class="p-lambda data-input" value="520.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                                <tr><td id="led-blu" class="font-bold text-blue-500">BLU</td><td><input type="number" class="p-lambda data-input" value="465.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -215,12 +215,16 @@
             const vOuts = document.querySelectorAll('.v-out');
             let data = []; let maxVo = 0;
             vIns.forEach((input, i) => {
-                const vin = parseFloat(input.value); const vout = parseFloat(vOuts[i].value);
+                const vin = parseFloat(input.value); 
+                const rawVout = parseFloat(vOuts[i].value);
+                // Auto-divide by 10
+                const vout = !isNaN(rawVout) ? rawVout / 10 : NaN;
+                
                 if (!isNaN(vin) && !isNaN(vout)) { data.push({ x: vin, y: vout }); if (vout > maxVo) maxVo = vout; }
             });
             data.sort((a, b) => a.x - b.x);
             satChart.data.datasets[0].data = data;
-            document.getElementById('sat-label').innerText = `SAT: ${maxVo.toFixed(2)} V`;
+            document.getElementById('sat-label').innerText = `SAT: ${maxVo.toFixed(3)} V`;
             if (data.length > 0) {
                 const minX = data[0].x; const maxX = data[data.length - 1].x;
                 satChart.data.datasets[1].data = [{x: minX, y: maxVo}, {x: maxX, y: maxVo}];
@@ -233,7 +237,11 @@
             const vss = document.querySelectorAll('.p-vs');
             let pts = [];
             vss.forEach((v, i) => {
-                const vs = parseFloat(v.value); const l_val = parseFloat(lambdas[i].value);
+                const rawVs = parseFloat(v.value);
+                // Auto-divide by 10
+                const vs = !isNaN(rawVs) ? rawVs / 10 : NaN;
+                const l_val = parseFloat(lambdas[i].value);
+                
                 if(!isNaN(vs)) {
                     const f = (c_l / (l_val * 1e-9)) / 1e14;
                     pts.push({ x: f, y: vs });
@@ -260,9 +268,7 @@
         }
     </script>
 </body>
-    <footer>
+    <footer class="text-center p-8 text-slate-600 text-[10px] mono">
         &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
     </footer>
 </html>
-
-
