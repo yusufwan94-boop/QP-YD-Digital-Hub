@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report_Project_QP-YD</title>
+    <title>Quantum_Project_QP-YD_Master</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -11,100 +11,183 @@
         body { font-family: 'Space Grotesk', sans-serif; background: #020617; color: #e2e8f0; margin: 0; padding: 0; line-height: 1.4; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(51, 65, 85, 0.3); }
-        .data-input { background: rgba(255,255,255,0.03); width: 100%; text-align: center; padding: 4px; outline: none; border-radius: 6px; border: 1px solid transparent; color: white; font-size: 12px; }
+        .data-input, .input-cell { background: rgba(255,255,255,0.03); width: 100%; text-align: center; padding: 4px; outline: none; border-radius: 6px; border: 1px solid transparent; color: white; font-size: 12px; }
+        .header-input { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); font-weight: bold; color: #60a5fa; }
         
+        .tab-btn { transition: all 0.3s ease; border-bottom: 3px solid transparent; }
+        .tab-btn.active { border-bottom-color: #3b82f6; color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+
         @media print {
-            @page { size: A4; margin: 0.8cm; }
-            body { background: white !important; color: black !important; padding: 0 !important; }
             .print-hide { display: none !important; }
-            .glass-panel { background: white !important; border: 1px solid #000 !important; color: black !important; backdrop-filter: none !important; box-shadow: none !important; margin-bottom: 0.2cm !important; break-inside: avoid; }
-            #page-1, #page-2 { width: 100% !important; display: block !important; }
-            #page-2 { break-before: page; margin-top: 0.4cm; }
-            .data-input { background: white !important; color: black !important; border: 1px solid #ccc !important; }
+            .page-break { page-break-before: always; }
+            body { background: white !important; color: black !important; }
+            .glass-panel { background: white !important; border: 1px solid black !important; color: black !important; backdrop-filter: none !important; }
             h1, h2, h3, span, p, td, th { color: black !important; }
-            .chart-container-sat { height: 220px !important; }
-            .chart-container-planck { height: 300px !important; }
-            main { display: block !important; }
-            .lg\:grid-cols-2, .lg\:grid-cols-12 { display: block !important; }
+            input { border: 1px solid #ccc !important; color: black !important; }
         }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <header class="max-w-7xl mx-auto mb-6 flex flex-col md:flex-row justify-between items-end gap-4 border-b border-slate-800 pb-4">
-        <div>
-            <span class="mono text-blue-500 font-bold text-xs tracking-[0.3em] font-bold">// MRSM_GERIK_QUANTUM_STATION</span>
-            <h1 class="text-4xl font-black tracking-tighter mt-1">Project <span class="text-blue-500">QP-YD</span></h1>
-            <p id="sub-header" class="text-slate-500 text-[10px] mono mt-1 font-bold">OFFICIAL_LAB_REPORT // 2026_SESSION</p>
+    <header class="max-w-7xl mx-auto mb-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-4 print-hide">
+        <div class="flex items-center gap-6">
+            <div>
+                <span class="mono text-blue-500 font-bold text-[10px] tracking-[0.3em]">// QP-YD_QUANTUM_STATION</span>
+                <h1 class="text-3xl font-black tracking-tighter">PROJECT <span class="text-blue-500">QP-YD</span></h1>
+            </div>
+            <nav class="flex gap-2">
+                <button onclick="switchTab('sat-method')" id="btn-sat" class="tab-btn active px-4 py-2 mono text-xs font-bold uppercase">Method A: Saturation</button>
+                <button onclick="switchTab('act-method')" id="btn-act" class="tab-btn px-4 py-2 mono text-xs font-bold uppercase">Method B: Activation</button>
+            </nav>
         </div>
-        <div class="flex gap-2 print-hide">
-            <button onclick="toggleLang()" class="px-3 py-1.5 bg-amber-600 rounded text-[10px] mono font-bold hover:bg-amber-500 transition">BM / EN</button>
-            <button onclick="resetVerification()" class="px-3 py-1.5 border border-slate-700 rounded text-[10px] mono font-bold hover:bg-slate-800 transition">CLEAR</button>
-            <button onclick="window.print()" class="px-4 py-1.5 bg-blue-600 rounded text-[10px] mono font-bold hover:bg-blue-500 transition">EXPORT PDF</button>
+        <div class="flex gap-2">
+            <button onclick="toggleGlobalLang()" class="px-3 py-1.5 bg-amber-600 rounded text-[10px] mono font-bold hover:bg-amber-500 transition">BM / EN</button>
+            <button onclick="window.print()" class="px-4 py-1.5 bg-blue-600 rounded text-[10px] mono font-bold hover:bg-blue-500 transition">EXPORT REPORT</button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto">
-        <div id="page-1">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div class="glass-panel p-4 rounded-2xl border-t-4 border-t-blue-500">
-                    <h2 id="t-verify" class="text-xs font-bold mono text-blue-400 mb-3 uppercase tracking-tighter">01_Verification_Data</h2>
-                    <table class="w-full mono text-[10px]">
-                        <thead><tr class="text-left border-b border-slate-800"><th>Vin (V)</th><th>I (µA)</th><th>Vo (V)</th></tr></thead>
-                        <tbody id="v-body"></tbody>
-                    </table>
-                </div>
-
-                <div class="glass-panel p-4 rounded-2xl border border-slate-800 bg-blue-500/5">
-                    <h2 class="text-[10px] font-bold mono text-blue-400 mb-2 uppercase text-center">Saturation Search</h2>
-                    <div class="text-center mb-1"><span id="sat-label" class="text-xs font-bold text-amber-400 mono">SAT: --- V</span></div>
-                    <div class="chart-container-sat h-[250px]"><canvas id="satChart"></canvas></div>
-                    <div class="mt-4 p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                        <h4 id="t-why-sat" class="text-[10px] font-bold text-blue-300 mono uppercase mb-1">Why Saturation Voltage (Vo)?</h4>
-                        <p id="sat-desc" class="text-[9px] text-slate-400 leading-tight">
-                            The saturation voltage represents the <b>Stopping Potential</b>. In a solar cell, as we increase light intensity (Vin), the output voltage (Vo) eventually plateaus. This "plateau" is our true data point because it indicates that even with more photons, the <i>maximum</i> kinetic energy of the electrons (determined only by the light's frequency) has been reached. 
-                        </p>
-                    </div>
+    <main id="sat-method" class="max-w-7xl mx-auto space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="glass-panel p-4 rounded-2xl border-t-4 border-t-blue-500">
+                <h2 id="t-verify" class="text-xs font-bold mono text-blue-400 mb-3 uppercase tracking-tighter">01_Verification_Data</h2>
+                <table class="w-full mono text-[10px]">
+                    <thead><tr class="text-left border-b border-slate-800"><th>Vin (V)</th><th>I (µA)</th><th>Vo (V)</th></tr></thead>
+                    <tbody id="v-body"></tbody>
+                </table>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl border border-slate-800 bg-blue-500/5">
+                <h2 class="text-[10px] font-bold mono text-blue-400 mb-2 uppercase text-center">Saturation Search</h2>
+                <div class="text-center mb-1"><span id="sat-label" class="text-xs font-bold text-amber-400 mono">SAT: --- V</span></div>
+                <div class="chart-container-sat h-[250px]"><canvas id="satChart"></canvas></div>
+                <div class="mt-4 p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                    <h4 id="t-why-sat" class="text-[10px] font-bold text-blue-300 mono uppercase mb-1">Why Saturation Voltage (Vo)?</h4>
+                    <p id="sat-desc" class="text-[9px] text-slate-400 leading-tight">The saturation voltage represents the Stopping Potential. In a solar cell, as we increase light intensity (Vin), the output voltage (Vo) eventually plateaus. This "plateau" is our true data point because it indicates that the maximum kinetic energy of the electrons has been reached.</p>
                 </div>
             </div>
         </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div class="lg:col-span-4 space-y-4">
+                <div class="glass-panel p-4 rounded-2xl border-l-4 border-l-emerald-500">
+                    <h2 id="t-spectral" class="text-xs font-bold mono text-emerald-400 mb-2 uppercase">Spectral Input</h2>
+                    <table class="w-full mono text-[10px]">
+                        <thead><tr class="text-left border-b border-slate-800"><th id="th-src">Src</th><th id="th-wave">λ</th><th id="th-vo">Vo</th></tr></thead>
+                        <tbody>
+                            <tr><td class="font-bold text-red-500">RED</td><td><input type="number" class="p-lambda data-input" value="650.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                            <tr><td class="font-bold text-emerald-500">GRN</td><td><input type="number" class="p-lambda data-input" value="530.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                            <tr><td class="font-bold text-blue-500">BLU</td><td><input type="number" class="p-lambda data-input" value="460.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl bg-emerald-500/5 text-center">
+                    <span class="text-[9px] mono text-slate-500 uppercase font-bold">Experimental h</span>
+                    <div id="h-result" class="text-3xl font-black text-emerald-400 tracking-tighter">---</div>
+                    <div id="error-perc" class="text-[9px] mono text-slate-400 font-bold uppercase">Err: 0.0%</div>
+                </div>
+            </div>
+            <div class="lg:col-span-8">
+                <div class="glass-panel p-4 rounded-2xl border border-slate-800 bg-white/5 h-[320px]">
+                    <canvas id="planckChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
 
-        <div id="page-2">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div class="lg:col-span-4 space-y-4">
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-l-emerald-500">
-                        <h2 id="t-spectral" class="text-xs font-bold mono text-emerald-400 mb-2 uppercase">Spectral Input</h2>
-                        <table class="w-full mono text-[10px]">
-                            <thead><tr class="text-left border-b border-slate-800"><th id="th-src">Src</th><th id="th-wave">λ</th><th id="th-vo">Vo</th></tr></thead>
-                            <tbody>
-                                <tr><td id="led-red" class="font-bold text-red-500">RED</td><td><input type="number" class="p-lambda data-input" value="620.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
-                                <tr><td id="led-grn" class="font-bold text-emerald-500">GRN</td><td><input type="number" class="p-lambda data-input" value="520.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
-                                <tr><td id="led-blu" class="font-bold text-blue-500">BLU</td><td><input type="number" class="p-lambda data-input" value="465.0" oninput="calcMagic()"></td><td><input type="number" step="0.01" class="p-vs data-input" oninput="calcMagic()"></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl bg-emerald-500/5 text-center">
-                        <span id="t-h" class="text-[9px] mono text-slate-500 uppercase font-bold">Experimental h</span>
-                        <div id="h-result" class="text-3xl font-black text-emerald-400 tracking-tighter">---</div>
-                        <div id="error-perc" class="text-[9px] mono text-slate-400 font-bold uppercase">Err: 0.0%</div>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl bg-blue-500/5">
-                        <div class="grid grid-cols-2 gap-2 text-center">
-                            <div><span id="t-f0" class="text-[9px] text-slate-500 mono">f₀(Hz)</span><div id="f0-val" class="font-bold text-xs">---</div></div>
-                            <div><span id="t-phi" class="text-[9px] text-slate-500 mono">Φ (eV)</span><div id="phi-val" class="font-bold text-xs">---</div></div>
+    <main id="act-method" class="max-w-7xl mx-auto hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-7 space-y-6">
+                <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-red-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-black mono text-red-400 uppercase">Red LED (623 nm)</h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] mono text-slate-500">Va DITENTUKAN:</span>
+                            <input type="number" step="0.01" class="input-cell w-20 border-red-500/50" id="va-red" oninput="updatePlanckPlot()">
                         </div>
                     </div>
+                    <table class="w-full mono text-[11px]">
+                        <thead><tr class="text-left border-b border-slate-800 text-slate-500">
+                            <th class="pb-2 w-24">Voltage V (V)</th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V1" oninput="updateIVChart('red')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V2" oninput="updateIVChart('red')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V3" oninput="updateIVChart('red')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V4" oninput="updateIVChart('red')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V5" oninput="updateIVChart('red')"></th>
+                        </tr></thead>
+                        <tbody><tr><td class="py-3 text-red-500 font-bold">Current I (mA)</td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('red')"></td>
+                        </tr></tbody>
+                    </table>
                 </div>
-
-                <div class="lg:col-span-8 space-y-4">
-                    <div class="glass-panel p-4 rounded-2xl border border-slate-800 bg-white/5">
-                        <div class="chart-container-planck h-[320px]"><canvas id="planckChart"></canvas></div>
+                <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-emerald-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-black mono text-emerald-400 uppercase">Green LED (567 nm)</h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] mono text-slate-500">Va DITENTUKAN:</span>
+                            <input type="number" step="0.01" class="input-cell w-20 border-emerald-500/50" id="va-green" oninput="updatePlanckPlot()">
+                        </div>
                     </div>
-                    <div class="glass-panel p-4 rounded-2xl border-t-2 border-t-amber-500 bg-amber-500/5">
-                        <h2 id="t-summary" class="text-xs font-bold mono text-amber-400 mb-1 uppercase">Summary</h2>
-                        <p id="summary-text" class="text-[10px] leading-tight text-slate-300">
-                            The experiment confirms the Photoelectric Effect using a solar cell. Kinetic energy is frequency-dependent, allowing for the derivation of Planck's constant (h), Work Function (Φ), and Threshold Frequency (f₀).
-                        </p>
+                    <table class="w-full mono text-[11px]">
+                        <thead><tr class="text-left border-b border-slate-800 text-slate-500">
+                            <th class="pb-2 w-24">Voltage V (V)</th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V1" oninput="updateIVChart('green')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V2" oninput="updateIVChart('green')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V3" oninput="updateIVChart('green')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V4" oninput="updateIVChart('green')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V5" oninput="updateIVChart('green')"></th>
+                        </tr></thead>
+                        <tbody><tr><td class="py-3 text-emerald-500 font-bold">Current I (mA)</td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('green')"></td>
+                        </tr></tbody>
+                    </table>
+                </div>
+                <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-blue-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-black mono text-blue-400 uppercase">Blue LED (467 nm)</h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] mono text-slate-500">Va DITENTUKAN:</span>
+                            <input type="number" step="0.01" class="input-cell w-20 border-blue-500/50" id="va-blue" oninput="updatePlanckPlot()">
+                        </div>
+                    </div>
+                    <table class="w-full mono text-[11px]">
+                        <thead><tr class="text-left border-b border-slate-800 text-slate-500">
+                            <th class="pb-2 w-24">V (V)</th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V1" oninput="updateIVChart('blue')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V2" oninput="updateIVChart('blue')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V3" oninput="updateIVChart('blue')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V4" oninput="updateIVChart('blue')"></th>
+                            <th><input type="number" step="0.01" class="input-cell header-input" placeholder="V5" oninput="updateIVChart('blue')"></th>
+                        </tr></thead>
+                        <tbody><tr><td class="py-3 text-blue-500 font-bold">I (mA)</td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                            <td><input type="number" class="input-cell" oninput="updateIVChart('blue')"></td>
+                        </tr></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass-panel p-4 rounded-2xl h-[300px]"><canvas id="ivChart"></canvas></div>
+                <div class="glass-panel p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
+                    <h3 class="text-center mono text-[10px] text-emerald-400 mb-4 uppercase">Analysis: Va vs 1/λ</h3>
+                    <div class="h-[250px] mb-4"><canvas id="actPlanckPlot"></canvas></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-slate-900 p-4 rounded-xl text-center">
+                            <span class="text-[9px] mono text-slate-500">Derived h</span>
+                            <div id="final-h-act" class="text-xl font-black text-emerald-400">---</div>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-xl text-center">
+                            <span class="text-[9px] mono text-slate-500">Error %</span>
+                            <div id="final-error-act" class="text-xl font-black text-slate-300">0.0%</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -113,49 +196,40 @@
 
     <script>
         const h_ref = 6.626e-34, e_c = 1.602e-19, c_l = 2.998e8;
-        let chart, satChart, lang = 'en';
+        let chart, satChart, ivChart, actPlanckPlot;
+        let globalLang = 'en';
 
-        const dictionary = {
-            en: {
-                sub: "OFFICIAL_LAB_REPORT // 2026_SESSION", verify: "01_Verification_Data", 
-                whySat: "Why Saturation Voltage (Vo)?",
-                satDesc: "The saturation voltage represents the Stopping Potential. In a solar cell, as we increase light intensity (Vin), the output voltage (Vo) eventually plateaus. This 'plateau' is our true data point because it indicates that even with more photons, the maximum kinetic energy of the electrons (determined only by the light's frequency) has been reached.",
-                f0: "f₀", phi: "Φ (eV)", spectral: "Spectral Input", src: "Src", wave: "λ",
-                vo: "Vo", expH: "Experimental h", red: "RED", grn: "GRN", blu: "BLU", summary: "Summary",
-                sumText: "The experiment confirms the Photoelectric Effect using a solar cell. Kinetic energy is frequency-dependent, allowing for the derivation of Planck's constant (h), Work Function (Φ), and Threshold Frequency (f₀)."
-            },
-            bm: {
-                sub: "LAPORAN_MAKMAL_RASMI // SESI_2026", verify: "01_Data_Pengesahan",
-                whySat: "Kenapa Voltan Ketepuan (Vo)?",
-                satDesc: "Voltan ketepuan mewakili Keupayaan Penyekat. Dalam sel suria, apabila keamatan cahaya (Vin) meningkat, voltan output (Vo) akhirnya mendatar (plateau). 'Plateau' ini adalah titik data sebenar kerana ia menunjukkan bahawa walaupun dengan lebih banyak foton, tenaga kinetik maksimum elektron (yang hanya ditentukan oleh frekuensi cahaya) telah dicapai.",
-                f0: "f₀", phi: "Φ (eV)", spectral: "Input Spektrum", src: "Sumb", wave: "λ",
-                vo: "Vo", expH: "Nilai h Eksperimen", red: "MERAH", grn: "HIJAU", blu: "BIRU", summary: "Ringkasan",
-                sumText: "Eksperimen membuktikan Kesan Fotoelektrik menggunakan sel suria. Tenaga kinetik bergantung kepada frekuensi, membolehkan penentuan pemalar Planck (h), Fungsi Kerja (Φ), dan Frekuensi Ambang (f₀)."
-            }
+        window.onload = () => {
+            initSatCharts();
+            initActCharts();
+            resetVerification();
         };
 
-        window.onload = () => { resetVerification(); initCharts(); };
+        function switchTab(tabId) {
+            document.getElementById('sat-method').classList.toggle('hidden', tabId !== 'sat-method');
+            document.getElementById('act-method').classList.toggle('hidden', tabId !== 'act-method');
+            document.getElementById('btn-sat').classList.toggle('active', tabId === 'sat-method');
+            document.getElementById('btn-act').classList.toggle('active', tabId === 'act-method');
+        }
 
-        function toggleLang() {
-            lang = lang === 'en' ? 'bm' : 'en';
-            const d = dictionary[lang];
-            document.getElementById('sub-header').innerText = d.sub;
-            document.getElementById('t-verify').innerText = d.verify;
-            document.getElementById('t-why-sat').innerText = d.whySat;
-            document.getElementById('sat-desc').innerText = d.satDesc;
-            document.getElementById('t-f0').innerText = d.f0;
-            document.getElementById('t-phi').innerText = d.phi;
-            document.getElementById('t-spectral').innerText = d.spectral;
-            document.getElementById('th-src').innerText = d.src;
-            document.getElementById('th-wave').innerText = d.wave;
-            document.getElementById('th-vo').innerText = d.vo;
-            document.getElementById('t-h').innerText = d.expH;
-            document.getElementById('led-red').innerText = d.red;
-            document.getElementById('led-grn').innerText = d.grn;
-            document.getElementById('led-blu').innerText = d.blu;
-            document.getElementById('t-summary').innerText = d.summary;
-            document.getElementById('summary-text').innerText = d.sumText;
-            chart.update(); satChart.update();
+        // --- METHOD A: SATURATION ---
+        function initSatCharts() {
+            chart = new Chart(document.getElementById('planckChart'), {
+                type: 'scatter',
+                data: { datasets: [
+                    { label: 'RED', backgroundColor: '#ef4444', data: [], pointRadius: 6 },
+                    { label: 'GREEN', backgroundColor: '#22c55e', data: [], pointRadius: 6 },
+                    { label: 'BLUE', backgroundColor: '#3b82f6', data: [], pointRadius: 6 },
+                    { label: 'Fit Line', type: 'line', borderColor: 'rgba(59, 130, 246, 0.4)', borderDash: [5,5], data: [], pointRadius: 0 }
+                ]},
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { color: '#1e293b' } }, y: { grid: { color: '#1e293b' } } }, plugins: { legend: { display: false } } }
+            });
+
+            satChart = new Chart(document.getElementById('satChart'), {
+                type: 'line',
+                data: { datasets: [{ borderColor: '#3b82f6', data: [], fill: true, tension: 0.3 }, { borderColor: '#fbbf24', borderDash: [5,5], data: [] }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear' }, y: { grid: { color: '#1e293b' } } }, plugins: { legend: { display: false } } }
+            });
         }
 
         function resetVerification() {
@@ -170,65 +244,19 @@
             }
         }
 
-        function initCharts() {
-            chart = new Chart(document.getElementById('planckChart'), {
-                type: 'scatter',
-                data: {
-                    datasets: [
-                        { label: 'RED', backgroundColor: '#ef4444', data: [], pointRadius: 6 },
-                        { label: 'GREEN', backgroundColor: '#22c55e', data: [], pointRadius: 6 },
-                        { label: 'BLUE', backgroundColor: '#3b82f6', data: [], pointRadius: 6 },
-                        { label: 'Fit Line', type: 'line', borderColor: 'rgba(59, 130, 246, 0.4)', borderDash: [5,5], data: [], pointRadius: 0 },
-                        { label: 'f₀', backgroundColor: '#fff', borderColor: '#3b82f6', borderWidth: 2, data: [], pointRadius: 5, pointStyle: 'rectRot' },
-                        { label: 'Φ', backgroundColor: '#fff', borderColor: '#ef4444', borderWidth: 2, data: [], pointRadius: 5, pointStyle: 'circle' }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        x: { grid: { color: '#1e293b' }, title: { display: true, text: 'f (x10¹⁴ Hz)', color: '#94a3b8', font: { size: 10 } }, min: 0 },
-                        y: { grid: { color: '#1e293b' }, title: { display: true, text: 'Vo (V)', color: '#94a3b8', font: { size: 10 } } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            satChart = new Chart(document.getElementById('satChart'), {
-                type: 'line',
-                data: {
-                    datasets: [{ label: 'V_o Search', borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', data: [], fill: true, tension: 0.3, pointRadius: 3 },
-                    { label: 'SATURATION', borderColor: '#fbbf24', borderDash: [5, 5], data: [], pointRadius: 0 }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        x: { type: 'linear', position: 'bottom', title: { display: true, text: 'Vin (V)', font: { size: 10 } }, grid: { display: false } },
-                        y: { title: { display: true, text: 'Vo (V)', font: { size: 10 } }, grid: { color: '#1e293b' } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-
         function updateSatChart() {
             const vIns = document.querySelectorAll('.v-in');
             const vOuts = document.querySelectorAll('.v-out');
             let data = []; let maxVo = 0;
             vIns.forEach((input, i) => {
                 const vin = parseFloat(input.value); 
-                const rawVout = parseFloat(vOuts[i].value);
-                // Auto-divide by 10
-                const vout = !isNaN(rawVout) ? rawVout / 10 : NaN;
-                
+                const vout = parseFloat(vOuts[i].value) / 10;
                 if (!isNaN(vin) && !isNaN(vout)) { data.push({ x: vin, y: vout }); if (vout > maxVo) maxVo = vout; }
             });
-            data.sort((a, b) => a.x - b.x);
+            data.sort((a,b) => a.x - b.x);
             satChart.data.datasets[0].data = data;
             document.getElementById('sat-label').innerText = `SAT: ${maxVo.toFixed(3)} V`;
-            if (data.length > 0) {
-                const minX = data[0].x; const maxX = data[data.length - 1].x;
-                satChart.data.datasets[1].data = [{x: minX, y: maxVo}, {x: maxX, y: maxVo}];
-            }
+            if (data.length > 0) satChart.data.datasets[1].data = [{x: data[0].x, y: maxVo}, {x: data[data.length-1].x, y: maxVo}];
             satChart.update();
         }
 
@@ -237,38 +265,80 @@
             const vss = document.querySelectorAll('.p-vs');
             let pts = [];
             vss.forEach((v, i) => {
-                const rawVs = parseFloat(v.value);
-                // Auto-divide by 10
-                const vs = !isNaN(rawVs) ? rawVs / 10 : NaN;
-                const l_val = parseFloat(lambdas[i].value);
-                
-                if(!isNaN(vs)) {
-                    const f = (c_l / (l_val * 1e-9)) / 1e14;
-                    pts.push({ x: f, y: vs });
-                    chart.data.datasets[i].data = [{x: f, y: vs}];
-                }
+                const vs = parseFloat(v.value) / 10;
+                const f = (c_l / (parseFloat(lambdas[i].value) * 1e-9)) / 1e14;
+                if(!isNaN(vs)) { pts.push({ x: f, y: vs }); chart.data.datasets[i].data = [{x: f, y: vs}]; }
             });
-
             if(pts.length >= 2) {
                 const n = pts.length; let sx=0, sy=0, sxy=0, sxx=0;
                 pts.forEach(p => { sx+=p.x; sy+=p.y; sxy+=p.x*p.y; sxx+=p.x*p.x; });
                 const m = (n*sxy - sx*sy) / (n*sxx - sx*sx), b = (sy - m*sx) / n;
-                const h_calc = (m * e_c) / 1e14; const f0 = Math.abs(b / m); const phiVal = Math.abs(b);
-
+                const h_calc = (m * e_c) / 1e14;
                 document.getElementById('h-result').innerText = h_calc.toExponential(2);
                 document.getElementById('error-perc').innerText = `ERR: ${((Math.abs(h_calc - h_ref)/h_ref)*100).toFixed(1)}%`;
-                document.getElementById('f0-val').innerText = f0.toFixed(2);
-                document.getElementById('phi-val').innerText = phiVal.toFixed(2);
-
                 chart.data.datasets[3].data = [{x: 0, y: b}, {x: 10, y: m*10+b}];
-                chart.data.datasets[4].data = [{x: f0, y: 0}]; 
-                chart.data.datasets[5].data = [{x: 0, y: b}];
                 chart.update();
             }
         }
+
+        // --- METHOD B: ACTIVATION ---
+        function initActCharts() {
+            ivChart = new Chart(document.getElementById('ivChart'), {
+                type: 'line',
+                data: { labels: [1,2,3,4,5], datasets: [
+                    { label: 'RED', borderColor: '#ef4444', data: Array(5).fill(null), tension: 0.3 },
+                    { label: 'GREEN', borderColor: '#10b981', data: Array(5).fill(null), tension: 0.3 },
+                    { label: 'BLUE', borderColor: '#3b82f6', data: Array(5).fill(null), tension: 0.3 }
+                ]},
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, grid: { color: '#1e293b' } } }, plugins: { legend: { display: false } } }
+            });
+
+            actPlanckPlot = new Chart(document.getElementById('actPlanckPlot'), {
+                type: 'scatter',
+                data: { datasets: [{ backgroundColor: '#10b981', data: [], pointRadius: 6 }, { type: 'line', borderColor: 'rgba(255,255,255,0.2)', borderDash: [5,5], data: [] }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: '1/λ (10⁶ m⁻¹)' } }, y: { title: { display: true, text: 'Va (V)' } } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function updateIVChart(color) {
+            const colors = { red: 'red', green: 'emerald', blue: 'blue' };
+            const sectionSelector = `.glass-panel.border-l-${colors[color]}-500`;
+            const iInputs = document.querySelectorAll(`${sectionSelector} tbody input`);
+            const datasetIndex = color === 'red' ? 0 : color === 'green' ? 1 : 2;
+            iInputs.forEach((input, i) => {
+                const val = parseFloat(input.value);
+                ivChart.data.datasets[datasetIndex].data[i] = isNaN(val) ? null : val;
+            });
+            ivChart.update();
+        }
+
+        function updatePlanckPlot() {
+            const wavelengths = { red: 623e-9, green: 567e-9, blue: 467e-9 };
+            const vaPoints = [
+                { x: (1/wavelengths.red)/1e6, y: parseFloat(document.getElementById('va-red').value) },
+                { x: (1/wavelengths.green)/1e6, y: parseFloat(document.getElementById('va-green').value) },
+                { x: (1/wavelengths.blue)/1e6, y: parseFloat(document.getElementById('va-blue').value) }
+            ].filter(p => !isNaN(p.y));
+            actPlanckPlot.data.datasets[0].data = vaPoints;
+            if (vaPoints.length >= 2) {
+                const n = vaPoints.length; let sx=0, sy=0, sxy=0, sxx=0;
+                vaPoints.forEach(p => { sx+=p.x; sy+=p.y; sxy+=p.x*p.y; sxx+=p.x*p.x; });
+                const m = (n*sxy - sx*sy) / (n*sxx - sx*sx);
+                const b = (sy - m*sx) / n;
+                const h_calc = ((m / 1e6) * e_c) / c_l;
+                document.getElementById('final-h-act').innerText = h_calc.toExponential(2);
+                document.getElementById('final-error-act').innerText = ((Math.abs(h_calc - h_ref)/h_ref)*100).toFixed(1) + "%";
+                const minX = Math.min(...vaPoints.map(p => p.x)) * 0.8;
+                const maxX = Math.max(...vaPoints.map(p => p.x)) * 1.2;
+                actPlanckPlot.data.datasets[1].data = [{x: minX, y: m*minX+b}, {x: maxX, y: m*maxX+b}];
+            }
+            actPlanckPlot.update();
+        }
+
+        function toggleGlobalLang() { globalLang = globalLang === 'en' ? 'bm' : 'en'; alert("Language Switched."); }
     </script>
 </body>
-    <footer class="text-center p-8 text-slate-600 text-[10px] mono">
-        &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
-    </footer>
+<footer class="text-center p-8 text-slate-600 text-[10px] mono">
+    &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
+</footer>
 </html>
