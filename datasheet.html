@@ -40,6 +40,7 @@
             </nav>
         </div>
         <div class="flex gap-2">
+            <button onclick="clearAllData()" class="px-3 py-1.5 bg-red-900/40 border border-red-500/50 rounded text-[10px] mono font-bold hover:bg-red-600 transition text-red-400 hover:text-white">RESET DATASHEET</button>
             <button onclick="toggleGlobalLang()" class="px-3 py-1.5 bg-amber-600 rounded text-[10px] mono font-bold hover:bg-amber-500 transition">BM / EN</button>
             <button onclick="window.print()" class="px-4 py-1.5 bg-blue-600 rounded text-[10px] mono font-bold hover:bg-blue-500 transition" data-key="export">EXPORT REPORT</button>
         </div>
@@ -60,7 +61,7 @@
                 <div class="chart-container-sat h-[250px]"><canvas id="satChart"></canvas></div>
                 <div class="mt-4 p-3 bg-slate-900/50 rounded-xl border border-slate-800">
                     <h4 class="text-[10px] font-bold text-blue-300 mono uppercase mb-1" data-key="whySat">Why Saturation Voltage (Vo)?</h4>
-                    <p class="text-[9px] text-slate-400 leading-tight" data-key="satDesc">The saturation voltage represents the Stopping Potential...</p>
+                    <p class="text-[9px] text-slate-400 leading-tight" data-key="satDesc">The saturation voltage represents the Stopping Potential. Plateaus indicate maximum kinetic energy.</p>
                 </div>
             </div>
         </div>
@@ -233,6 +234,20 @@
 
         window.onload = () => { initSatCharts(); initActCharts(); resetVerification(); updateUI(); };
 
+        function clearAllData() {
+            if(confirm("Are you sure you want to clear all data in this session?")) {
+                document.querySelectorAll('input').forEach(input => input.value = '');
+                updateSatChart();
+                updatePlanckPlot();
+                calcMagic();
+                updateIVChart('red');
+                updateIVChart('green');
+                updateIVChart('blue');
+                document.getElementById('h-result').innerText = '---';
+                document.getElementById('final-h-act').innerText = '---';
+            }
+        }
+
         function toggleGlobalLang() {
             currentLang = currentLang === 'en' ? 'bm' : 'en';
             updateUI();
@@ -243,7 +258,6 @@
                 const key = el.getAttribute('data-key');
                 if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
             });
-            // Update Chart Axis Titles
             if(ivChart) {
                 ivChart.options.scales.x.title.text = i18n[currentLang].volts;
                 ivChart.options.scales.y.title.text = i18n[currentLang].currentMa;
@@ -382,6 +396,8 @@
                 const minX = Math.min(...vaPoints.map(p => p.x)) * 0.8;
                 const maxX = Math.max(...vaPoints.map(p => p.x)) * 1.2;
                 actPlanckPlot.data.datasets[1].data = [{x: minX, y: m*minX+b}, {x: maxX, y: m*maxX+b}];
+            } else {
+                actPlanckPlot.data.datasets[1].data = [];
             }
             actPlanckPlot.update();
         }
@@ -391,5 +407,3 @@
     &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
 </footer>
 </html>
-
-
