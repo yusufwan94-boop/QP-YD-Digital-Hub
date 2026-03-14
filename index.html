@@ -10,14 +10,13 @@
             --neon-purple: #a855f7;
             --dark-bg: #020617;
             --card-bg: #1e293b;
-            --correct: #10b981;
-            --wrong: #ef4444;
+            --accent: #fbbf24;
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--dark-bg);
             color: white;
             display: flex;
@@ -27,13 +26,14 @@
             background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
         }
 
+        /* Language Toggle */
         .lang-btn {
             position: absolute;
             top: 20px;
             right: 20px;
             padding: 10px 20px;
             cursor: pointer;
-            background: #fbbf24;
+            background: var(--accent);
             color: #000;
             border: none;
             border-radius: 20px;
@@ -42,41 +42,45 @@
             z-index: 100;
         }
 
+        .lang-btn:hover { transform: scale(1.05); opacity: 0.9; }
+
         header {
             text-align: center;
-            padding: 50px 20px;
+            padding: 40px 20px 10px; /* Tightened spacing */
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: clamp(2rem, 6vw, 3rem);
             margin: 0;
             background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 2px;
+            font-weight: 900;
         }
 
         #subtitle {
             color: #94a3b8;
-            font-size: 1.2rem;
-            margin-top: 10px;
+            font-size: 1rem;
+            margin-top: 5px;
         }
 
+        /* Grid Layout */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px; /* Compact gaps */
             width: 90%;
-            max-width: 1200px;
-            padding: 20px;
-            margin-bottom: 50px;
+            max-width: 1100px;
+            padding: 20px 0;
         }
 
+        /* Card Design */
         .card {
             background: var(--card-bg);
             border: 1px solid #334155;
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 16px;
+            padding: 25px;
             text-align: center;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -84,48 +88,65 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            cursor: pointer;
+            min-height: 320px; /* Locked height */
         }
 
         .card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             border-color: var(--neon-blue);
-            box-shadow: 0 0 30px rgba(34, 211, 238, 0.2);
+            box-shadow: 0 10px 25px rgba(34, 211, 238, 0.15);
         }
 
-        .icon { font-size: 3.5rem; margin-bottom: 20px; }
-        .card h2 { margin: 10px 0; color: var(--neon-blue); font-size: 1.4rem; }
-        .card p { font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; color: #cbd5e1; height: 60px; overflow: hidden; }
+        .icon { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px; 
+            background: rgba(255,255,255,0.05);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
+        .card h2 { 
+            margin: 0 0 10px 0; 
+            color: var(--neon-blue); 
+            font-size: 1.2rem; 
+            min-height: 2.8em; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .card p { 
+            font-size: 0.9rem; 
+            line-height: 1.4; 
+            color: #cbd5e1; 
+            margin-bottom: 20px; 
+            min-height: 4.2em; /* Prevents button jump */
+        }
+
+        /* Tactical Button */
         .btn {
             background: linear-gradient(45deg, #2563eb, #7c3aed);
             color: white;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 800;
             text-transform: uppercase;
             font-size: 0.8rem;
             letter-spacing: 1px;
-        }
-        .opt-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: white;
-            border-radius: 12px;
-            text-align: left;
+            border: none;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.1s;
         }
 
-        .opt-btn:hover { border-color: var(--neon-blue); }
-        .opt-btn.correct { background: var(--correct); border-color: white; }
-        .opt-btn.wrong { background: var(--wrong); border-color: white; }
+        .btn:active { transform: scale(0.95); }
 
-        footer { margin-top: auto; padding: 40px; color: #475569; font-size: 0.8rem; }
+        footer { margin-top: auto; padding: 30px; color: #475569; font-size: 0.75rem; }
     </style>
 </head>
 <body>
@@ -151,7 +172,7 @@
             <div>
                 <div class="icon">⚛️</div>
                 <h2 id="card1-h">01. Theoretical Lab</h2>
-                <p id="card1-p">Understand the core concepts of Einstein's equation E = hf - Φ before starting the experiment.</p>
+                <p id="card1-p">Understand the core concepts of Einstein's equation $E = hf - \Phi$ before starting the experiment.</p>
             </div>
             <div class="btn" id="btn1">Launch Theory</div>
         </a>
@@ -160,7 +181,7 @@
             <div>
                 <div class="icon">🔬</div>
                 <h2 id="card2-h">02. Virtual Experiment</h2>
-                <p id="card2-p">Operate the high-fidelity simulator. Sync LED intensity and record Solar Vo saturation points.</p>
+                <p id="card2-p">Operate the simulator. Sync LED intensity and record Solar $V_o$ saturation points.</p>
             </div>
             <div class="btn" id="btn2">Launch Simulator</div>
         </a>
@@ -169,7 +190,7 @@
             <div>
                 <div class="icon">📊</div>
                 <h2 id="card3-h">03. Digital Datasheet</h2>
-                <p id="card3-p">Analyze your results, calculate Planck's constant (h), and find the threshold frequency (fo).</p>
+                <p id="card3-p">Analyze results, calculate Planck's constant ($h$), and find the threshold frequency ($f_o$).</p>
             </div>
             <div class="btn" id="btn3">Launch Analysis</div>
         </a>
@@ -179,8 +200,8 @@
         &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
     </footer>
 
-            }
-        };
+    <script>
+        let currentLang = 'en';
 
         const translations = {
             en: {
@@ -193,11 +214,11 @@
                 c1p: "Understand the core concepts of Einstein's equation E = hf - Φ before starting the experiment.",
                 b1: "Launch Theory",
                 c2h: "02. Virtual Experiment",
-                c2p: "Operate the high-fidelity simulator. Sync LED intensity and record Solar Vo saturation points.",
+                c2p: "Operate the simulator. Sync LED intensity and record Solar Vo saturation points.",
                 b2: "Launch Simulator",
                 c3h: "03. Digital Datasheet",
-                c3p: "Analyze your results, calculate Planck's constant (h), and find the threshold frequency (fo).",
-                b3: "Launch Analysis",
+                c3p: "Analyze results, calculate Planck's constant (h), and find the threshold frequency (fo).",
+                b3: "Launch Analysis"
             },
             ms: {
                 switcher: "Switch to English",
@@ -209,35 +230,36 @@
                 c1p: "Fahami konsep teras persamaan Einstein E = hf - Φ sebelum memulakan eksperimen.",
                 b1: "Buka Teori",
                 c2h: "02. Eksperimen Maya",
-                c2p: "Kendalikan simulator berketepatan tinggi. Segerakkan intensiti LED dan rekod titik tepu Solar Vo.",
+                c2p: "Kendalikan simulator. Segerakkan intensiti LED dan rekod titik tepu Solar Vo.",
                 b2: "Buka Simulator",
                 c3h: "03. Lembaran Data Digital",
                 c3p: "Analisis keputusan anda, kira pemalar Planck (h), dan cari frekuensi ambang (fo).",
-                b3: "Buka Analisis",
+                b3: "Buka Analisis"
             }
         };
 
         function toggleLang() {
             currentLang = (currentLang === 'en') ? 'ms' : 'en';
             const d = translations[currentLang];
+            
             document.getElementById('langSwitcher').innerText = d.switcher;
             document.getElementById('subtitle').innerText = d.sub;
+            
             document.getElementById('cardH-h').innerText = d.chH;
             document.getElementById('cardH-p').innerText = d.cpH;
             document.getElementById('btnH').innerText = d.bH;
+            
             document.getElementById('card1-h').innerText = d.c1h;
             document.getElementById('card1-p').innerText = d.c1p;
             document.getElementById('btn1').innerText = d.b1;
+            
             document.getElementById('card2-h').innerText = d.c2h;
             document.getElementById('card2-p').innerText = d.c2p;
             document.getElementById('btn2').innerText = d.b2;
+            
             document.getElementById('card3-h').innerText = d.c3h;
             document.getElementById('card3-p').innerText = d.c3p;
             document.getElementById('btn3').innerText = d.b3;
-            document.getElementById('cardQ-h').innerText = d.cqh;
-            document.getElementById('cardQ-p').innerText = d.cqp;
-            document.getElementById('btnQ').innerText = d.bq;
-        }
         }
     </script>
 </body>
