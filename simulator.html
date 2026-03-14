@@ -171,14 +171,28 @@
         const liveryChart1 = new Chart(liveryCtx1, {
             type: 'line',
             data: { datasets: Object.keys(ledDatasets1).map(key => ({ label: key, data: [], borderColor: ledDatasets1[key].color, borderWidth: 2, pointRadius: 0, fill: false, tension: 0.4 }))},
-            options: { responsive: true, maintainAspectRatio: false, animation: false, scales: { x: { type: 'linear', min: 0, max: 1 }, y: { type: 'linear', min: 0, max: 3 } }, plugins: { legend: { display: false } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false, animation: false, 
+                scales: { 
+                    x: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'Brightness Input (A.U.)', font: { size: 10, weight: 'bold' } } }, 
+                    y: { type: 'linear', min: 0, max: 3, title: { display: true, text: 'Solar Vo (V)', font: { size: 10, weight: 'bold' } } } 
+                }, 
+                plugins: { legend: { display: false } } 
+            }
         });
 
         const planckCtx1 = document.getElementById('planckChart1').getContext('2d');
         const planckChart1 = new Chart(planckCtx1, {
             type: 'scatter',
             data: { datasets: [{ label: 'Data', data: [], pointRadius: 10, pointBackgroundColor: [] }, { label: 'Fit', data: [], type: 'line', borderColor: '#3b82f6', borderDash: [5, 5], pointRadius: 0 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', min: 0, max: 10 }, y: { type: 'linear', min: -1.5, max: 3 } }, plugins: { legend: { display: false } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                scales: { 
+                    x: { type: 'linear', min: 0, max: 10, title: { display: true, text: 'Frequency (10¹⁴ Hz)', font: { size: 12, weight: 'bold' } } }, 
+                    y: { type: 'linear', min: -1.5, max: 3, title: { display: true, text: 'Saturation Voltage Vo (V)', font: { size: 12, weight: 'bold' } } } 
+                }, 
+                plugins: { legend: { display: false } } 
+            }
         });
 
         function selectLED1(name, wave, color) { activeLED1 = { name, wave, color }; document.getElementById('pot1').value = 0; runPhysics1(); }
@@ -240,7 +254,7 @@
             updateAnalysis1();
         }
 
-        // --- LAB 2: ACTIVATION LOGIC (WITH I-V KNEE CHARACTERISTICS) ---
+        // --- LAB 2: ACTIVATION LOGIC ---
         const E_CHARGE2 = 1.602e-19;
         let currentLang2 = 'en';
         const langData2 = {
@@ -289,8 +303,8 @@
             options: {
                 responsive: true, maintainAspectRatio: false, animation: false,
                 scales: { 
-                    x: { type: 'linear', min: 0, max: 4, title: { display: true, text: 'Vf', font: { size: 8 } } }, 
-                    y: { type: 'linear', min: 0, max: 50, title: { display: true, text: 'I (mA)', font: { size: 8 } }, ticks: { font: { size: 7 } } } 
+                    x: { type: 'linear', min: 0, max: 4, title: { display: true, text: 'Forward Voltage Vf (V)', font: { size: 9, weight: 'bold' } } }, 
+                    y: { type: 'linear', min: 0, max: 50, title: { display: true, text: 'Current I (mA)', font: { size: 9, weight: 'bold' } }, ticks: { font: { size: 7 } } } 
                 },
                 plugins: { legend: { display: false } }
             }
@@ -306,8 +320,8 @@
             options: { 
                 responsive: true, maintainAspectRatio: false, 
                 scales: { 
-                    x: { type: 'linear', min: 0, max: 7, title: { display: true, text: 'Frequency (10¹⁴ Hz)', color: '#94a3b8' } }, 
-                    y: { type: 'linear', min: -1, max: 4, title: { display: true, text: 'Voltage (V)', color: '#94a3b8' } } 
+                    x: { type: 'linear', min: 0, max: 7, title: { display: true, text: 'Frequency (10¹⁴ Hz)', font: { size: 12, weight: 'bold' }, color: '#94a3b8' } }, 
+                    y: { type: 'linear', min: -1, max: 4, title: { display: true, text: 'Activation Voltage Vac (V)', font: { size: 12, weight: 'bold' }, color: '#94a3b8' } } 
                 },
                 plugins: { legend: { display: false } }
             }
@@ -316,22 +330,16 @@
         function runPhysics2() {
             const vInput = parseFloat(document.getElementById('volt-slider2').value);
             document.getElementById('volt-display2').innerText = vInput.toFixed(2) + 'V';
-            
-            // Generate I-V Curve "Knee" like the provided image
             const idx = selectedLED2.id;
             const curveData = [];
             for (let v = 0; v <= vInput; v += 0.05) {
-                // Diode equation approximation: I = Is * (exp(V/Vt) - 1)
-                // Shifted based on specific LED Vac
                 let current = v > (selectedLED2.vac - 0.3) ? 2 * Math.exp((v - selectedLED2.vac + 0.3) * 5) : 0;
                 curveData.push({x: v, y: Math.min(current, 50)});
             }
-
             liveTraceChart2.data.datasets.forEach((ds, i) => {
                 ds.data = (i === idx) ? curveData : ds.data;
             });
             liveTraceChart2.update('none');
-
             const physical = document.getElementById('led-physical2');
             const status = document.getElementById('glow-status2');
             if (vInput >= selectedLED2.vac) {
@@ -358,14 +366,12 @@
         function updateAnalysis2() {
             chart2.data.datasets[0].data = loggedPoints2;
             chart2.data.datasets[0].pointBackgroundColor = loggedPoints2.map(p => p.color);
-            
             if (loggedPoints2.length >= 2) {
                 const n = loggedPoints2.length;
                 let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
                 loggedPoints2.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumX2 += p.x * p.x; });
                 const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
                 const c = (sumY - m * sumX) / n;
-                
                 chart2.data.datasets[1].data = [{ x: 0, y: c }, { x: 7, y: m * 7 + c }];
                 document.getElementById('res-gradient2').innerText = m.toFixed(4);
                 document.getElementById('res-h2').innerText = (m * 1.602e-33).toExponential(2);
