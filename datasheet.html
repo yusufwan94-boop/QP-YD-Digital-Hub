@@ -217,7 +217,8 @@
                 calcA: "Using Einstein's equation eVo = hf - W. Gradient m = h/e. Thus, h = gradient x e.",
                 calcB: "Based on eVa = hc/λ. Gradient m = hc/e. Thus, h = (gradient x e)/c.",
                 ledRed: "Red LED (623 nm)", ledGrn: "Green LED (567 nm)", ledBlu: "Blue LED (467 nm)",
-                detVa: "DETERMINED Va:", volts: "Voltage V (V)", currentMa: "Current I (mA)", finalAnal: "Analysis: Va vs 1/λ", errPerc: "Error %"
+                detVa: "DETERMINED Va:", volts: "Voltage V (V)", currentMa: "Current I (mA)", finalAnal: "Analysis: Va vs 1/λ", errPerc: "Error %",
+                freq: "Frequency (10¹⁴ Hz)", invWave: "1/λ (10⁶ m⁻¹)"
             },
             bm: {
                 btnA: "Kaedah A: Ketepuan", btnB: "Kaedah B: Pengaktifan", export: "EKSPORT LAPORAN",
@@ -228,7 +229,8 @@
                 calcA: "Menggunakan persamaan Einstein eVo = hf -W. Kecerunan m = h/e. Maka, h = kecerunan x e.",
                 calcB: "Berdasarkan eVa = hc/λ. Kecerunan m = hc/e. Maka, h = (kecerunan x e)/c.",
                 ledRed: "LED Merah (623 nm)", ledGrn: "LED Hijau (567 nm)", ledBlu: "LED Biru (467 nm)",
-                detVa: "Va DITENTUKAN:", volts: "Voltan V (V)", currentMa: "Arus I (mA)", finalAnal: "Analisis: Va vs 1/λ", errPerc: "Ralat %"
+                detVa: "Va DITENTUKAN:", volts: "Voltan V (V)", currentMa: "Arus I (mA)", finalAnal: "Analisis: Va vs 1/λ", errPerc: "Ralat %",
+                freq: "Frekuensi (10¹⁴ Hz)", invWave: "1/λ (10⁶ m⁻¹)"
             }
         };
 
@@ -258,10 +260,29 @@
                 const key = el.getAttribute('data-key');
                 if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
             });
+            
+            // Update Axis Titles for Method A
+            if(chart) {
+                chart.options.scales.x.title.text = i18n[currentLang].freq;
+                chart.options.scales.y.title.text = i18n[currentLang].vo;
+                chart.update();
+            }
+            if(satChart) {
+                satChart.options.scales.x.title.text = "Vin (V)";
+                satChart.options.scales.y.title.text = "Vo (V)";
+                satChart.update();
+            }
+            
+            // Update Axis Titles for Method B
             if(ivChart) {
                 ivChart.options.scales.x.title.text = i18n[currentLang].volts;
                 ivChart.options.scales.y.title.text = i18n[currentLang].currentMa;
                 ivChart.update();
+            }
+            if(actPlanckPlot) {
+                actPlanckPlot.options.scales.x.title.text = i18n[currentLang].invWave;
+                actPlanckPlot.options.scales.y.title.text = "Va (V)";
+                actPlanckPlot.update();
             }
         }
 
@@ -281,13 +302,29 @@
                     { label: 'BLUE', backgroundColor: '#3b82f6', data: [], pointRadius: 6 },
                     { label: 'Fit Line', type: 'line', borderColor: 'rgba(59, 130, 246, 0.4)', borderDash: [5,5], data: [], pointRadius: 0 }
                 ]},
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { color: '#1e293b' } }, y: { grid: { color: '#1e293b' } } }, plugins: { legend: { display: false } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { 
+                        x: { display: true, title: { display: true, text: 'Frequency', color: '#64748b' }, grid: { color: '#1e293b' } }, 
+                        y: { display: true, title: { display: true, text: 'Vo (V)', color: '#64748b' }, grid: { color: '#1e293b' } } 
+                    }, 
+                    plugins: { legend: { display: false } } 
+                }
             });
 
             satChart = new Chart(document.getElementById('satChart'), {
                 type: 'line',
                 data: { datasets: [{ borderColor: '#3b82f6', data: [], fill: true, tension: 0.3 }, { borderColor: '#fbbf24', borderDash: [5,5], data: [] }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', title:{display:true, text:'Vin (V)'} }, y: { title:{display:true, text:'Vo (V)'}, grid: { color: '#1e293b' } } }, plugins: { legend: { display: false } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { 
+                        x: { type: 'linear', display: true, title:{display:true, text:'Vin (V)', color: '#64748b'} }, 
+                        y: { display: true, title:{display:true, text:'Vo (V)', color: '#64748b'}, grid: { color: '#1e293b' } } 
+                    }, 
+                    plugins: { legend: { display: false } } 
+                }
             });
         }
 
@@ -349,15 +386,18 @@
                     { label: 'BLUE', borderColor: '#3b82f6', data: [], tension: 0.3 }
                 ]},
                 options: { responsive: true, maintainAspectRatio: false, scales: { 
-                    x: { type: 'linear', title: { display: true, text: 'Voltage (V)', color: '#64748b' }, grid: { color: '#1e293b' } },
-                    y: { title: { display: true, text: 'Current (mA)', color: '#64748b' }, min: 0, grid: { color: '#1e293b' } } 
+                    x: { type: 'linear', display: true, title: { display: true, text: 'Voltage (V)', color: '#64748b' }, grid: { color: '#1e293b' } },
+                    y: { display: true, title: { display: true, text: 'Current (mA)', color: '#64748b' }, min: 0, grid: { color: '#1e293b' } } 
                 }, plugins: { legend: { display: false } } }
             });
 
             actPlanckPlot = new Chart(document.getElementById('actPlanckPlot'), {
                 type: 'scatter',
                 data: { datasets: [{ backgroundColor: '#10b981', data: [], pointRadius: 6 }, { type: 'line', borderColor: 'rgba(255,255,255,0.2)', borderDash: [5,5], data: [] }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: '1/λ (10⁶ m⁻¹)' } }, y: { title: { display: true, text: 'Va (V)' } } }, plugins: { legend: { display: false } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { 
+                    x: { display: true, title: { display: true, text: '1/λ (10⁶ m⁻¹)', color: '#64748b' } }, 
+                    y: { display: true, title: { display: true, text: 'Va (V)', color: '#64748b' } } 
+                }, plugins: { legend: { display: false } } }
             });
         }
 
