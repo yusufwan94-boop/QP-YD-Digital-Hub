@@ -107,37 +107,6 @@
             font-size: 0.8rem;
             letter-spacing: 1px;
         }
-
-        /* QUIZ MODAL STYLES */
-        #quiz-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 6, 23, 0.95);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .quiz-window {
-            background: #1e293b;
-            width: 90%;
-            max-width: 600px;
-            padding: 40px;
-            border-radius: 30px;
-            border: 1px solid var(--neon-blue);
-            position: relative;
-        }
-
-        .close-quiz {
-            position: absolute;
-            top: 20px; right: 20px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #64748b;
-        }
-
         .opt-btn {
             display: block;
             width: 100%;
@@ -204,77 +173,12 @@
             </div>
             <div class="btn" id="btn3">Launch Analysis</div>
         </a>
-
-        <div class="card" onclick="openQuiz()">
-            <div>
-                <div class="icon">⚡</div>
-                <h2 id="cardQ-h">04. Quantum Assessment</h2>
-                <p id="cardQ-p">Test your knowledge with 20 mission-critical questions and provide project feedback.</p>
-            </div>
-            <div class="btn" id="btnQ">Start Quiz</div>
-        </div>
-    </div>
-
-    <div id="quiz-overlay">
-        <div class="quiz-window">
-            <span class="close-quiz" onclick="closeQuiz()">&times;</span>
-            <div id="quiz-body">
-                <div id="q-progress" style="font-size: 0.7rem; color: var(--neon-blue); margin-bottom: 10px;"></div>
-                <h3 id="q-text" style="margin-bottom: 25px;"></h3>
-                <div id="q-options"></div>
-                <button id="q-next" class="btn" style="margin-top: 30px; width: 100%; display: none;" onclick="nextQuestion()">Next</button>
-            </div>
-            
-            <div id="survey-body" style="display: none;">
-                <h3 id="survey-title" style="color: #fbbf24;">SURVEY QP-YD</h3>
-                <div id="survey-items"></div>
-                <button class="btn" style="margin-top: 30px; width: 100%;" onclick="showResults()">Finish</button>
-            </div>
-
-            <div id="result-body" style="display: none; text-align: center;">
-                <h2 id="final-score" style="font-size: 3rem;"></h2>
-                <p id="final-msg"></p>
-                <button class="btn" onclick="closeQuiz()">Return to Base</button>
-            </div>
-        </div>
     </div>
 
     <footer>
         &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
     </footer>
 
-    <script>
-        let currentLang = 'en';
-        
-        const quizData = {
-            en: {
-                questions: [
-                    { q: "What is the concept introduced by Max Planck regarding energy?", o: ["Energy is continuous", "Energy is quantized", "Energy is infinite", "Energy is wave-only"], a: 1 },
-                    { q: "What is the value of Planck's constant (h)?", o: ["6.63 x 10^-34 J s", "3.00 x 10^8 m/s", "1.60 x 10^-19 C", "9.11 x 10^-31 kg"], a: 0 },
-                    { q: "Which phenomenon proves the particle nature of light?", o: ["Diffraction", "Interference", "Photoelectric Effect", "Refraction"], a: 2 },
-                    { q: "The minimum frequency required to emit electrons is...", o: ["Maximum frequency", "Cut-off frequency", "Threshold frequency", "Quantum frequency"], a: 2 },
-                    { q: "The gradient of a Graph of Vo against f is equal to:", o: ["e", "h", "h/e", "Φ/e"], a: 2 },
-                    // ... (20 questions simplified for brevity, you can add the rest here)
-                    { q: "What is Φ in hf = Φ + K_max?", o: ["Power", "Work Function", "Kinetic Energy", "Momentum"], a: 1 }
-                ],
-                survey: ["How much did QP-YD improve your understanding?", "Rate the Digital Station (1-10)", "Did real-time graphing help?", "Digital vs Paper Reports?", "One word for the QP-YD vibe?"],
-                next: "Next Signal",
-                finish: "Submit Final Report",
-                scoreMsg: "Quantum Competency Verified"
-            },
-            ms: {
-                questions: [
-                    { q: "Apakah konsep yang diperkenalkan oleh Max Planck mengenai tenaga?", o: ["Tenaga adalah selanjar", "Tenaga adalah terkuantum", "Tenaga adalah infinit", "Tenaga hanya gelombang"], a: 1 },
-                    { q: "Apakah nilai pemalar Planck (h)?", o: ["6.63 x 10^-34 J s", "3.00 x 10^8 m/s", "1.60 x 10^-19 C", "9.11 x 10^-31 kg"], a: 0 },
-                    { q: "Fenomena manakah membuktikan sifat zarah cahaya?", o: ["Pembelauan", "Interferens", "Kesan Fotoelektrik", "Pembiasan"], a: 2 },
-                    { q: "Frekuensi minimum untuk membebaskan elektron ialah...", o: ["Frekuensi Maksimum", "Frekuensi Potong", "Frekuensi Ambang", "Frekuensi Kuantum"], a: 2 },
-                    { q: "Kecerunan graf Vo melawan f adalah bersamaan dengan:", o: ["e", "h", "h/e", "Φ/e"], a: 2 },
-                    { q: "Apakah Φ dalam hf = Φ + K_max?", o: ["Kuasa", "Fungsi Kerja", "Tenaga Kinetik", "Momentum"], a: 1 }
-                ],
-                survey: ["Sejauh mana QP-YD membantu pemahaman anda?", "Kadar Stesen Digital (1-10)", "Adakah graf masa-nyata membantu?", "Digital vs Laporan Kertas?", "Satu perkataan untuk 'vibe' QP-YD?"],
-                next: "Isyarat Seterusnya",
-                finish: "Hantar Laporan Akhir",
-                scoreMsg: "Kompetensi Kuantum Disahkan"
             }
         };
 
@@ -294,9 +198,6 @@
                 c3h: "03. Digital Datasheet",
                 c3p: "Analyze your results, calculate Planck's constant (h), and find the threshold frequency (fo).",
                 b3: "Launch Analysis",
-                cqh: "04. Quantum Assessment",
-                cqp: "Test your knowledge with 20 mission-critical questions and provide project feedback.",
-                bq: "Start Quiz"
             },
             ms: {
                 switcher: "Switch to English",
@@ -313,9 +214,6 @@
                 c3h: "03. Lembaran Data Digital",
                 c3p: "Analisis keputusan anda, kira pemalar Planck (h), dan cari frekuensi ambang (fo).",
                 b3: "Buka Analisis",
-                cqh: "04. Penilaian Kuantum",
-                cqp: "Uji pengetahuan anda dengan 20 soalan kritikal-misi dan berikan maklum balas projek.",
-                bq: "Mula Kuiz"
             }
         };
 
@@ -340,79 +238,6 @@
             document.getElementById('cardQ-p').innerText = d.cqp;
             document.getElementById('btnQ').innerText = d.bq;
         }
-
-        // QUIZ LOGIC
-        let currentQIdx = 0;
-        let score = 0;
-
-        function openQuiz() {
-            document.getElementById('quiz-overlay').style.display = 'flex';
-            currentQIdx = 0;
-            score = 0;
-            showQuestion();
-        }
-
-        function closeQuiz() {
-            document.getElementById('quiz-overlay').style.display = 'none';
-            document.getElementById('quiz-body').style.display = 'block';
-            document.getElementById('survey-body').style.display = 'none';
-            document.getElementById('result-body').style.display = 'none';
-        }
-
-        function showQuestion() {
-            const data = quizData[currentLang].questions[currentQIdx];
-            document.getElementById('q-progress').innerText = `STEP ${currentQIdx + 1} / 20`;
-            document.getElementById('q-text').innerText = data.q;
-            const optContainer = document.getElementById('q-options');
-            optContainer.innerHTML = '';
-            data.o.forEach((opt, i) => {
-                const b = document.createElement('button');
-                b.className = 'opt-btn';
-                b.innerText = opt;
-                b.onclick = () => checkAns(i, data.a);
-                optContainer.appendChild(b);
-            });
-            document.getElementById('q-next').style.display = 'none';
-        }
-
-        function checkAns(picked, correct) {
-            const btns = document.querySelectorAll('.opt-btn');
-            btns.forEach(b => b.disabled = true);
-            if(picked === correct) {
-                btns[picked].classList.add('correct');
-                score++;
-            } else {
-                btns[picked].classList.add('wrong');
-                btns[correct].classList.add('correct');
-            }
-            document.getElementById('q-next').style.display = 'block';
-            document.getElementById('q-next').innerText = quizData[currentLang].next;
-        }
-
-        function nextQuestion() {
-            currentQIdx++;
-            if(currentQIdx < quizData[currentLang].questions.length) {
-                showQuestion();
-            } else {
-                showSurvey();
-            }
-        }
-
-        function showSurvey() {
-            document.getElementById('quiz-body').style.display = 'none';
-            document.getElementById('survey-body').style.display = 'block';
-            const sCont = document.getElementById('survey-items');
-            sCont.innerHTML = '';
-            quizData[currentLang].survey.forEach(s => {
-                sCont.innerHTML += `<div style="margin-top:15px"><label style="font-size:0.8rem; color:var(--neon-blue)">${s}</label><input type="text" style="width:100%; background:#0f172a; border:1px solid #334155; color:white; padding:8px; border-radius:5px;"></div>`;
-            });
-        }
-
-        function showResults() {
-            document.getElementById('survey-body').style.display = 'none';
-            document.getElementById('result-body').style.display = 'block';
-            document.getElementById('final-score').innerText = `${score} / 20`;
-            document.getElementById('final-msg').innerText = quizData[currentLang].scoreMsg;
         }
     </script>
 </body>
