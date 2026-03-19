@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
             --neon-blue: #22d3ee;
             --neon-purple: #a855f7;
             --dark-bg: #020617;
-            --card-bg: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.7); /* Updated to semi-transparent */
             --accent: #fbbf24;
         }
 
@@ -24,6 +24,71 @@
             align-items: center;
             min-height: 100vh;
             background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
+            overflow-x: hidden;
+        }
+
+        /* --- ATOM ANIMATION BACKGROUND --- */
+        .atom-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.6; /* Increased opacity for better visibility */
+        }
+
+        .nucleus {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 30px var(--accent);
+        }
+
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .orbit-1 { width: 300px; height: 120px; transform: translate(-50%, -50%) rotate(45deg); }
+        .orbit-2 { width: 300px; height: 120px; transform: translate(-50%, -50%) rotate(-45deg); }
+        .orbit-3 { width: 350px; height: 150px; transform: translate(-50%, -50%) rotate(90deg); }
+
+        .electron {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .electron-1 { animation: orbit-move-1 4s linear infinite; }
+        .electron-2 { animation: orbit-move-2 3s linear infinite; }
+        .electron-3 { animation: orbit-move-3 5s linear infinite; }
+
+        @keyframes orbit-move-1 {
+            from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
+        }
+        @keyframes orbit-move-2 {
+            from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+            to { transform: rotate(-360deg) translateX(150px) rotate(360deg); }
+        }
+        @keyframes orbit-move-3 {
+            from { transform: rotate(0deg) translateX(175px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(175px) rotate(-360deg); }
         }
 
         /* Language Toggle */
@@ -75,10 +140,10 @@
             padding: 20px 0;
         }
 
-        /* Card Design */
+        /* Card Design - Semi Transparent Boxes */
         .card {
             background: var(--card-bg);
-            border: 1px solid #334155;
+            border: 1px solid rgba(51, 65, 85, 0.5);
             border-radius: 16px;
             padding: 25px;
             text-align: center;
@@ -89,11 +154,14 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 320px;
+            backdrop-filter: blur(12px); /* High blur for frosted glass effect */
+            -webkit-backdrop-filter: blur(12px);
         }
 
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--neon-blue);
+            background: rgba(30, 41, 59, 0.85); /* Slightly more solid on hover */
             box-shadow: 0 10px 25px rgba(34, 211, 238, 0.15);
         }
 
@@ -154,17 +222,23 @@
             text-align: center;
         }
 
-        /* Counter Style */
-        #counter-container {
+        #visitor-info {
             margin-top: 10px;
             color: var(--neon-blue);
-            font-family: monospace;
-            font-size: 0.85rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
             letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
+
+    <div class="atom-container">
+        <div class="nucleus"></div>
+        <div class="orbit orbit-1"><div class="electron electron-1"></div></div>
+        <div class="orbit orbit-2"><div class="electron electron-2"></div></div>
+        <div class="orbit orbit-3"><div class="electron electron-3"></div></div>
+    </div>
 
     <button class="lang-btn" onclick="toggleLang()" id="langSwitcher">Tukar ke Bahasa Melayu</button>
 
@@ -212,32 +286,34 @@
     </div>
 
     <footer>
-        &copy; 2026 Project QP-YD | MRSM Gerik KIK | Physics Dept
-        <div id="counter-container">
+        &copy; 2026 Project QP-YD | MRSM Gerik Physics Dept
+        <div id="visitor-info">
             TOTAL VISITORS: <span id="count">0000</span>
         </div>
     </footer>
 
     <script>
-        // --- Visitor Counter Logic ---
-        async function updateCounter() {
+        // --- GLOBAL VISITOR COUNTER LOGIC ---
+        async function incrementCounter() {
+            const countDisplay = document.getElementById('count');
             try {
-                // Menggunakan CountAPI (Percuma & Stabil untuk projek pendidikan)
-                const response = await fetch('https://api.countapi.xyz/hit/project-qp-yd-unique-id/visits');
+                const response = await fetch('https://api.counterapi.dev/v1/project-qp-yd/main_visits/up');
                 const data = await response.json();
-                document.getElementById('count').innerText = data.value.toString().padStart(4, '0');
+                if (data.count) {
+                    countDisplay.innerText = data.count.toString().padStart(4, '0');
+                }
             } catch (error) {
-                // Fallback jika API gagal (menggunakan local storage sebagai backup)
-                let localCount = localStorage.getItem('visitor_count') || 0;
-                localCount++;
-                localStorage.setItem('visitor_count', localCount);
-                document.getElementById('count').innerText = localCount.toString().padStart(4, '0');
+                console.error("Counter Sync Error:", error);
+                let fallback = parseInt(localStorage.getItem('qp_yd_fallback_count') || "0") + 1;
+                localStorage.setItem('qp_yd_fallback_count', fallback);
+                countDisplay.innerText = fallback.toString().padStart(4, '0');
             }
         }
-        updateCounter();
+        incrementCounter();
 
-        // --- Existing Language Logic ---
+        // --- LANGUAGE LOGIC ---
         let currentLang = 'en';
+
         const translations = {
             en: {
                 switcher: "Tukar ke Bahasa Melayu",
