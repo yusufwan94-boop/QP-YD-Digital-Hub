@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
             --neon-blue: #22d3ee;
             --neon-purple: #a855f7;
             --dark-bg: #020617;
-            --card-bg: rgba(30, 41, 59, 0.7); /* Updated to semi-transparent */
+            --card-bg: rgba(30, 41, 59, 0.7);
             --accent: #fbbf24;
         }
 
@@ -37,7 +37,7 @@
             height: 100vh;
             z-index: -1;
             pointer-events: none;
-            opacity: 0.6; /* Increased opacity for better visibility */
+            opacity: 0.6;
         }
 
         .nucleus {
@@ -91,7 +91,6 @@
             to { transform: rotate(360deg) translateX(175px) rotate(-360deg); }
         }
 
-        /* Language Toggle */
         .lang-btn {
             position: absolute;
             top: 20px;
@@ -130,17 +129,15 @@
             margin-top: 5px;
         }
 
-        /* Grid Layout */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 20px;
             width: 90%;
-            max-width: 1100px;
+            max-width: 1200px;
             padding: 20px 0;
         }
 
-        /* Card Design - Semi Transparent Boxes */
         .card {
             background: var(--card-bg);
             border: 1px solid rgba(51, 65, 85, 0.5);
@@ -154,14 +151,14 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 320px;
-            backdrop-filter: blur(12px); /* High blur for frosted glass effect */
+            backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
 
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--neon-blue);
-            background: rgba(30, 41, 59, 0.85); /* Slightly more solid on hover */
+            background: rgba(30, 41, 59, 0.85);
             box-shadow: 0 10px 25px rgba(34, 211, 238, 0.15);
         }
 
@@ -197,7 +194,6 @@
             min-height: 4.2em;
         }
 
-        /* Tactical Button */
         .btn {
             background: linear-gradient(45deg, #2563eb, #7c3aed);
             color: white;
@@ -283,6 +279,15 @@
             </div>
             <div class="btn" id="btn3">Launch Analysis</div>
         </a>
+
+        <a href="https://forms.gle/y9EZJaC8Eay8unoy9" target="_blank" class="card">
+            <div>
+                <div class="icon">📝</div>
+                <h2 id="card4-h">04. Mission Debrief</h2>
+                <p id="card4-p">Complete the feedback form to help us improve the Project QP-YD learning experience.</p>
+            </div>
+            <div class="btn" id="btn4">Launch Feedback</div>
+        </a>
     </div>
 
     <footer>
@@ -329,7 +334,10 @@
                 b2: "Launch Simulator",
                 c3h: "03. Digital Datasheet",
                 c3p: "Analyze results, calculate Planck's constant (h), and find the threshold frequency (fo).",
-                b3: "Launch Analysis"
+                b3: "Launch Analysis",
+                c4h: "04. Mission Debrief",
+                c4p: "Complete the feedback form to help us improve the Project QP-YD learning experience.",
+                b4: "Launch Feedback"
             },
             ms: {
                 switcher: "Switch to English",
@@ -345,7 +353,10 @@
                 b2: "Buka Simulator",
                 c3h: "03. Lembaran Data Digital",
                 c3p: "Analisis keputusan anda, kira pemalar Planck (h), dan cari frekuensi ambang (fo).",
-                b3: "Buka Analisis"
+                b3: "Buka Analisis",
+                c4h: "04. Maklum Balas Misi",
+                c4p: "Lengkapkan borang maklum balas untuk membantu kami meningkatkan pengalaman pembelajaran Project QP-YD.",
+                b4: "Buka Maklum Balas"
             }
         };
 
@@ -371,6 +382,10 @@
             document.getElementById('card3-h').innerText = d.c3h;
             document.getElementById('card3-p').innerText = d.c3p;
             document.getElementById('btn3').innerText = d.b3;
+
+            document.getElementById('card4-h').innerText = d.c4h;
+            document.getElementById('card4-p').innerText = d.c4p;
+            document.getElementById('btn4').innerText = d.b4;
         }
     </script>
 </body>
