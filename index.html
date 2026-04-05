@@ -106,8 +106,6 @@
             z-index: 100;
         }
 
-        .lang-btn:hover { transform: scale(1.05); opacity: 0.9; }
-
         header {
             text-align: center;
             padding: 40px 20px 10px;
@@ -135,31 +133,20 @@
             width: 95%;
             max-width: 1400px;
             padding: 20px 0;
-            /* Default: Single row (Landscape) */
+            /* Landscape/Desktop: 1 Row, 5 Columns */
             grid-template-columns: repeat(5, 1fr);
         }
 
-        /* Portrait Adjustment: 3-row layout */
-        @media (orientation: portrait), (max-width: 1024px) {
+        /* --- PORTRAIT EDIT: 5 Rows, 1 Column --- */
+        @media (orientation: portrait), (max-width: 800px) {
             .grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
-            .card:nth-child(1), .card:nth-child(2), .card:nth-child(3) { grid-column: span 2; }
-            .card:nth-child(4), .card:nth-child(5) { grid-column: span 3; }
-        }
-
-        /* Mobile specific font/padding tweaks */
-        @media (max-width: 600px) {
-            .grid {
-                gap: 10px;
-                width: 98%;
+                grid-template-columns: 1fr;
+                width: 90%;
             }
             .card {
-                padding: 15px 10px;
-                min-height: 240px;
+                min-height: 180px !important;
+                padding: 15px !important;
             }
-            .card h2 { font-size: 0.9rem; }
-            .card p { font-size: 0.75rem; }
         }
 
         .card {
@@ -204,7 +191,7 @@
             margin: 0 0 10px 0; 
             color: var(--neon-blue); 
             font-size: 1rem; 
-            min-height: 2.5em; 
+            min-height: 1.5em; 
             display: flex; 
             align-items: center; 
             justify-content: center;
@@ -215,7 +202,6 @@
             line-height: 1.3; 
             color: #cbd5e1; 
             margin-bottom: 15px; 
-            min-height: 4em;
         }
 
         .btn {
@@ -232,8 +218,6 @@
             transition: 0.1s;
         }
 
-        .btn:active { transform: scale(0.95); }
-
         footer { 
             margin-top: auto; 
             padding: 30px; 
@@ -247,7 +231,6 @@
             color: var(--neon-blue);
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            letter-spacing: 1px;
         }
     </style>
 </head>
@@ -272,7 +255,7 @@
             <div>
                 <div class="icon">📜</div>
                 <h2 id="cardH-h">00. Quantum History</h2>
-                <p id="cardH-p">Explore the timeline of light theory from Newton's corpuscles to De Broglie's matter waves.</p>
+                <p id="cardH-p">Explore the timeline of light theory from Newton to De Broglie.</p>
             </div>
             <div class="btn" id="btnH">Launch History</div>
         </a>
@@ -281,7 +264,7 @@
             <div>
                 <div class="icon">⚛️</div>
                 <h2 id="card1-h">01. Theoretical Lab</h2>
-                <p id="card1-p">Understand the core concepts of Einstein's equation E = hf - Phi before starting the experiment.</p>
+                <p id="card1-p">Understand Einstein's equation E = hf - Phi.</p>
             </div>
             <div class="btn" id="btn1">Launch Theory</div>
         </a>
@@ -290,7 +273,7 @@
             <div>
                 <div class="icon">🔬</div>
                 <h2 id="card2-h">02. Virtual Experiment</h2>
-                <p id="card2-p">Operate the simulator. Sync LED intensity and record Solar Vo saturation points.</p>
+                <p id="card2-p">Operate the simulator and record saturation points.</p>
             </div>
             <div class="btn" id="btn2">Launch Simulator</div>
         </a>
@@ -299,7 +282,7 @@
             <div>
                 <div class="icon">📊</div>
                 <h2 id="card3-h">03. Digital Datasheet</h2>
-                <p id="card3-p">Analyze results, calculate Planck's constant (h), and find the threshold frequency (fo).</p>
+                <p id="card3-p">Analyze results and calculate Planck's constant.</p>
             </div>
             <div class="btn" id="btn3">Launch Analysis</div>
         </a>
@@ -308,7 +291,7 @@
             <div>
                 <div class="icon">📝</div>
                 <h2 id="card4-h">04. Mission Debrief</h2>
-                <p id="card4-p">Complete the feedback form to help us improve the Project QP-YD learning experience.</p>
+                <p id="card4-p">Complete the feedback form for Project QP-YD.</p>
             </div>
             <div class="btn" id="btn4">Launch Feedback</div>
         </a>
@@ -322,85 +305,32 @@
     </footer>
 
     <script>
+        // --- VISITOR COUNTER ---
         async function incrementCounter() {
             const countDisplay = document.getElementById('count');
             try {
                 const response = await fetch('https://api.counterapi.dev/v1/project-qp-yd/main_visits/up');
                 const data = await response.json();
-                if (data.count) {
-                    countDisplay.innerText = data.count.toString().padStart(4, '0');
-                }
-            } catch (error) {
-                console.error("Counter Sync Error:", error);
-                let fallback = parseInt(localStorage.getItem('qp_yd_fallback_count') || "0") + 1;
-                localStorage.setItem('qp_yd_fallback_count', fallback);
+                if (data.count) countDisplay.innerText = data.count.toString().padStart(4, '0');
+            } catch (e) {
+                let fallback = parseInt(localStorage.getItem('qp_yd_count') || "0") + 1;
+                localStorage.setItem('qp_yd_count', fallback);
                 countDisplay.innerText = fallback.toString().padStart(4, '0');
             }
         }
         incrementCounter();
 
+        // --- LANGUAGE SWITCHER ---
         let currentLang = 'en';
         const translations = {
-            en: {
-                switcher: "Tukar ke Bahasa Melayu",
-                sub: "A Digital Journey into the Quantum Effect",
-                chH: "00. Quantum History",
-                cpH: "Explore the timeline of light theory from Newton's corpuscles to De Broglie's matter waves.",
-                bH: "Launch History",
-                c1h: "01. Theoretical Lab",
-                c1p: "Understand the core concepts of Einstein's equation E = hf - Φ before starting the experiment.",
-                b1: "Launch Theory",
-                c2h: "02. Virtual Experiment",
-                c2p: "Operate the simulator. Sync LED intensity and record Solar Vo saturation points.",
-                b2: "Launch Simulator",
-                c3h: "03. Digital Datasheet",
-                c3p: "Analyze results, calculate Planck's constant (h), and find the threshold frequency (fo).",
-                b3: "Launch Analysis",
-                c4h: "04. Mission Debrief",
-                c4p: "Complete the feedback form to help us improve the Project QP-YD learning experience.",
-                b4: "Launch Feedback"
-            },
-            ms: {
-                switcher: "Switch to English",
-                sub: "Perjalanan Digital ke dalam Kesan Kuantum",
-                chH: "00. Sejarah Kuantum",
-                cpH: "Terokai garis masa teori cahaya daripada korpuskel Newton sehingga gelombang jirim De Broglie.",
-                bH: "Buka Sejarah",
-                c1h: "01. Makmal Teori",
-                c1p: "Fahami konsep teras persamaan Einstein E = hf - Φ sebelum memulakan eksperimen.",
-                b1: "Buka Teori",
-                c2h: "02. Eksperimen Maya",
-                c2p: "Kendalikan simulator. Segerakkan intensiti LED dan rekod titik tepu Solar Vo.",
-                b2: "Buka Simulator",
-                c3h: "03. Lembaran Data Digital",
-                c3p: "Analisis keputusan anda, kira pemalar Planck (h), dan cari frekuensi ambang (fo).",
-                b3: "Buka Analisis",
-                c4h: "04. Maklum Balas Misi",
-                c4p: "Lengkapkan borang maklum balas untuk membantu kami meningkatkan pengalaman pembelajaran Project QP-YD.",
-                b4: "Buka Maklum Balas"
-            }
+            en: { switcher: "Tukar ke Bahasa Melayu", sub: "A Digital Journey into the Quantum Effect" },
+            ms: { switcher: "Switch to English", sub: "Perjalanan Digital ke dalam Kesan Kuantum" }
         };
 
         function toggleLang() {
             currentLang = (currentLang === 'en') ? 'ms' : 'en';
-            const d = translations[currentLang];
-            document.getElementById('langSwitcher').innerText = d.switcher;
-            document.getElementById('subtitle').innerText = d.sub;
-            document.getElementById('cardH-h').innerText = d.chH;
-            document.getElementById('cardH-p').innerText = d.cpH;
-            document.getElementById('btnH').innerText = d.bH;
-            document.getElementById('card1-h').innerText = d.c1h;
-            document.getElementById('card1-p').innerText = d.c1p;
-            document.getElementById('btn1').innerText = d.b1;
-            document.getElementById('card2-h').innerText = d.c2h;
-            document.getElementById('card2-p').innerText = d.c2p;
-            document.getElementById('btn2').innerText = d.b2;
-            document.getElementById('card3-h').innerText = d.c3h;
-            document.getElementById('card3-p').innerText = d.c3p;
-            document.getElementById('btn3').innerText = d.b3;
-            document.getElementById('card4-h').innerText = d.c4h;
-            document.getElementById('card4-p').innerText = d.c4p;
-            document.getElementById('btn4').innerText = d.b4;
+            document.getElementById('langSwitcher').innerText = translations[currentLang].switcher;
+            document.getElementById('subtitle').innerText = translations[currentLang].sub;
         }
     </script>
 </body>
