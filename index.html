@@ -131,10 +131,10 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-            width: 90%;
-            max-width: 1200px;
+            grid-template-columns: repeat(5, 1fr); /* Forced to 1 row with 5 columns */
+            gap: 15px;
+            width: 95%;
+            max-width: 1400px;
             padding: 20px 0;
         }
 
@@ -142,7 +142,7 @@
             background: var(--card-bg);
             border: 1px solid rgba(51, 65, 85, 0.5);
             border-radius: 16px;
-            padding: 25px;
+            padding: 15px; /* Reduced padding for single row fit */
             text-align: center;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -150,7 +150,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 320px;
+            min-height: 280px; /* Slightly reduced height to maintain aspect ratio */
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
@@ -163,11 +163,11 @@
         }
 
         .icon { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px; 
+            font-size: 2rem; 
+            margin-bottom: 10px; 
             background: rgba(255,255,255,0.05);
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -179,7 +179,7 @@
         .card h2 { 
             margin: 0 0 10px 0; 
             color: var(--neon-blue); 
-            font-size: 1.2rem; 
+            font-size: 1rem; 
             min-height: 2.8em; 
             display: flex; 
             align-items: center; 
@@ -187,21 +187,21 @@
         }
 
         .card p { 
-            font-size: 0.9rem; 
-            line-height: 1.4; 
+            font-size: 0.85rem; 
+            line-height: 1.3; 
             color: #cbd5e1; 
-            margin-bottom: 20px; 
+            margin-bottom: 15px; 
             min-height: 4.2em;
         }
 
         .btn {
             background: linear-gradient(45deg, #2563eb, #7c3aed);
             color: white;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             font-weight: 800;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             letter-spacing: 1px;
             border: none;
             cursor: pointer;
@@ -224,6 +224,17 @@
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
             letter-spacing: 1px;
+        }
+
+        /* Responsive adjustment for very small screens to keep it in 1 row but scrollable if needed */
+        @media (max-width: 800px) {
+            .grid {
+                overflow-x: auto;
+                padding-bottom: 30px;
+            }
+            .card {
+                min-width: 180px;
+            }
         }
     </style>
 </head>
@@ -298,7 +309,6 @@
     </footer>
 
     <script>
-        // --- GLOBAL VISITOR COUNTER LOGIC ---
         async function incrementCounter() {
             const countDisplay = document.getElementById('count');
             try {
@@ -316,9 +326,7 @@
         }
         incrementCounter();
 
-        // --- LANGUAGE LOGIC ---
         let currentLang = 'en';
-
         const translations = {
             en: {
                 switcher: "Tukar ke Bahasa Melayu",
@@ -363,26 +371,20 @@
         function toggleLang() {
             currentLang = (currentLang === 'en') ? 'ms' : 'en';
             const d = translations[currentLang];
-            
             document.getElementById('langSwitcher').innerText = d.switcher;
             document.getElementById('subtitle').innerText = d.sub;
-            
             document.getElementById('cardH-h').innerText = d.chH;
             document.getElementById('cardH-p').innerText = d.cpH;
             document.getElementById('btnH').innerText = d.bH;
-            
             document.getElementById('card1-h').innerText = d.c1h;
             document.getElementById('card1-p').innerText = d.c1p;
             document.getElementById('btn1').innerText = d.b1;
-            
             document.getElementById('card2-h').innerText = d.c2h;
             document.getElementById('card2-p').innerText = d.c2p;
             document.getElementById('btn2').innerText = d.b2;
-            
             document.getElementById('card3-h').innerText = d.c3h;
             document.getElementById('card3-p').innerText = d.c3p;
             document.getElementById('btn3').innerText = d.b3;
-
             document.getElementById('card4-h').innerText = d.c4h;
             document.getElementById('card4-p').innerText = d.c4p;
             document.getElementById('btn4').innerText = d.b4;
