@@ -133,19 +133,29 @@
             width: 95%;
             max-width: 1400px;
             padding: 20px 0;
-            /* Landscape: 1 Row, 5 Columns */
+            /* DEFAULT: Landscape 1 Row, 5 Columns */
             grid-template-columns: repeat(5, 1fr);
         }
 
-        /* Portrait: 5 Rows, 1 Column */
-        @media (orientation: portrait), (max-width: 800px) {
+        /* --- TABLET PORTRAIT (3 rows: 2x2x1) --- */
+        @media (min-width: 601px) and (max-width: 1024px) and (orientation: portrait) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            /* Last card (Mission Debrief) takes full width of the 3rd row */
+            .card:last-child {
+                grid-column: span 2;
+            }
+        }
+
+        /* --- PHONE PORTRAIT (5 rows, 1 column) --- */
+        @media (max-width: 600px) and (orientation: portrait) {
             .grid {
                 grid-template-columns: 1fr;
                 width: 90%;
             }
             .card {
                 min-height: 180px !important;
-                padding: 15px !important;
             }
         }
 
